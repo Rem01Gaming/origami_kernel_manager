@@ -446,7 +446,7 @@ mtk_idle_charging() {
 	esac
 }
 
-mtk_unlimit_charging_current() {
+mtk_limit_charging_current() {
 	case $(fzf_select "Enable Disable" "Unlimit charging current: ") in
 		Enable) echo 1 $(cat /proc/mtk_battery_cmd/current_cmd | awk '{print $2}') > /proc/mtk_battery_cmd/current_cmd ;;
 		Disable) echo 0 $(cat /proc/mtk_battery_cmd/current_cmd | awk '{print $2}') > /proc/mtk_battery_cmd/current_cmd ;;
@@ -469,13 +469,13 @@ mtk_battery_menu() {
 
 # It's should be fine to say all Mediatek kernels supported idle charging
 # though procfs 'mtk_battery_cmd', no testing needed.
-echo -e "1) Idle charging\n2) Unlimit charging current\n0) Back to main menu\n"
+echo -e "1) Idle charging\n2) Limit charging current\n0) Back to main menu\n"
 read -p "Select the number: " a1
 
 case $a1 in
 	1) mtk_idle_charging
 		loop_helper ;;
-	2) mtk_unlimit_charging_current
+	2) mtk_limit_charging_current
 		loop_helper ;;
 	0) clear && main_act ;;
 	*) echo -e "error: Invalid selection" && exit 1 ;;
