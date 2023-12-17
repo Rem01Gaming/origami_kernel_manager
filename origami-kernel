@@ -441,8 +441,10 @@ disp_menu() {
 
 mtk_idle_charging() {
 	case $(fzf_select "Enable Disable" "Idle charging: ") in
-		Enable) echo $(cat /proc/mtk_battery_cmd/current_cmd | awk '{print $1}') 1 > /proc/mtk_battery_cmd/current_cmd ;;
-		Disable) echo $(cat /proc/mtk_battery_cmd/current_cmd | awk '{print $1}') 0 > /proc/mtk_battery_cmd/current_cmd ;;
+		Enable) echo $(cat /proc/mtk_battery_cmd/current_cmd | awk '{print $1}') 1 > /proc/mtk_battery_cmd/current_cmd
+			echo 0 > /proc/mtk_battery_cmd/en_power_path ;;
+		Disable) echo $(cat /proc/mtk_battery_cmd/current_cmd | awk '{print $1}') 0 > /proc/mtk_battery_cmd/current_cmd
+			echo 1 > /proc/mtk_battery_cmd/en_power_path ;;
 	esac
 }
 
