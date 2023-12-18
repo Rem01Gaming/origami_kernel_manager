@@ -292,6 +292,55 @@ mtk_cpu_menu() {
 	esac
 }
 
+qcom_cpu_menu() {
+	restorecon -R /sys/devices/system/cpu 2>/dev/null
+
+	loop_helper() {
+		clear
+		mtk_cpu_menu
+	}
+
+	echo -e "${LIGHTCYAN}CPU Control menu\n"
+	echo -e "${GREEN}CPU: ${chipset} $(nproc --all) cores"
+	echo -e "Arch: $(uname -m)"
+	echo -e "Scheduler: $(cat /sys/devices/system/cpu/eas/enable | awk '{print $2}')"
+	echo -e "Is big.LITTLE: ${is_big_little}"
+	if [[ $is_big_little == 1 ]]; then
+		echo -e "big.LITTLE clusters: ${nr_clusters} clusters\n"
+		echo -e "LITTLE cluster scaling Governor: $(cat /sys/devices/system/cpu/$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_governor)"
+		echo -e "BIG cluster scaling Governor: $(cat /sys/devices/system/cpu/$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_governor)"
+		if [[ $nr_clusters == 3 ]]; then
+			echo -e "PRIME cluster scaling Governor: $(cat /sys/devices/system/cpu/$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_governor)"
+		fi
+		echo -e "LITTLE cluster scaling freq: $(cat /sys/devices/system/cpu/$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz"
+		echo -e "BIG cluster scaling freq: $(cat /sys/devices/system/cpu/$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz"
+		if [[ $nr_clusters == 3 ]]; then
+			echo -e "PRIME cluster scaling freq: $(cat /sys/devices/system/cpu/$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz"
+		fi
+	else
+		echo -e "scaling Governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
+		echo -e "scaling freq: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)KHz"
+	fi
+	echo -e "$(gradient_line 66A8E0ff 94CCF9ff)${NOCOLOR}\n"
+
+	echo -e "${LIGHTCYAN}CPU Utilities:\n"
+	echo -e "1) Set Governor\n2) Set max freq\n3) Set min freq\n4) EAS/HMP Scheduler\n0) Back to main menu${NOCOLOR}\n"
+	read -p "Select the number: " a1
+
+	case $a1 in
+		1) cpu_set_gov
+			loop_helper ;;
+		2) cpu_set_freq max
+			loop_helper ;;
+		3) cpu_set_freq min
+			loop_helper ;;
+		4) cpu_eas_hmp
+			loop_helper ;;
+		0) clear && main_act ;;
+		*) echo -e "error: Invalid selection" && exit 1 ;;
+	esac
+}
+
 cpu_menu() {
 	case $soc in
 		mtk) mtk_cpu_menu ;;
