@@ -187,13 +187,22 @@ cpu_set_freq() {
 			prime) cluster_need_set=2 ;;
 		esac
 
+		case $cluster_need_set in
+			0) export first_cpu_oncluster=$(echo ${cluster0} | awk '{print $1}')
+				export cpus_cluster_selected=${cluster0} ;;
+			1) export first_cpu_oncluster=$(echo ${cluster1} | awk '{print $1}')
+				export cpus_cluster_selected=${cluster1} ;;
+			2) export first_cpu_oncluster=$(echo ${cluster2} | awk '{print $1}')
+				export cpus_cluster_selected=${cluster2} ;;
+		esac
+
 		if [[ $soc == mtk ]]; then
-			case $cluster_need_set in
-				0) export cpu=$(echo ${cluster0} | awk '{print $1}') ;;
-				1) export cpu=$(echo ${cluster1} | awk '{print $1}') ;;
-				2) export cpu=$(echo ${cluster2} | awk '{print $1}') ;;
-			esac
-			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/${cpu}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") > /proc/ppm/policy/hard_userlimit_${1}_cpu_freq
+			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/${first_cpu_oncluster}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") > /proc/ppm/policy/hard_userlimit_${1}_cpu_freq
+		else
+			freq=$(fzf_select "$(cat /sys/devices/system/cpu/${first_cpu_oncluster}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
+			for cpu in ${cpus_cluster_selected}; do
+				echo $freq > /sys/devices/system/cpu/${cpu}/cpufreq/scaling_${1}_freq
+			done
 		fi
 	fi
 }
