@@ -117,10 +117,10 @@ gradient_line() {
 
 cores=$(($(nproc --all) - 1 ))
 
-# Check if the system has big.LITTLE architecture
-export is_big_little=$(cat /sys/devices/system/cpu/cputopo/is_big_little)
+if [ -f /sys/devices/system/cpu/cputopo/is_big_little ]; then
 
-if [ "$is_big_little" -eq 1 ]; then
+	export is_big_little=1
+
 	# Get the number of clusters
 	nr_clusters=$(cat /sys/devices/system/cpu/cputopo/nr_clusters)
 
@@ -143,6 +143,8 @@ if [ "$is_big_little" -eq 1 ]; then
     if [[ $nr_clusters == 3 ]]; then
 	    export cluster2=${clusters[2]}
     fi
+else
+	export is_big_little=0
 fi
 
 cpu_set_gov() {
