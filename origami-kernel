@@ -1148,6 +1148,20 @@ dirty_expire_centisecs() {
 	done
 }
 
+mtk_dram_force_maxfreq() {
+	if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
+		case $(fzf_select "Yes No" "Force DRAM to maximum frequency: ") in
+			Yes) echo 0 > /sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp ;;
+			No) echo 1 > /sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp ;;
+		esac
+	else
+		case $(fzf_select "Yes No" "Force DRAM to maximum frequency: ") in
+			Yes) echo 0 > /sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ;;
+			No) echo 1 > /sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ;;
+		esac
+	fi
+}
+
 # TODO: Add MGLRU and KSM menu
 
 memory_menu() {
@@ -1158,14 +1172,21 @@ memory_menu() {
 	}
 
 	echo -e "Memory settings memu\n"
-	echo -e "1) Memory cache drop mode\n2) Swappiness\n3) Minimal free kbytes\n4) Extra free kbytes\n5) Laptop mode\n6) OOM Kill allocating task\n7) VFS Pressure cache\n8) Overcommit memory ratio\n9) Dirty ratio\n10) Dirty background ratio\n11) Dirty writeback centisecs\n12) Dirty expire centisecs\n0) Back to main menu\n"
+	echo -e "1) Memory cache drop mode\n2) Swappiness\n3) Minimal free kbytes\n4) Extra free kbytes\n5) Laptop mode\n6) OOM Kill allocating task\n7) VFS Pressure cache\n8) Overcommit memory ratio\n9) Dirty ratio\n10) Dirty background ratio\n11) Dirty writeback centisecs\n12) Dirty expire centisecs\n0) Back to main menu"
+
+	if [[ $soc == mtk ]]; then
+		echo -e "a) Force DRAM to maximum freq"
+	fi
+
 	if [[ -d /sys/kernel/mm/lru_gen ]]; then
-		echo -e "Your kernel also support for Multi-Gen LRU, type 'mglru' for enter the mglru menu.\n"
+		echo -e "\nYour kernel also support for Multi-Gen LRU, type 'mglru' for enter the mglru menu."
 	fi
 
 	if [[ -d /sys/kernel/mm/ksm ]]; then 
-		echo -e "Your kernel also support for kernel samepage merging, type 'ksm' for enter the ksm menu.\n"
+		echo -e "\nYour kernel also support for kernel samepage merging, type 'ksm' for enter the ksm menu."
 	fi
+
+	echo -e "\n"
 	read -p "Select the number: " a1
 
 	case $a1 in
@@ -1212,8 +1233,18 @@ memory_menu() {
 		ksm) clear
 			ksm_menu
 			loop_helper ;;
-		*) echo -e "error: Invalid selection" && exit 1
 	esac
+
+	if [[ $soc == mtk ]]; then
+		case $a1 in
+			[aA]*) clear
+				mtk_dram_force_maxfreq
+				loop_helper ;;
+		esac
+	fi
+
+# If invalid input
+echo -e "error: Invalid selection" && exit 1
 }
 
 ####### STORAGE IO NODE #######
