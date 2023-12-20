@@ -314,7 +314,7 @@ univ_cpu_menu() {
 
 	loop_helper() {
 		clear
-		mtk_cpu_menu
+		univ_cpu_menu
 	}
 
 	echo -e "${LIGHTCYAN}CPU Control menu\n"
