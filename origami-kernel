@@ -534,7 +534,7 @@ qcom_kcal_ctrl() {
 				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " "^" " " " " " " " "
 				;;
 			"sat")
-				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " "^" " " " " " " "
+				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " " "^" " " " " " "
 				;;
 			"hue")
 				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " " " " "^" " " " "
