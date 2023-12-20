@@ -777,7 +777,7 @@ tcp_keepalive_time() {
 	echo -e "waits before sending keepalive probes to verify connections\nare still active. Reducing this value can help detect inactive\nconnections faster and free up resources. be careful not to set\nit too low as it can increase network traffic and CPU usage.\n"
 	echo -e "Use ( ↑ ↓ ) to increase or decrease value\nUse HOME or END to exit\n"
 
-	number=$(cat /proc/sys/net/ipv4/tcp_max_syn_backlog)
+	number=$(cat /proc/sys/net/ipv4/tcp_keepalive_time)
 
 	print_number() {
 		printf "\r%s%s" "value: " "$number   "
@@ -800,7 +800,7 @@ tcp_keepalive_time() {
 			*) break ;;
 		esac
 
-		echo $number > /proc/sys/net/ipv4/tcp_max_syn_backlog
+		echo $number > /proc/sys/net/ipv4/tcp_keepalive_time
 	done
 }
 
