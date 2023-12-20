@@ -309,7 +309,7 @@ mtk_cpu_menu() {
 	esac
 }
 
-qcom_cpu_menu() {
+univ_cpu_menu() {
 	restorecon -R /sys/devices/system/cpu 2>/dev/null
 
 	loop_helper() {
@@ -361,7 +361,7 @@ qcom_cpu_menu() {
 cpu_menu() {
 	case $soc in
 		mtk) mtk_cpu_menu ;;
-		qcom) qcom_cpu_menu ;;
+		*) univ_cpu_menu ;;
 	esac
 }
 
