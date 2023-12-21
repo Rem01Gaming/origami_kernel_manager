@@ -48,7 +48,7 @@ fi
 
 which_chipset() {
 	export chipset=$(grep "Hardware" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')
-	
+
 	if [ -z "$chipset" ]; then
 		export chipset=$(getprop "ro.hardware")
 	fi
@@ -57,6 +57,8 @@ which_chipset() {
 		export soc=mtk
 	elif [[ $chipset == *MSM* || $chipset == *QCOM* || $chipset == *msm* || $chipset == *qcom* ]]; then
 		export soc=qcom
+	elif [[ $chipset == *exynos* ]]; then
+		export soc=exynos
 	else
 		echo -e "${LIGHTCYAN}Sorry, your chipset is unsupported :(${NOCOLOR}" && exit 1
 	fi
