@@ -41,7 +41,7 @@ export ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/ker
 export VENDOR=$(getprop "ro.product.manufacturer")
 
 # User agreement
-if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/agreed ]; then
+if [ ! -f /data/origami-kernel/agreed ]; then
 	clear
 	echo -e "Origami Kernel Manager v1.0.1"
 	echo -e "Copyright (c) 2023-2024 Rem01Gaming\n"
@@ -49,7 +49,7 @@ if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/agreed ]; then
 	echo -e "Origami Kernel Manager offers advanced root functions that could potentially harm your device if used incorrectly or in combination with other software, tweaks, or modules. Please be cautious as Origami Kernel Manager does not take responsibility for any damages resulting from the misuse of this software.\n\nIf you are not well-versed in how root access functions, it's advisable to refrain from utilizing the root options until you have a complete understanding of the associated risks.\n\nThis software is licensed under the GNU General Public License v3.0. It comes with NO WARRANTY AND LIABILITY. By using this software, you acknowledge and accept full responsibility for its use. You agree that any actions taken with this software that negatively impact your device are not the responsibility of the developer.\n\n" | fold -s -w ${LINE}
 	read -p "Type 'I AGREE' to continue: " a1
 	case $a1 in
-		"I AGREE") mkdir /data/data/com.termux/files/usr/share/origami-kernel && touch /data/data/com.termux/files/usr/share/origami-kernel/agreed ;;
+		"I AGREE") mkdir /data/origami-kernel && touch /data/origami-kernel/agreed ;;
 		*) clear && echo -e "[X] Not agreed, Aborted." && exit 0 ;;
 	esac
 fi
