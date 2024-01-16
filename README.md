@@ -34,7 +34,8 @@ To install the Origami Kernel Manager:
 
 ## Compatibility
 
-Presently, complete support is available for Mediatek devices, while specific features are tailored for Realme, Oppo, and OnePlus devices.
+Currently, full support is extended to all arm64 chipsets, with more features specifically tailored for Mediatek SoCs.
+While specific features are tailored for Realme, Oppo, and OnePlus devices.
 
 ## Contribution
 
