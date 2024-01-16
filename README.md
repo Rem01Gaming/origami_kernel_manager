@@ -22,7 +22,7 @@ This script offers an extensive range of functionalities, enabling users to:
 ### Requirements
 - Rooted Android device
 - Termux app installed
-- installed following dependencies: `make shc awk fzf uname getprop whoami`
+- Installed following dependencies: `make fzf fzy jq`
 
 ### Installation
 To install the Origami Kernel Manager:
