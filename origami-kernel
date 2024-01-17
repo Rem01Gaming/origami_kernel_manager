@@ -26,14 +26,14 @@ if [[ ! $(whoami) == "root" ]]; then
 	echo -e "${RED}FATAL:${NOCOLOR} Root permission not granted.\nAre you rooted?" && exit 126
 fi
 
-source ./init/init_run.sh
-source ./utils/menu/menu_helper.sh
-source ./utils/cpu/cpu_util.sh
-source ./utils/gpu/gpu_util.sh
-source ./utils/memory/memory_util.sh
-source ./utils/net/net_util.sh
-source ./utils/disp/disp_util.sh
-source ./utils/misc/misc_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/init/init_run.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/menu/menu_helper.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/cpu/cpu_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/memory/memory_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/net/net_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/disp/disp_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/misc/misc_util.sh
 
 export LINE=$(stty size | awk '{print $2}')
 export ANDROID=$(getprop ro.build.version.release)
@@ -49,7 +49,7 @@ if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/agreed ]; then
 	echo -e "Origami Kernel Manager offers advanced root functions that could potentially harm your device if used incorrectly or in combination with other software, tweaks, or modules. Please be cautious as Origami Kernel Manager does not take responsibility for any damages resulting from the misuse of this software.\n\nIf you are not well-versed in how root access functions, it's advisable to refrain from utilizing the root options until you have a complete understanding of the associated risks.\n\nThis software is licensed under the GNU General Public License v3.0. It comes with NO WARRANTY AND LIABILITY. By using this software, you acknowledge and accept full responsibility for its use. You agree that any actions taken with this software that negatively impact your device are not the responsibility of the developer.\n\n" | fold -s -w ${LINE}
 	read -p "Type 'I AGREE' to continue: " a1
 	case $a1 in
-		"I AGREE") mkdir /data/data/com.termux/files/usr/share/origami-kernel && touch /data/data/com.termux/files/usr/share/origami-kernel/agreed ;;
+		"I AGREE") touch /data/data/com.termux/files/usr/share/origami-kernel/agreed ;;
 		*) clear && echo -e "[X] Not agreed, Aborted." && exit 0 ;;
 	esac
 fi
