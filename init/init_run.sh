@@ -50,6 +50,6 @@ fi
 # GPU info
 gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}')
 
-if [ ! -d /sys/kernel/gpu ] && [ ! -d /proc/gpufreq ]; then
+if [ ! -d /sys/kernel/gpu ] && [ ! -d /proc/gpufreq ] && [ ! -d /proc/gpufreqv2 ]; then
 is_gpu_unsupported=1
 fi

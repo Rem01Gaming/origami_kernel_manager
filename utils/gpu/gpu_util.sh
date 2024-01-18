@@ -25,23 +25,41 @@ echo $(fzf_select "$(cat /sys/kernel/gpu/gpu_available_governor)" "Select Govern
 }
 
 mtk_gpu_freq_set() {
+if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 export freq=$(fzf_select "$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n)" "Set frequency for GPU (NO DVFS): ")
 export voltage=$(cat /proc/gpufreq/gpufreq_opp_dump | awk -v freq="$freq" '$0 ~ freq {gsub(/.*, volt = /, ""); gsub(/,.*/, ""); print}')
 echo $freq $voltage > /proc/gpufreq/gpufreq_fixed_freq_volt
+else
+export freq=$(fzf_select "$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -n)" "Set frequency for GPU (NO DVFS): ")
+export voltage=$(cat /proc/gpufreqv2/gpu_working_opp_table | awk -v freq="$freq" '$0 ~ freq {gsub(/.*, volt: /, ""); gsub(/,.*/, ""); print}')
+echo $freq $voltage > /proc/gpufreqv2/fix_custom_freq_volt
+fi
 }
 
 mtk_gpu_volt_set() {
+if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 if [[ $(cat /proc/gpufreq/gpufreq_fixed_freq_volt) == *disabled* ]]; then
 echo -e "\nerror: Set fixed freq first !"
 read -r -s
 return 1
 fi
-
 echo "$(sed -n 2p /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $3}' )" "$(fzf_select "$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'volt = [0-9]*' | sed 's/volt = //' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" > /proc/gpufreq/gpufreq_fixed_freq_volt
+else
+if [[ $(cat /proc/gpufreqv2/fix_custom_freq_volt) == *disabled* ]]; then
+echo -e "\nerror: Set fixed freq first !"
+read -r -s
+return 1
+fi
+echo "$(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $4}' )" "$(fzf_select "$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $5}' | sed 's/,//g' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" > /proc/gpufreq/gpufreq_fixed_freq_volt
+fi
 }
 
 mtk_gpu_reset_dvfs() {
+if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 echo 0 0 > /proc/gpufreq/gpufreq_fixed_freq_volt
+else
+echo 0 0 > /proc/gpufreqv2/fix_custom_freq_volt
+fi
 }
 
 mtk_gpu_mali_power_policy() {
@@ -100,7 +118,11 @@ fi
         
         
         if [[ $soc == Mediatek ]]; then
-            gpu_menu_info="$(echo $gpu_menu_info)[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $7}') //"
+            if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
+               gpu_menu_info="$(echo $gpu_menu_info)[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $7}') //"
+            else
+               gpu_menu_info="$(echo $gpu_menu_info)[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $2 $8}') //"
+            fi
             gpu_menu_options="Set freq (NO DVFS)\nSet voltage (NO DVFS)\nReset DVFS\nGED GPU DVFS\nGED Boost\nGED Extra Boost\nGED GPU boost\nGED Game Mode\n"
         else
             gpu_menu_options="Set Governor\nSet max freq\nSet min freq\n"
