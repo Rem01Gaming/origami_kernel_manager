@@ -63,11 +63,11 @@ cpu_set_freq() {
 		esac
 
 		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/${first_cpu_oncluster}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") > /proc/ppm/policy/hard_userlimit_${1}_cpu_freq
+			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/cpu${first_cpu_oncluster}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") > /proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
-			freq=$(fzf_select "$(cat /sys/devices/system/cpu/${first_cpu_oncluster}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
+			freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpu${first_cpu_oncluster}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
 			for cpu in ${cpus_cluster_selected}; do
-				echo $freq > /sys/devices/system/cpu/${cpu}/cpufreq/scaling_${1}_freq
+				echo $freq > /sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_${1}_freq
 			done
 		fi
 	else
@@ -171,9 +171,9 @@ mtk_ppm_policy() {
 cpu_menu() {
 	while true; do
 		if [[ $is_big_little == 1 ]]; then
-			cpu_menu_info="[] big.LITTLE Clusters: ${nr_clusters}//[] Little Scaling freq: $(cat /sys/devices/system/cpu/$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//[] Big Scaling freq: $(cat /sys/devices/system/cpu/$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//"
+			cpu_menu_info="[] big.LITTLE Clusters: ${nr_clusters}//[] Little Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//[] Big Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//"
 			if [[ $nr_clusters == 3 ]]; then
-				cpu_menu_info="$(echo $cpu_menu_info)[] Prime Scaling freq: $(cat /sys/devices/system/cpu/$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//"
+				cpu_menu_info="$(echo $cpu_menu_info)[] Prime Scaling freq: $(cat /sys/devices/system/cpu/$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//"
 			fi
 		else
 			cpu_menu_info="[] Scaling freq: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)KHz//"
@@ -182,7 +182,7 @@ cpu_menu() {
 cpu_menu_options="Set Governor\nGovernor parameter\nSet max freq\nSet min freq\n"
 
 		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-			cpu_menu_info="$(echo $cpu_menu_info)[] Scheduler: $(cat /sys/devices/system/cpu/eas/enable | awk '{print $2}')//[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')//[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)//"
+			cpu_menu_info="${cpu_menu_info}[] Scheduler: $(cat /sys/devices/system/cpu/eas/enable | awk '{print $2}')//[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')//[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)//"
 			cpu_menu_options="$(echo "$cpu_menu_options")EAS/HMP Scheduler Switch\nMediatek Processor Power Management\nMediatek CCI mode\nMediatek Power mode"
          fi
 
