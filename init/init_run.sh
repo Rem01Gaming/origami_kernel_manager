@@ -35,35 +35,16 @@ fi
 
 cores=$(($(nproc --all) - 1 ))
 
-if [ -f /sys/devices/system/cpu/cputopo/is_big_little ]; then
-	export is_big_little=1
+shopt -s nullglob
+policy_folders=(/sys/devices/system/cpu/cpufreq/policy*/)
+export nr_clusters=$(echo ${#policy_folders[@]})
 
-	# Get the number of clusters
-	nr_clusters=$(cat /sys/devices/system/cpu/cputopo/nr_clusters)
-
-    # Associative array to store CPUs in clusters
-    declare -A clusters
-
-    # Loop through each CPU core
-    for cpu_dir in /sys/devices/system/cpu/cpu[0-${cores}]*; do
-	    core_id=$(basename "$cpu_dir")
-	    chmod 0644 ${cpu_dir}/online
-	    echo 1 > ${cpu_dir}/online
-	    if [ -f "$cpu_dir/topology/physical_package_id" ]; then
-		    core_cluster=$(chmod +r "$cpu_dir/topology/physical_package_id" && cat "$cpu_dir/topology/physical_package_id")
-		    clusters[$core_cluster]+=" $core_id"
-	    else
-		    echo "error: Cannot determine cluster for $core_id" && exit 1
-	    fi
-    done
-
-    export cluster0=${clusters[0]}
-    export cluster1=${clusters[1]}
-    if [[ $nr_clusters == 3 ]]; then
-	    export cluster2=${clusters[2]}
-    fi
-else
-	export is_big_little=0
+if [ $nr_clusters -gt 1 ]; then
+export is_big_little=1
+cores_dir=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
+export cluster0=$(cat $(echo ${cores_dir[0]})/related_cpus 2>/dev/null)
+export cluster1=$(cat $(echo ${cores_dir[1]})/related_cpus 2>/dev/null)
+export cluster2=$(cat $(echo ${cores_dir[2]})/related_cpus 2>/dev/null)
 fi
 
 # GPU info
