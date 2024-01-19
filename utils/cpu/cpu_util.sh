@@ -28,7 +28,7 @@ cpu_set_gov() {
 }
 
 cpu_set_freq() {
-	if [[ $soc == Mediatek ]]; then
+	if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 		if [[ ! "$(cat /proc/ppm/enabled)" == "ppm is enabled" ]]; then
 			clear && echo -e "error: Enable Processor Power Management First."
 			read -r -s
@@ -62,7 +62,7 @@ cpu_set_freq() {
 				export cpus_cluster_selected=${cluster2} ;;
 		esac
 
-		if [[ $soc == Mediatek ]]; then
+		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/${first_cpu_oncluster}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") > /proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
 			freq=$(fzf_select "$(cat /sys/devices/system/cpu/${first_cpu_oncluster}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
@@ -71,7 +71,7 @@ cpu_set_freq() {
 			done
 		fi
 	else
-		if [[ $soc == Mediatek ]]; then
+		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 			echo 0 $(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies)" "Select ${1} CPU frequency: ") > /proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
 			freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies)" "Select ${1} CPU frequency: ")
@@ -181,10 +181,10 @@ cpu_menu() {
 
 cpu_menu_options="Set Governor\nGovernor parameter\nSet max freq\nSet min freq\n"
 
-		if [[ $soc == Mediatek ]]; then
+		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 			cpu_menu_info="$(echo $cpu_menu_info)[] Scheduler: $(cat /sys/devices/system/cpu/eas/enable | awk '{print $2}')//[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')//[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)//"
 			cpu_menu_options="$(echo "$cpu_menu_options")EAS/HMP Scheduler Switch\nMediatek Processor Power Management\nMediatek CCI mode\nMediatek Power mode"
-		fi
+         fi
 
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
