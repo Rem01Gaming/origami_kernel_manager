@@ -17,8 +17,9 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 thermal_gov_set() {
-export thermal_policy=$(fzf_select "$(cat /sys/class/thermal/thermal_zone0/available_policies)" "Select Thermal governor (apply globally): ")
+export thermal_policy=$(fzf_select "$(chmod 0644 /sys/class/thermal/thermal_zone0/available_policies && cat /sys/class/thermal/thermal_zone0/available_policies)" "Select Thermal governor (apply globally): ")
 for thermal in /sys/class/thermal/thermal_zone*; do
+chmod 0644 ${thermal}/policy
 echo $thermal_policy > ${thermal}/policy
 done &
 }
@@ -113,7 +114,7 @@ misc_menu() {
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] Thermal Governor: $(cat /sys/class/thermal/thermal_zone0/policy)"
+		echo -e "    _________      [] Thermal Governor: $(chmod 0644 /sys/class/thermal/thermal_zone0/policy && cat /sys/class/thermal/thermal_zone0/policy)"
 		echo -e "   /        /\\     [] SELINUX: $(getenforce)"
 		echo -e "  /        /  \\    $(echo "$misc_menu_info" | awk -F '//' '{print $1}')"
 		echo -e " /        /    \\   $(echo "$misc_menu_info" | awk -F '//' '{print $2}')"
