@@ -88,27 +88,27 @@ misc_menu() {
         fi
 
         if [[ $soc == Mediatek ]] && [ -d /sys/kernel/thunderquake_engine ]; then
-            misc_menu_info="$(echo $misc_menu_info)[ϟ] Vibrator strength: $(cat /sys/kernel/thunderquake_engine/level)//"
-            misc_menu_options="$(echo $misc_menu_options)Vibration strength level\n"
+            misc_menu_info="${misc_menu_info}[ϟ] Vibrator strength: $(cat /sys/kernel/thunderquake_engine/level)//"
+            misc_menu_options="${misc_menu_options}Vibration strength level\n"
         fi
 
         if [ -f /proc/touchpanel/game_switch_enable ]; then
-            misc_menu_info="$(echo $misc_menu_info)[ϟ] Touchpanel game mode: $(cat /proc/touchpanel/game_switch_enable)//"
-            misc_menu_options="$(echo $misc_menu_options)Touchpanel game mode\n"
+            misc_menu_info="${misc_menu_info}[ϟ] Touchpanel game mode: $(cat /proc/touchpanel/game_switch_enable)//"
+            misc_menu_options="${misc_menu_options}Touchpanel game mode\n"
         fi
 
         if [ -f /proc/touchpanel/oplus_tp_limit_enable ]; then
-            misc_menu_info="$(echo $misc_menu_info)[] Touchpanel limit: $(cat /proc/touchpanel/oplus_tp_limit_enable)//"
-            misc_menu_options="$(echo $misc_menu_options)Touchpanel limit\n"
+            misc_menu_info="${misc_menu_info}[] Touchpanel limit: $(cat /proc/touchpanel/oplus_tp_limit_enable)//"
+            misc_menu_options="${misc_menu_options}Touchpanel limit\n"
         fi
 
         if [ -f /proc/touchpanel/baseline_test ]; then
-            misc_menu_options="$(echo $misc_menu_options)Touchpanel baseline test\n"
+            misc_menu_options="${misc_menu_options}Touchpanel baseline test\n"
         fi
 
         if [ -f /proc/touchpanel/oplus_tp_direction ]; then
-            misc_menu_info="$(echo $misc_menu_info)[] Touchpanel direction fix: $(cat /proc/touchpanel/oplus_tp_direction)//"
-            misc_menu_options="$(echo $misc_menu_options)Touchpanel direction fix\n"
+            misc_menu_info="${misc_menu_info}[] Touchpanel direction fix: $(cat /proc/touchpanel/oplus_tp_direction)//"
+            misc_menu_options="${misc_menu_options}Touchpanel direction fix\n"
         fi
 
 		clear

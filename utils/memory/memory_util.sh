@@ -87,12 +87,12 @@ memory_menu() {
          memory_menu_options="Memory drop cache\nSwappiness\nMinimum amount of free memory\nExtra free kbytes\nVFS Cache pressure\nOvercommit ratio\nDirty ratio\nDirty background ratio\nDirty writeback centisecs\nDirty expire centisecs\nKill allocating task\nLaptop mode\n"
 
         if [ -f /sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ] || [ -f /sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ]; then
-			memory_menu_options="$(echo $memory_menu_options)Force DRAM to maximum freq\n"
+			memory_menu_options="${memory_menu_options}Force DRAM to maximum freq\n"
 		fi
 
         if [ -d /sys/kernel/mm/lru_gen ]; then
             memory_menu_info="[] MGLRU mode: $(cat /sys/kernel/mm/lru_gen)"
-            memory_menu_options="$(echo $memory_menu_options)MGLRU mode\nMGLRU time-to-live\n"
+            memory_menu_options="${memory_menu_options}MGLRU mode\nMGLRU time-to-live\n"
         fi
 
 		clear

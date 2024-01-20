@@ -119,9 +119,9 @@ fi
         
         if [[ $soc == Mediatek ]]; then
             if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-               gpu_menu_info="$(echo $gpu_menu_info)[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $7}') //"
+               gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $7}') //"
             else
-               gpu_menu_info="$(echo $gpu_menu_info)[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $2 $8}') //"
+               gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $2 $8}') //"
             fi
             gpu_menu_options="Set freq (NO DVFS)\nSet voltage (NO DVFS)\nReset DVFS\nGED GPU DVFS\nGED Boost\nGED Extra Boost\nGED GPU boost\nGED Game Mode\n"
         else
@@ -129,12 +129,12 @@ fi
         fi
         
         if [[ $soc == Mediatek ]] && [ -d /sys/devices/platform/13040000.mali ]; then
-            gpu_menu_info="$(echo $gpu_menu_info)[] Power policy: $(cat /sys/devices/platform/13040000.mali/power_policy | grep -o '\[.*\]' | tr -d '[]')//[] Serialize jobs: $(cat /sys/devices/platform/13040000.mali/scheduling/serialize_jobs | grep -o '\[.*\]' | tr -d '[]')//"
-            gpu_menu_options="$(echo $gpu_menu_options)Mali Serialize Job\nMali Power Policy\n"
+            gpu_menu_info="${gpu_menu_info}[] Power policy: $(cat /sys/devices/platform/13040000.mali/power_policy | grep -o '\[.*\]' | tr -d '[]')//[] Serialize jobs: $(cat /sys/devices/platform/13040000.mali/scheduling/serialize_jobs | grep -o '\[.*\]' | tr -d '[]')//"
+            gpu_menu_options="${gpu_menu_options}Mali Serialize Job\nMali Power Policy\n"
         fi
         
 		if [[ $soc == Mediatek ]] && [ -d /sys/module/ged ]; then
-            gpu_menu_info="$(echo $gpu_menu_info)[] Enable GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)//[ϟ] GED Game mode: $(cat /sys/module/ged/parameters/gx_game_mode)//[ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)//"
+            gpu_menu_info="${gpu_menu_info}[] Enable GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)//[ϟ] GED Game mode: $(cat /sys/module/ged/parameters/gx_game_mode)//[ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)//"
         fi
 
 		clear
