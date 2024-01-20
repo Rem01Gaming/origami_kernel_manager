@@ -37,7 +37,7 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/misc/misc_util
 
 export LINE=$(stty size | awk '{print $2}')
 export ANDROID=$(getprop ro.build.version.release)
-export ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ("$(( ($(cat /proc/sys/kernel/random/entropy_avail) * 100) / 4096))%\ available")"
+export ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
 export VENDOR=$(getprop "ro.product.manufacturer")
 
 # User agreement
