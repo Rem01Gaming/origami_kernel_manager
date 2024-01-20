@@ -35,16 +35,14 @@ fi
 
 cores=$(($(nproc --all) - 1 ))
 
-shopt -s nullglob
-policy_folders=(/sys/devices/system/cpu/cpufreq/policy*/)
+policy_folders=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
 export nr_clusters=$(echo ${#policy_folders[@]})
 
 if [ $nr_clusters -gt 1 ]; then
 export is_big_little=1
-cores_dir=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
-export cluster0=$(cat $(echo ${cores_dir[0]})/related_cpus 2>/dev/null)
-export cluster1=$(cat $(echo ${cores_dir[1]})/related_cpus 2>/dev/null)
-export cluster2=$(cat $(echo ${cores_dir[2]})/related_cpus 2>/dev/null)
+export cluster0=$(cat $(echo ${policy_folders[0]})/related_cpus 2>/dev/null)
+export cluster1=$(cat $(echo ${policy_folders[1]})/related_cpus 2>/dev/null)
+export cluster2=$(cat $(echo ${policy_folders[2]})/related_cpus 2>/dev/null)
 fi
 
 # GPU info
