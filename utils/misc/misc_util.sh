@@ -57,17 +57,6 @@ touchpanel_limit() {
 	esac
 }
 
-touchpanel_baseline_test() {
-clear
-echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
-echo -e "\e[38;2;254;228;208m"
-echo -e "[] Procfs exist, started Touchpanel baseline testing...\n"
-cat /proc/touchpanel/baseline_test
-echo -e "\n\n[+] Details saved in /sdcard/TpTestReport\n"
-echo -e "[!] Press enter to back into Miscellaneous settings\033[0m"
-read -r -s
-}
-
 touchpanel_direction_fix() {
     case $(fzf_select "Enable Disable" "Touchpanel direction fix: ") in
 	      Enable) echo 1 > /proc/touchpanel/oplus_tp_direction ;;
@@ -100,10 +89,6 @@ misc_menu() {
         if [ -f /proc/touchpanel/oplus_tp_limit_enable ]; then
             misc_menu_info="${misc_menu_info}[] Touchpanel limit: $(cat /proc/touchpanel/oplus_tp_limit_enable)//"
             misc_menu_options="${misc_menu_options}Touchpanel limit\n"
-        fi
-
-        if [ -f /proc/touchpanel/baseline_test ]; then
-            misc_menu_options="${misc_menu_options}Touchpanel baseline test\n"
         fi
 
         if [ -f /proc/touchpanel/oplus_tp_direction ]; then
@@ -140,7 +125,6 @@ misc_menu() {
 			"Touchpanel game mode") touchpanel_game_mode ;;
 			"Touchpanel limit") touchpanel_limit ;;
 			"Touchpanel direction fix") touchpanel_direction_fix ;;
-			"Touchpanel baseline test") touchpanel_baseline_test ;;
 			"Back to main menu") clear && main_menu ;;
 		esac
 	done
