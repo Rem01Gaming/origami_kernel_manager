@@ -62,6 +62,32 @@ echo 0 0 > /proc/gpufreqv2/fix_custom_freq_volt
 fi
 }
 
+mtk_gpu_power_limit() {
+while true; do
+        options=(
+                "Ignore GPU Overcurrent protect $(sed -n 2p /proc/gpufreq/gpufreq_power_limited | awk '{print $3}')"
+                "Ignore GPU Low batt percentage limit $(sed -n 3p /proc/gpufreq/gpufreq_power_limited | awk '{print $3}')"
+                "Ignore GPU Low battery limit $(sed -n 4p /proc/gpufreq/gpufreq_power_limited | awk '{print $3}')"
+                "Ignore GPU Thermal protect $(sed -n 5p /proc/gpufreq/gpufreq_power_limited | awk '{print $3}')"
+                "Ignore GPU Power Budget limitter $(sed -n 6p /proc/gpufreq/gpufreq_power_limited | awk '{print $3}')"
+                " "
+                "Back to main menu"
+        )
+
+        selected=$(printf '%s\n' "${options[@]}" | fzy -l 15 -p "")
+        state=$(echo $selected | grep -oE '[0-9]+')
+
+        case "$selected" in
+                *"Ignore GPU Overcurrent protect"*) echo "ignore_batt_oc $((1 - state))" > /proc/gpufreq/gpufreq_power_limited;;
+                *"Ignore GPU Low batt percentage limit"*) echo "ignore_batt_percent $((1 - state))" > /proc/gpufreq/gpufreq_power_limited;;
+                *"Ignore GPU Low battery limit"*) echo "ignore_low_batt $((1 - state))" > /proc/gpufreq/gpufreq_power_limited;;
+                *"Ignore GPU Thermal protect"*) echo "ignore_thermal_protect $((1 - state))" > /proc/gpufreq/gpufreq_power_limited;;
+                *"Ignore GPU Power Budget limitter"*) echo "ignore_pbm_limited $((1 - state))" > /proc/gpufreq/gpufreq_power_limited ;;
+                "Back to main menu") break ;;
+        esac
+done
+}
+
 mtk_gpu_mali_power_policy() {
 	echo $(fzf_select "$(cat /sys/devices/platform/13040000.mali/power_policy | sed 's/\[//g; s/\]//g')" "Select GPU power policy: ") > /sys/devices/platform/13040000.mali/power_policy
 }
@@ -133,9 +159,13 @@ fi
             gpu_menu_options="${gpu_menu_options}Mali Serialize Job\nMali Power Policy\n"
         fi
         
-		if [[ $soc == Mediatek ]] && [ -d /sys/module/ged ]; then
+	if [[ $soc == Mediatek ]] && [ -d /sys/module/ged ]; then
             gpu_menu_info="${gpu_menu_info}[] Enable GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)//[ϟ] GED Game mode: $(cat /sys/module/ged/parameters/gx_game_mode)//[ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)//"
         fi
+
+	if [[ $soc == Mediatek ]] && [ -f /proc/gpufreq/gpufreq_power_limited ]; then
+		gpu_menu_options="${gpu_menu_options}GPU Power limit settings"
+	fi
 
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
@@ -169,6 +199,7 @@ fi
 			"GED Extra Boost") mtk_ged_extra_boost ;;
 			"GED GPU boost") mtk_ged_gpu_boost ;;
 			"GED Game Mode") mtk_ged_game_mode ;;
+			"GPU Power limit settings") mtk_gpu_power_limit ;;
 			"Back to main menu") clear && main_menu ;;
 		esac
 	done
