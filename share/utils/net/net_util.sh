@@ -17,20 +17,20 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 tcp_congestion_change() {
-	echo $(fzf_select "$(cat /proc/sys/net/ipv4/tcp_available_congestion_control)" "Select TCP Congestion: ") > /proc/sys/net/ipv4/tcp_congestion_control
+	echo $(fzf_select "$(cat /proc/sys/net/ipv4/tcp_available_congestion_control)" "Select TCP Congestion: ") >/proc/sys/net/ipv4/tcp_congestion_control
 }
 
 tcp_low_latency() {
 	case $(fzf_select "Enable Disable" "TCP Low latency mode: ") in
-		Enable) echo 1 > /proc/sys/net/ipv4/tcp_low_latency ;;
-		Disable) echo 0 > /proc/sys/net/ipv4/tcp_low_latency ;;
+	Enable) echo 1 >/proc/sys/net/ipv4/tcp_low_latency ;;
+	Disable) echo 0 >/proc/sys/net/ipv4/tcp_low_latency ;;
 	esac
 }
 
 tcp_syncookies() {
 	case $(fzf_select "Enable Disable" "SYN Cookies: ") in
-		Enable) echo 1 > /proc/sys/net/ipv4/tcp_syncookies ;;
-		Disable) echo 0 > /proc/sys/net/ipv4/tcp_syncookies ;;
+	Enable) echo 1 >/proc/sys/net/ipv4/tcp_syncookies ;;
+	Disable) echo 0 >/proc/sys/net/ipv4/tcp_syncookies ;;
 	esac
 }
 
@@ -44,23 +44,23 @@ tcp_keepalive_time() {
 
 tcp_reuse_socket() {
 	case $(fzf_select "Enable Disable enable-for-loopback-traffic-only" "TCP Reuse socket: ") in
-		Enable) echo 1 > /proc/sys/net/ipv4/tcp_tw_reuse ;;
-		Disable) echo 0 > /proc/sys/net/ipv4/tcp_tw_reuse ;;
-		enable-for-loopback-traffic-only) echo 2 > /proc/sys/net/ipv4/tcp_tw_reuse ;;
+	Enable) echo 1 >/proc/sys/net/ipv4/tcp_tw_reuse ;;
+	Disable) echo 0 >/proc/sys/net/ipv4/tcp_tw_reuse ;;
+	enable-for-loopback-traffic-only) echo 2 >/proc/sys/net/ipv4/tcp_tw_reuse ;;
 	esac
 }
 
 bpf_jit_harden() {
 	case $(fzf_select "Normal Secure Hardened" "BPF JIT harden: ") in
-        Hardened) echo 2 > /proc/sys/net/core/bpf_jit_harden ;;
-		Secure) echo 1 > /proc/sys/net/core/bpf_jit_harden ;;
-		Normal) echo 0 > /proc/sys/net/core/bpf_jit_harden ;;
+	Hardened) echo 2 >/proc/sys/net/core/bpf_jit_harden ;;
+	Secure) echo 1 >/proc/sys/net/core/bpf_jit_harden ;;
+	Normal) echo 0 >/proc/sys/net/core/bpf_jit_harden ;;
 	esac
 }
 
 net_menu() {
 	while true; do
-        clear
+		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] TCP Congestion: $(cat /proc/sys/net/ipv4/tcp_congestion_control)" | cut -c 1-${LINE}
@@ -79,14 +79,14 @@ net_menu() {
 		tput civis
 
 		case $(fzy_select "Change TCP Congestion algorithm\nTCP Low latency mode\nTCP SYN Cookies\nTCP Max SYN backlog\nTCP Keep alive time\nTCP Reuse socket\nBPF JIT harden\nBack to main menu" "") in
-			"Change TCP Congestion algorithm") tcp_congestion_change ;;
-			"TCP Low latency mode") tcp_low_latency ;;
-			"TCP SYN Cookies") tcp_syncookies ;;
-			"TCP Max SYN backlog") tcp_max_syn_backlog ;;
-			"TCP Keep alive time") tcp_keepalive_time ;;
-			"TCP Reuse socket") tcp_reuse_socket ;;
-			"BPF JIT harden") bpf_jit_harden ;;
-			"Back to main menu") clear && main_menu ;;
+		"Change TCP Congestion algorithm") tcp_congestion_change ;;
+		"TCP Low latency mode") tcp_low_latency ;;
+		"TCP SYN Cookies") tcp_syncookies ;;
+		"TCP Max SYN backlog") tcp_max_syn_backlog ;;
+		"TCP Keep alive time") tcp_keepalive_time ;;
+		"TCP Reuse socket") tcp_reuse_socket ;;
+		"BPF JIT harden") bpf_jit_harden ;;
+		"Back to main menu") clear && main_menu ;;
 		esac
 	done
 }

@@ -33,21 +33,21 @@ else
 	export soc=unknown
 fi
 
-cores=$(($(nproc --all) - 1 ))
+cores=$(($(nproc --all) - 1))
 
 policy_folders=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
 export nr_clusters=$(echo ${#policy_folders[@]})
 
 if [ $nr_clusters -gt 1 ]; then
-export is_big_little=1
-export cluster0=$(cat $(echo ${policy_folders[0]})/related_cpus 2>/dev/null)
-export cluster1=$(cat $(echo ${policy_folders[1]})/related_cpus 2>/dev/null)
-export cluster2=$(cat $(echo ${policy_folders[2]})/related_cpus 2>/dev/null)
+	export is_big_little=1
+	export cluster0=$(cat $(echo ${policy_folders[0]})/related_cpus 2>/dev/null)
+	export cluster1=$(cat $(echo ${policy_folders[1]})/related_cpus 2>/dev/null)
+	export cluster2=$(cat $(echo ${policy_folders[2]})/related_cpus 2>/dev/null)
 fi
 
 # GPU info
 gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}')
 
 if [ ! -d /sys/kernel/gpu ] && [ ! -d /proc/gpufreq ] && [ ! -d /proc/gpufreqv2 ]; then
-is_gpu_unsupported=1
+	is_gpu_unsupported=1
 fi

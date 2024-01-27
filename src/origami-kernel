@@ -49,14 +49,14 @@ if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/agreed ]; then
 	echo -e "Origami Kernel Manager offers advanced root functions that could potentially harm your device if used incorrectly or in combination with other software, tweaks, or modules. Please be cautious as Origami Kernel Manager does not take responsibility for any damages resulting from the misuse of this software.\n\nIf you are not well-versed in how root access functions, it's advisable to refrain from utilizing the root options until you have a complete understanding of the associated risks.\n\nThis software is licensed under the GNU General Public License v3.0. It comes with NO WARRANTY AND LIABILITY. By using this software, you acknowledge and accept full responsibility for its use. You agree that any actions taken with this software that negatively impact your device are not the responsibility of the developer.\n\n" | fold -s -w ${LINE}
 	read -p "Type 'I AGREE' to continue: " a1
 	case $a1 in
-		"I AGREE") touch /data/data/com.termux/files/usr/share/origami-kernel/agreed ;;
-		*) clear && echo -e "[X] Not agreed, Aborted." && exit 0 ;;
+	"I AGREE") touch /data/data/com.termux/files/usr/share/origami-kernel/agreed ;;
+	*) clear && echo -e "[X] Not agreed, Aborted." && exit 0 ;;
 	esac
 fi
 
 show_license() {
-clear
-echo -e "Origami Kernel Manager version 1.0.1
+	clear
+	echo -e "Origami Kernel Manager version 1.0.1
 Copyright (c) 2023-2024 Rem01Gaming
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License version 3. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -70,43 +70,43 @@ Rem01Gaming <Rem01_Gaming@proton.me>
 
 [!] Press enter to back into main menu
 " | fold -s -w ${LINE}
-read -r -s
+	read -r -s
 }
 
 main_menu() {
-while true; do
-clear
-echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
-echo -e "\e[38;2;254;228;208m"
-echo -e "    _________      [] DEVICE: $(getprop "ro.product.system.model")"
-echo -e "   /        /\\     [] MANUFACTURER: ${VENDOR}"
-echo -e "  /        /  \\    [] CPU: ${soc} ${chipset}"
-echo -e " /        /    \\   [] GPU: ${gpu}" | cut -c 1-${LINE}
-echo -e "/________/      \\  [] KERNEL VERSION: $(uname -r)" | cut -c 1-${LINE}
-echo -e "\\        \\      /  [] UPTIME: $(uptime -p)"
-echo -e " \\        \\    /   [] ANDROID VERSION: ${ANDROID}"
-echo -e "  \\        \\  /    [] SELINUX: $(getenforce)"
-echo -e "   \\________\\/     [] ENTROPY: ${ENTROPY}"
-echo -e "\n//////////////"
-echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
-echo -e "[] Main Menu\033[0m"
+	while true; do
+		clear
+		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
+		echo -e "\e[38;2;254;228;208m"
+		echo -e "    _________      [] DEVICE: $(getprop "ro.product.system.model")"
+		echo -e "   /        /\\     [] MANUFACTURER: ${VENDOR}"
+		echo -e "  /        /  \\    [] CPU: ${soc} ${chipset}"
+		echo -e " /        /    \\   [] GPU: ${gpu}" | cut -c 1-${LINE}
+		echo -e "/________/      \\  [] KERNEL VERSION: $(uname -r)" | cut -c 1-${LINE}
+		echo -e "\\        \\      /  [] UPTIME: $(uptime -p)"
+		echo -e " \\        \\    /   [] ANDROID VERSION: ${ANDROID}"
+		echo -e "  \\        \\  /    [] SELINUX: $(getenforce)"
+		echo -e "   \\________\\/     [] ENTROPY: ${ENTROPY}"
+		echo -e "\n//////////////"
+		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
+		echo -e "[] Main Menu\033[0m"
 
-# Hide cursor
-tput civis
+		# Hide cursor
+		tput civis
 
-case $(fzy_select "CPU control\nGPU control\nMemory settings\nNetworking and Firewall settings\nMiscellaneous settings\nDisplay color calibration\nShow License\nDonate me\nJoin my telegram channel\nExit" "") in
-	"CPU control") cpu_menu ;;
-	"GPU control") gpu_menu ;;
-	"Memory settings") memory_menu ;;
-	"Networking and Firewall settings") net_menu ;;
-	"Miscellaneous settings") misc_menu ;;
-	"Display color calibration") disp_menu ;;
-	"Show License") show_license ;;
-	"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel >/dev/null 2>&1 ;;
-	"Donate me") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/about_wisnu/21 >/dev/null 2>&1 ;;
-	"Exit") tput cnorm && clear && exit 0 ;;
-esac
-done
+		case $(fzy_select "CPU control\nGPU control\nMemory settings\nNetworking and Firewall settings\nMiscellaneous settings\nDisplay color calibration\nShow License\nDonate me\nJoin my telegram channel\nExit" "") in
+		"CPU control") cpu_menu ;;
+		"GPU control") gpu_menu ;;
+		"Memory settings") memory_menu ;;
+		"Networking and Firewall settings") net_menu ;;
+		"Miscellaneous settings") misc_menu ;;
+		"Display color calibration") disp_menu ;;
+		"Show License") show_license ;;
+		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel >/dev/null 2>&1 ;;
+		"Donate me") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/about_wisnu/21 >/dev/null 2>&1 ;;
+		"Exit") tput cnorm && clear && exit 0 ;;
+		esac
+	done
 }
 
 main_menu

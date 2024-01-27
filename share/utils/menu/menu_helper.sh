@@ -35,8 +35,8 @@ color_blocks() {
 		"\e[48;5;12m   \e[0m" "\e[48;5;13m   \e[0m" "\e[48;5;14m   \e[0m" "\e[48;5;15m   \e[0m"
 	)
 
-	for ((i=0; i<${#colors[@]}; i+=8)); do
-		for ((j=i; j<i+8; j++)); do
+	for ((i = 0; i < ${#colors[@]}; i += 8)); do
+		for ((j = i; j < i + 8; j++)); do
 			echo -ne "${colors[$j]}"
 		done
 		echo
@@ -45,7 +45,7 @@ color_blocks() {
 
 # Usage: menu_value_tune "prompt comment" <max value> <min value> <increment/decrement by ..>
 menu_value_tune() {
-    echo
+	echo
 	echo -e "${1}" | fold -s -w ${LINE}
 	echo -e "\nUse ( ↑ ↓ ) to increase or decrease value\nUse HOME or END to exit\n"
 
@@ -60,24 +60,24 @@ menu_value_tune() {
 		print_number
 		read -r -sN3 t
 		case "${t:2:1}" in
-			A)
-				if ((number < ${3})); then
-					((number += x))
-				fi
-				;;
-			B)
-				if ((number > ${4})); then
-					((number -= x))
-				fi
-				;;
-			*) break ;;
+		A)
+			if ((number < ${3})); then
+				((number += x))
+			fi
+			;;
+		B)
+			if ((number > ${4})); then
+				((number -= x))
+			fi
+			;;
+		*) break ;;
 		esac
 
-		echo $number > ${2} 2>/dev/null
+		echo $number >${2} 2>/dev/null
 	done
 }
 
 clear() {
-echo -e "\033[H\033[2J\033[3J$"
-tput cuu 1
+	echo -e "\033[H\033[2J\033[3J$"
+	tput cuu 1
 }

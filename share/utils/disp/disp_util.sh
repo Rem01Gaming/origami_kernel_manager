@@ -22,7 +22,7 @@ mtk_videox_livedisplay() {
 	B=$(cat /sys/devices/platform/mtk_disp_mgr.0/rgb | awk '{print $3}')
 	curr_color="R"
 
-    clear
+	clear
 	echo -e "MTK Videox Livedisplay"
 	echo -e "Display color control for Mediatek devices\n"
 	echo -e "Use ( ↑ ↓ ) to increase or decrease value\nUse ( ← → ) to move\nUse HOME or END to exit\n"
@@ -40,18 +40,18 @@ mtk_videox_livedisplay() {
 			printf "\n\r%s\t%s\t%s" " " " " "^"
 		fi
 
-# Make the cursor invisible
-tput civis
-# moves the cursor up one line
-tput cuu1
-# stores the positon of cursor
-tput sc
-}
+		# Make the cursor invisible
+		tput civis
+		# moves the cursor up one line
+		tput cuu1
+		# stores the positon of cursor
+		tput sc
+	}
 
-while true; do
-	print_colors
-	read -r -sN3 t
-	case "${t:2:1}" in
+	while true; do
+		print_colors
+		read -r -sN3 t
+		case "${t:2:1}" in
 		A)
 			if [ "$curr_color" = "R" ] && ((R < 2000)); then
 				((R++))
@@ -89,14 +89,14 @@ while true; do
 			fi
 			;;
 		*) break ;;
-	esac
+		esac
 
-	echo $R $G $B > /sys/devices/platform/mtk_disp_mgr.0/rgb 2>/dev/null
-done
+		echo $R $G $B >/sys/devices/platform/mtk_disp_mgr.0/rgb 2>/dev/null
+	done
 
-# Normalize cursor
-echo -e "\n"
-tput cnorm
+	# Normalize cursor
+	echo -e "\n"
+	tput cnorm
 }
 
 qcom_kcal() {
@@ -110,7 +110,7 @@ qcom_kcal() {
 	cont=$(cat /sys/devices/platform/kcal_ctrl.0/kcal_cont)
 	curr_color="R"
 
-    clear
+	clear
 	echo -e "Kcal color control"
 	echo -e "Display color control for Snapdragon devices\n"
 	echo -e "Use ( ↑ ↓ ) to increase or decrease value\nUse ( ← → ) to move\nUse HOME or END to exit\n"
@@ -121,44 +121,44 @@ qcom_kcal() {
 		printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" "$R" "$G" "$B" "$invert" "$sat" "$hue" "$val" "$cont"
 
 		case "$curr_color" in
-			"R")
-				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" "^" " " " " " " " " " " " " " "
-				;;
-			"G")
-				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " "^" " " " " " " " " " " " "
-				;;
-			"B")
-				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " "^" " " " " " " " " " "
-				;;
-			"invert")
-				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " "^" " " " " " " " "
-				;;
-			"sat")
-				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " " "^" " " " " " "
-				;;
-			"hue")
-				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " " " " "^" " " " "
-				;;
-			"val")
-				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " " " " " " "^" " "
-				;;
-			*)
-				printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " " " " " " " " "^"
-				;;
+		"R")
+			printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" "^" " " " " " " " " " " " " " "
+			;;
+		"G")
+			printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " "^" " " " " " " " " " " " "
+			;;
+		"B")
+			printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " "^" " " " " " " " " " "
+			;;
+		"invert")
+			printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " "^" " " " " " " " "
+			;;
+		"sat")
+			printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " " "^" " " " " " "
+			;;
+		"hue")
+			printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " " " " "^" " " " "
+			;;
+		"val")
+			printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " " " " " " "^" " "
+			;;
+		*)
+			printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" " " " " " " " " " " " " " " "^"
+			;;
 		esac
 
-# Make the cursor invisible
-tput civis
-# moves the cursor up one line
-tput cuu1
-# stores the positon of cursor
-tput sc
-}
+		# Make the cursor invisible
+		tput civis
+		# moves the cursor up one line
+		tput cuu1
+		# stores the positon of cursor
+		tput sc
+	}
 
-while true; do
-	print_colors
-	read -r -sN3 t
-	case "${t:2:1}" in
+	while true; do
+		print_colors
+		read -r -sN3 t
+		case "${t:2:1}" in
 		A)
 			if [ "$curr_color" = "R" ] && ((R < 256)); then
 				((R++))
@@ -236,28 +236,28 @@ while true; do
 			fi
 			;;
 		*) break ;;
-	esac
+		esac
 
-	echo $R $G $B > /sys/devices/platform/kcal_ctrl.0/kcal 2>/dev/null
-	echo $invert > /sys/devices/platform/kcal_ctrl.0/kcal_invert
-	echo $sat > /sys/devices/platform/kcal_ctrl.0/kcal_sat
-	echo $hue > /sys/devices/platform/kcal_ctrl.0/kcal_hue
-	echo $val > /sys/devices/platform/kcal_ctrl.0/kcal_val
-	echo $cont > /sys/devices/platform/kcal_ctrl.0/kcal_cont
-done
+		echo $R $G $B >/sys/devices/platform/kcal_ctrl.0/kcal 2>/dev/null
+		echo $invert >/sys/devices/platform/kcal_ctrl.0/kcal_invert
+		echo $sat >/sys/devices/platform/kcal_ctrl.0/kcal_sat
+		echo $hue >/sys/devices/platform/kcal_ctrl.0/kcal_hue
+		echo $val >/sys/devices/platform/kcal_ctrl.0/kcal_val
+		echo $cont >/sys/devices/platform/kcal_ctrl.0/kcal_cont
+	done
 
-# Normalize cursor
-echo -e "\n"
-tput cnorm
+	# Normalize cursor
+	echo -e "\n"
+	tput cnorm
 }
 
 disp_menu() {
-if [[ $soc == Mediatek ]] && [ -f /sys/devices/platform/mtk_disp_mgr.0/rgb ]; then
-mtk_videox_livedisplay
-elif [[ $soc == Qualcomm ]] && [ -f /sys/devices/platform/kcal_ctrl.0/kcal]; then
-qcom_kcal
-else
-echo -e "Your device/kernel combination doesn't support display color settings"
-read -r -s
-fi
+	if [[ $soc == Mediatek ]] && [ -f /sys/devices/platform/mtk_disp_mgr.0/rgb ]; then
+		mtk_videox_livedisplay
+	elif [[ $soc == Qualcomm ]] && [ -f /sys/devices/platform/kcal_ctrl.0/kcal]; then
+		qcom_kcal
+	else
+		echo -e "Your device/kernel combination doesn't support display color settings"
+		read -r -s
+	fi
 }
