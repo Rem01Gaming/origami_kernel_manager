@@ -142,31 +142,38 @@ gpu_menu() {
 		gpu_menu_info="[] Governor: $(cat /sys/kernel/gpu/gpu_governor 2>/dev/null)//[] GPU Scaling freq: $(cat /sys/kernel/gpu/gpu_min_clock 2>/dev/null) - $(cat /sys/kernel/gpu/gpu_max_clock 2>/dev/null)//"
 
 		if [[ $soc == Mediatek ]]; then
+			gpu_menu_options="Set freq (NO DVFS)\nSet voltage (NO DVFS)\nReset DVFS\nGED GPU DVFS\nGED Boost\nGED GPU boost\n"
+			gpu_menu_info="${gpu_menu_info}[] Enable GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)//[ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)//"
+
 			if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 				gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $7}') //"
 			else
 				gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $2 $8}') //"
 			fi
-			gpu_menu_options="Set freq (NO DVFS)\nSet voltage (NO DVFS)\nReset DVFS\nGED GPU DVFS\nGED Boost\nGED Extra Boost\nGED GPU boost\nGED Game Mode\n"
+
+			if [ -d /sys/devices/platform/13040000.mali ]; then
+				gpu_menu_info="${gpu_menu_info}[] Power policy: $(cat /sys/devices/platform/13040000.mali/power_policy | grep -o '\[.*\]' | tr -d '[]')//[] Serialize jobs: $(cat /sys/devices/platform/13040000.mali/scheduling/serialize_jobs | grep -o '\[.*\]' | tr -d '[]')//"
+				gpu_menu_options="${gpu_menu_options}Mali Serialize Job\nMali Power Policy\n"
+			fi
+
+			if [ -f /sys/module/ged/parameters/gx_game_mode ]; then
+				gpu_menu_options="${gpu_menu_options}GED Game Mode\n"
+				gpu_menu_info="${gpu_menu_info}[ϟ] GED Game mode: $(cat /sys/module/ged/parameters/gx_game_mode)//"
+			fi
+
+			if [ -f /sys/module/ged/parameters/boost_extra ]; then
+				gpu_menu_options="${gpu_menu_options}GED Extra Boost\n"
+			fi
+
+			if [ -f /proc/gpufreq/gpufreq_power_limited ]; then
+				gpu_menu_options="${gpu_menu_options}GPU Power limit settings"
+			fi
 		else
 			gpu_menu_options="Set Governor\nSet max freq\nSet min freq\n"
 		fi
 
-		if [[ $soc == Mediatek ]] && [ -d /sys/devices/platform/13040000.mali ]; then
-			gpu_menu_info="${gpu_menu_info}[] Power policy: $(cat /sys/devices/platform/13040000.mali/power_policy | grep -o '\[.*\]' | tr -d '[]')//[] Serialize jobs: $(cat /sys/devices/platform/13040000.mali/scheduling/serialize_jobs | grep -o '\[.*\]' | tr -d '[]')//"
-			gpu_menu_options="${gpu_menu_options}Mali Serialize Job\nMali Power Policy\n"
-		fi
-
-		if [[ $soc == Mediatek ]] && [ -d /sys/module/ged ]; then
-			gpu_menu_info="${gpu_menu_info}[] Enable GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)//[ϟ] GED Game mode: $(cat /sys/module/ged/parameters/gx_game_mode)//[ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)//"
-		fi
-
-		if [[ $soc == Mediatek ]] && [ -f /proc/gpufreq/gpufreq_power_limited ]; then
-			gpu_menu_options="${gpu_menu_options}GPU Power limit settings"
-		fi
-
 		clear
-		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
+		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] GPU: ${gpu}" | cut -c 1-${LINE}
 		echo -e "   /        /\\     $(echo "$gpu_menu_info" | awk -F '//' '{print $1}')"
