@@ -1,0 +1,9 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+printf "\033[1;38;2;254;228;208m    .^.   .^.\n"
+printf "    /⋀\\_ﾉ_/⋀\\ \n"
+printf "   /ﾉｿﾉ\\ﾉｿ丶)|\n"
+printf "  |ﾙﾘﾘ >   )ﾘ\n"
+printf "  ﾉノ㇏ Ｖ ﾉ|ﾉ\n"
+printf "        ⠁⠁\n"
+printf "\033[1;38;2;254;228;208m[+] origami-kernel installed, run with sudo origami-kernel\033[0m\n"

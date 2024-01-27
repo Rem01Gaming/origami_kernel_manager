@@ -26,12 +26,13 @@ all:
 	@echo "make install : Install directly to your termux"
 	@echo "make uninstall : Uninstall from your termux"
 	@echo "make install-dependence : Install needed dependencines"
+	@echo "make pack-deb : Build deb package"
+	@echo "make clear : Clear generated files"
 
 install:
-	cp origami-kernel $(PREFIX)/bin/$(SCRIPT_NAME)
+	cp ./src/origami-kernel $(PREFIX)/bin/$(SCRIPT_NAME)
 	mkdir $(PREFIX)/share/origami-kernel
-	cp -r ./init $(PREFIX)/share/origami-kernel
-	cp -r ./utils $(PREFIX)/share/origami-kernel
+	cp -r ./share/* $(PREFIX)/share/origami-kernel
 	chmod +x $(PREFIX)/bin/$(SCRIPT_NAME)
 	@echo "$(SCRIPT_NAME) installed to $(PREFIX)/bin"
 
@@ -43,3 +44,30 @@ uninstall:
 install-dependence:
 	@echo "[+] Installing dependencines..."
 	@pkg install make fzf fzy git tsu jq
+
+pack-deb:
+	@if [ ! -d $(O) ]; then mkdir -v $(O); fi
+	@mkdir -v $(O)/deb
+	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr
+	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/bin/
+	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/
+	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/doc
+	@cp -rv share/* $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/
+	@cp -rv src/origami-kernel $(O)/deb/data/data/com.termux/files/usr/bin/
+	@cp -rv doc/ $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/doc
+	@cp -rv dpkg-conf $(O)/deb/DEBIAN
+	@printf "\033[1;38;2;254;228;208m[+] Build packages.\033[0m\n"&&sleep 1s
+	@chmod -Rv 755 $(O)/deb/DEBIAN
+	@chmod -Rv 755 $(O)/deb/data/data/com.termux/files/usr/bin
+	@chmod -Rv 777 $(O)/deb/data/data/com.termux/files/usr/bin/origami-kernel
+	@cd $(O)/deb&&dpkg -b . ../../origami-kernel.deb
+	@printf "\033[1;38;2;254;228;208m    .^.   .^.\n"
+	@printf "    /⋀\\_ﾉ_/⋀\\ \n"
+	@printf "   /ﾉｿﾉ\\ﾉｿ丶)|\n"
+	@printf "  |ﾙﾘﾘ >   )ﾘ\n"
+	@printf "  ﾉノ㇏ Ｖ ﾉ|ﾉ\n"
+	@printf "        ⠁⠁\n"
+	@printf "\033[1;38;2;254;228;208m[*] Build done,package: origami-kernel.deb\033[0m\n"
+
+clear:
+	rm -rf ./out
