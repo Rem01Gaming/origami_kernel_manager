@@ -32,7 +32,7 @@ To install the Origami Kernel Manager:
 - Execute the following command for installation: `make install`. To uninstall, use `make uninstall`.
 - Once installed, run with `sudo origami-kernel`.
 
-## Compatibility
+## Compatibility state
 
 Currently, full support is extended to all arm64 chipsets, with more features specifically tailored for Mediatek SoCs.
 While specific features are tailored for Realme, Oppo, and OnePlus devices.

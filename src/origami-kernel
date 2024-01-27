@@ -18,12 +18,12 @@
 
 # Check dependencies
 if ! hash whoami fzf fzy tput jq 2>/dev/null; then
-	echo -e "${RED}[!] hash whoami fzf fzy tput jq\nerror:${NOCOLOR} Environment has missing dependencies" && exit 127
+	echo -e "\033[38;5;196m[!] hash whoami fzf fzy tput jq\nerror:\033[0m Environment has missing dependencies" && exit 127
 fi
 
 # Check the root
 if [[ ! $(whoami) == "root" ]]; then
-	echo -e "${RED}FATAL:${NOCOLOR} Root permission not granted.\nAre you rooted?" && exit 126
+	echo -e "\033[38;5;196mFATAL:\033[0m Root permission not granted.\nAre you rooted?" && exit 126
 fi
 
 source /data/data/com.termux/files/usr/share/origami-kernel/init/init_run.sh
@@ -50,7 +50,7 @@ if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/agreed ]; then
 	read -p "Type 'I AGREE' to continue: " a1
 	case $a1 in
 	"I AGREE") touch /data/data/com.termux/files/usr/share/origami-kernel/agreed ;;
-	*) clear && echo -e "[X] Not agreed, Aborted." && exit 0 ;;
+	*) clear && echo -e "\033[38;5;196m[*] Not agreed, Aborted.\033[0m" && exit 0 ;;
 	esac
 fi
 

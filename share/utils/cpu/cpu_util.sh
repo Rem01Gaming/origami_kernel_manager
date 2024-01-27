@@ -30,11 +30,11 @@ cpu_set_gov() {
 cpu_set_freq() {
 	if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 		if [[ ! "$(cat /proc/ppm/enabled)" == "ppm is enabled" ]]; then
-			clear && echo -e "error: Enable Processor Power Management First."
+			clear && echo -e "\033[38;5;196merror:\033[0m Enable Processor Power Management First."
 			read -r -s
 			return 1
 		elif [[ ! "$(cat /proc/ppm/policy_status | grep "PPM_POLICY_HARD_USER_LIMIT")" == *enabled* ]]; then
-			clear && echo "error: Enable 'PPM_POLICY_HARD_USER_LIMIT' on Processor Power Management First."
+			clear && echo -e "\033[38;5;196merror:\033[0m Enable 'PPM_POLICY_HARD_USER_LIMIT' on Processor Power Management First."
 			read -r -s
 			return 1
 		fi

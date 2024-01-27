@@ -257,7 +257,7 @@ disp_menu() {
 	elif [[ $soc == Qualcomm ]] && [ -f /sys/devices/platform/kcal_ctrl.0/kcal]; then
 		qcom_kcal
 	else
-		echo -e "Your device/kernel combination doesn't support display color settings"
+		echo -e "\033[38;5;196merror:\033[0m Your device/kernel combination doesn't support display color settings"
 		read -r -s
 	fi
 }

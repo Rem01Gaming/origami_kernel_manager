@@ -39,14 +39,14 @@ mtk_gpu_freq_set() {
 mtk_gpu_volt_set() {
 	if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 		if [[ $(cat /proc/gpufreq/gpufreq_fixed_freq_volt) == *disabled* ]]; then
-			echo -e "\nerror: Set fixed freq first !"
+			echo -e "\n\033[38;5;196merror:\033[0m Set fixed freq first !"
 			read -r -s
 			return 1
 		fi
 		echo "$(sed -n 2p /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $3}')" "$(fzf_select "$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'volt = [0-9]*' | sed 's/volt = //' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" >/proc/gpufreq/gpufreq_fixed_freq_volt
 	else
 		if [[ $(cat /proc/gpufreqv2/fix_custom_freq_volt) == *disabled* ]]; then
-			echo -e "\nerror: Set fixed freq first !"
+			echo -e "\n\033[38;5;196merror:\033[0m Set fixed freq first !"
 			read -r -s
 			return 1
 		fi
@@ -132,9 +132,8 @@ mtk_ged_game_mode() {
 }
 
 gpu_menu() {
-
 	if [[ $is_gpu_unsupported == 1 ]]; then
-		echo -e "\ninterface (sysfs or procfs) of your GPU is not supported :("
+		echo -e "\n\033[38;5;196error:\033[0m interface (sysfs or procfs) of your GPU is not supported :("
 		read -r -s
 		clear && main_menu
 	fi
