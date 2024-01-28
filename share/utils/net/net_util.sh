@@ -51,10 +51,10 @@ tcp_reuse_socket() {
 }
 
 bpf_jit_harden() {
-	case $(fzf_select "Normal Secure Hardened" "BPF JIT harden: ") in
-	Hardened) echo 2 >/proc/sys/net/core/bpf_jit_harden ;;
-	Secure) echo 1 >/proc/sys/net/core/bpf_jit_harden ;;
-	Normal) echo 0 >/proc/sys/net/core/bpf_jit_harden ;;
+	case $(fzf_select "Disable enable-for-unprivileged-users enable-for-all-users" "BPF JIT harden: ") in
+	enable-for-all-users) echo 2 >/proc/sys/net/core/bpf_jit_harden ;;
+	enable-for-unprivileged-users) echo 1 >/proc/sys/net/core/bpf_jit_harden ;;
+	Disable) echo 0 >/proc/sys/net/core/bpf_jit_harden ;;
 	esac
 }
 
