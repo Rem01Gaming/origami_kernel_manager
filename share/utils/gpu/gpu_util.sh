@@ -173,7 +173,7 @@ gpu_menu() {
 		fi
 
 		clear
-		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
+		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] GPU: ${gpu}" | cut -c 1-${LINE}
 		echo -e "   /        /\\     $(echo "$gpu_menu_info" | awk -F '//' '{print $1}')"

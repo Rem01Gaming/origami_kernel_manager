@@ -39,11 +39,12 @@ export LINE=$(stty size | awk '{print $2}')
 export ANDROID=$(getprop ro.build.version.release)
 export ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
 export VENDOR=$(getprop "ro.product.manufacturer")
+export VERSION="v1.0.2"
 
 # User agreement
 if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/agreed ]; then
 	clear
-	echo -e "Origami Kernel Manager v1.0.1"
+	echo -e "Origami Kernel Manager ${VERSION}"
 	echo -e "Copyright (c) 2023-2024 Rem01Gaming\n"
 	echo -e "DISCLAIMER AND LICENSE AGREEMENT\n"
 	echo -e "Origami Kernel Manager offers advanced root functions that could potentially harm your device if used incorrectly or in combination with other software, tweaks, or modules. Please be cautious as Origami Kernel Manager does not take responsibility for any damages resulting from the misuse of this software.\n\nIf you are not well-versed in how root access functions, it's advisable to refrain from utilizing the root options until you have a complete understanding of the associated risks.\n\nThis software is licensed under the GNU General Public License v3.0. It comes with NO WARRANTY AND LIABILITY. By using this software, you acknowledge and accept full responsibility for its use. You agree that any actions taken with this software that negatively impact your device are not the responsibility of the developer.\n\n" | fold -s -w ${LINE}
@@ -56,7 +57,7 @@ fi
 
 show_license() {
 	clear
-	echo -e "Origami Kernel Manager version 1.0.1
+	echo -e "Origami Kernel Manager ${VERSION}
 Copyright (c) 2023-2024 Rem01Gaming
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License version 3. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -76,7 +77,7 @@ Rem01Gaming <Rem01_Gaming@proton.me>
 main_menu() {
 	while true; do
 		clear
-		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager v1.0.1$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
+		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] DEVICE: $(getprop "ro.product.system.model")"
 		echo -e "   /        /\\     [] MANUFACTURER: ${VENDOR}"
