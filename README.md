@@ -1,45 +1,56 @@
 # Origami Kernel Manager
 
-![Hero image for Origami Kernel Manager](.assets/hero_img.jpg)
+![Hero image for Origami Kernel Manager](.assets/new_hero_img.png)
 
 ## About
 
 The Origami Kernel Manager script is a versatile tool designed to empower users with an array of features, facilitating kernel adjustments, management, and optimization through the command line interface (CLI). It aims to deliver a comprehensive solution for enhancing device performance and customization by providing various settings for kernel fine-tuning.
 
-## Description
+## Why need a kernel manager?
 
-This script offers an extensive range of functionalities, enabling users to:
-- Modify advanced settings
-- Manage CPU and GPU frequencies, governor, scheduler and many more
-- Customize display colors
-- Configure networking and firewall settings
-- Access specific features tailored for manufacturers and SoCs (System on Chips)
-- Control charging parameters
-- Control memory parameters
+- Performance Optimization
+  - Fine-tune CPU frequencies, governor profiles, and memory management for enhanced system performance.
 
-## Installation and running Origami kernel manager
+- Battery Life Improvement
+  - Optimize power-related settings to extend battery life by efficiently managing CPU power and power-saving features.
+
+- Customization and Features
+  - Customize additional features on kernel that not available in your settings, such as display color calibration, Selinux, low memory killer, or advanced network settings.
+
+- Stability and Reliability
+  - Switch between different configurations to find a balance between performance and stability, ideal for users experimenting with kernel stuff.
+
+## Installation and running Origami Kernel Manager
 
 ### Requirements
 - Rooted Android device
 - Termux app installed
-- Installed following dependencies: `make fzf fzy jq`
+- Installed following dependencies: `tsu, fzf, fzy, jq`
+- Working brain 🧠 with minimal cli knowledge
 
-### Installation
-To install the Origami Kernel Manager:
-- Launch your Termux environment.
-- Clone this repository.
-- Navigate to the repository directory.
+### Installation with deb package
+
+- Download deb package from GitHub release
+- Navigate to the Download directory
+- Execute the following command for installation: `apt install ./origami-kernel.deb`. To uninstall, use `apt remove origami-kernel`.
+- Once installed, run with `sudo origami-kernel`
+
+### Installation with make
+
+- Clone this repository
+- Navigate to the repository directory
 - Execute the following command for installation: `make install`. To uninstall, use `make uninstall`.
-- Once installed, run with `sudo origami-kernel`.
+- Once installed, run with `sudo origami-kernel`
+
+PS: You need `make` and `git` installed on your termux for this method.
 
 ## Compatibility state
 
-Currently, full support is extended to all arm64 chipsets, with more features specifically tailored for Mediatek SoCs.
-While specific features are tailored for Realme, Oppo, and OnePlus devices.
+Currently, Origami Kernel Manager complete support is available for Mediatek chipsets, other should be supported with no GPU tuning.
 
 ## Contribution
 
-Contributions are encouraged! Whether it's through issue submissions or pull requests, your input is valued in enhancing the Origami Kernel Manager script.
+Contributions are encouraged! Whether it's through issue submissions or pull requests, your input is valued in enhancing the Origami Kernel Manager.
 
 ## License
 
