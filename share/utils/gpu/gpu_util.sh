@@ -191,7 +191,7 @@ gpu_menu() {
 		tput civis
 
 		case $(fzy_select "$(echo -e "$gpu_menu_options")\nBack to main menu" "") in
-		"Set Governor") cpu_set_gov ;;
+		"Set Governor") gpu_universal_set_gov ;;
 		"Set freq (NO DVFS)") mtk_gpu_freq_set ;;
 		"Set voltage (NO DVFS)") mtk_gpu_volt_set ;;
 		"Reset DVFS") mtk_gpu_reset_dvfs ;;
