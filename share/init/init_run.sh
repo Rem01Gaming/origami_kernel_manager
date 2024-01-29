@@ -46,7 +46,7 @@ if [ $nr_clusters -gt 1 ]; then
 fi
 
 # GPU info
-gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}')
+gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
 
 if [ ! -d /sys/kernel/gpu ] && [ ! -d /proc/gpufreq ] && [ ! -d /proc/gpufreqv2 ]; then
 	is_gpu_unsupported=1
