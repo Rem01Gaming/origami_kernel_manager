@@ -109,7 +109,7 @@ mtk_cpufreq_cci_mode() {
 }
 
 mtk_cpufreq_power_mode() {
-	case $(fzf_select "Normal Low-power Make Performance" "Mediatek CPU CCI mode: ") in
+	case $(fzf_select "Normal Low-power Make Performance" "Mediatek CPU Power mode: ") in
 	Performance) echo 3 >/proc/cpufreq/cpufreq_power_mode ;;
 	Low-power) echo 1 >/proc/cpufreq/cpufreq_power_mode ;;
 	Make) echo 2 >/proc/cpufreq/cpufreq_power_mode ;;
