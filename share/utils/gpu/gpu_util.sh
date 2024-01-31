@@ -45,11 +45,7 @@ mtk_gpu_volt_set() {
 }
 
 mtk_gpu_reset_dvfs() {
-	if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-		echo 0 0 >/proc/gpufreq/gpufreq_fixed_freq_volt
-	else
-		echo 0 0 >/proc/gpufreqv2/fix_custom_freq_volt
-	fi
+	echo 0 0 >/proc/gpufreqv2/fix_custom_freq_volt
 }
 
 mtk_gpu_power_limit() {
@@ -138,11 +134,11 @@ gpu_menu() {
 				gpu_menu_info="${gpu_menu_info}[] Fixed freq: $(sed -n 1p /proc/gpufreq/gpufreq_opp_freq | awk '{print $5}')//"
 			else
 				gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $2 $8}')//"
-				gpu_menu_options="${gpu_menu_options}Set voltage (NO DVFS)\n"
+				gpu_menu_options="${gpu_menu_options}Set voltage (NO DVFS)\nReset DVFS\n"
 			fi
 
 			gpu_menu_info="${gpu_menu_info}[] Enable GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)//[ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)//"
-			gpu_menu_options="${gpu_menu_options}Reset DVFS\nGED GPU DVFS\nGED Boost\nGED GPU boost\n"
+			gpu_menu_options="${gpu_menu_options}GED GPU DVFS\nGED Boost\nGED GPU boost\n"
 
 			if [ -f /sys/module/ged/parameters/gx_game_mode ]; then
 				gpu_menu_options="${gpu_menu_options}GED Game Mode\n"
