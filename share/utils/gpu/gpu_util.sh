@@ -26,9 +26,8 @@ gpu_universal_set_gov() {
 
 mtk_gpu_freq_set() {
 	if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-		export freq=$(fzf_select "$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n)" "Set frequency for GPU (NO DVFS): ")
-		export voltage=$(cat /proc/gpufreq/gpufreq_opp_dump | awk -v freq="$freq" '$0 ~ freq {gsub(/.*, volt = /, ""); gsub(/,.*/, ""); print}')
-		echo $freq $voltage >/proc/gpufreq/gpufreq_fixed_freq_volt
+		export freq=$(fzf_select "0 $(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n)" "Set frequency for GPU (NO DVFS): ")
+		echo $freq >/proc/gpufreq/gpufreq_opp_freq 2>/dev/null
 	else
 		export freq=$(fzf_select "$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -n)" "Set frequency for GPU (NO DVFS): ")
 		export voltage=$(cat /proc/gpufreqv2/gpu_working_opp_table | awk -v freq="$freq" '$0 ~ freq {gsub(/.*, volt: /, ""); gsub(/,.*/, ""); print}')
@@ -37,21 +36,12 @@ mtk_gpu_freq_set() {
 }
 
 mtk_gpu_volt_set() {
-	if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-		if [[ $(cat /proc/gpufreq/gpufreq_fixed_freq_volt) == *disabled* ]]; then
-			echo -e "\n\033[38;5;196merror:\033[0m Set fixed freq first !"
-			read -r -s
-			return 1
-		fi
-		echo "$(sed -n 2p /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $3}')" "$(fzf_select "$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'volt = [0-9]*' | sed 's/volt = //' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" >/proc/gpufreq/gpufreq_fixed_freq_volt
-	else
-		if [[ $(cat /proc/gpufreqv2/fix_custom_freq_volt) == *disabled* ]]; then
-			echo -e "\n\033[38;5;196merror:\033[0m Set fixed freq first !"
-			read -r -s
-			return 1
-		fi
-		echo "$(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $4}')" "$(fzf_select "$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $5}' | sed 's/,//g' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" >/proc/gpufreq/gpufreq_fixed_freq_volt
+	if [[ $(cat /proc/gpufreqv2/fix_custom_freq_volt) == *disabled* ]]; then
+		echo -e "\n\033[38;5;196merror:\033[0m Set fixed freq first !"
+		read -r -s
+		return 1
 	fi
+	echo "$(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $4}')" "$(fzf_select "$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $5}' | sed 's/,//g' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" >/proc/gpufreq/gpufreq_fixed_freq_volt
 }
 
 mtk_gpu_reset_dvfs() {
@@ -142,19 +132,17 @@ gpu_menu() {
 		gpu_menu_info="[] Governor: $(cat /sys/kernel/gpu/gpu_governor 2>/dev/null)//[] GPU Scaling freq: $(cat /sys/kernel/gpu/gpu_min_clock 2>/dev/null) - $(cat /sys/kernel/gpu/gpu_max_clock 2>/dev/null)//"
 
 		if [[ $soc == Mediatek ]]; then
-			gpu_menu_options="Set freq (NO DVFS)\nSet voltage (NO DVFS)\nReset DVFS\nGED GPU DVFS\nGED Boost\nGED GPU boost\n"
-			gpu_menu_info="${gpu_menu_info}[] Enable GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)//[ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)//"
+			gpu_menu_options="Set freq (NO DVFS)\n"
 
 			if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-				gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $7}') //"
+				gpu_menu_info="${gpu_menu_info}[] Fixed freq: $(sed -n 1p /proc/gpufreq/gpufreq_opp_freq | awk '{print $5}')//"
 			else
-				gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $2 $8}') //"
+				gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(cat /proc/gpufreq/gpufreq_fixed_freq_volt | awk '{print $2 $8}')//"
+				gpu_menu_options="${gpu_menu_options}Set voltage (NO DVFS)\n"
 			fi
 
-			if [ -d /sys/devices/platform/13040000.mali ]; then
-				gpu_menu_info="${gpu_menu_info}[] Power policy: $(cat /sys/devices/platform/13040000.mali/power_policy | grep -o '\[.*\]' | tr -d '[]')//[] Serialize jobs: $(cat /sys/devices/platform/13040000.mali/scheduling/serialize_jobs | grep -o '\[.*\]' | tr -d '[]')//"
-				gpu_menu_options="${gpu_menu_options}Mali Serialize Job\nMali Power Policy\n"
-			fi
+			gpu_menu_info="${gpu_menu_info}[] Enable GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)//[ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)//"
+			gpu_menu_options="${gpu_menu_options}Reset DVFS\nGED GPU DVFS\nGED Boost\nGED GPU boost\n"
 
 			if [ -f /sys/module/ged/parameters/gx_game_mode ]; then
 				gpu_menu_options="${gpu_menu_options}GED Game Mode\n"
@@ -166,7 +154,12 @@ gpu_menu() {
 			fi
 
 			if [ -f /proc/gpufreq/gpufreq_power_limited ]; then
-				gpu_menu_options="${gpu_menu_options}GPU Power limit settings"
+				gpu_menu_options="${gpu_menu_options}GPU Power limit settings\n"
+			fi
+
+			if [ -d /sys/devices/platform/13040000.mali ]; then
+				gpu_menu_info="${gpu_menu_info}[] Power policy: $(cat /sys/devices/platform/13040000.mali/power_policy | grep -o '\[.*\]' | tr -d '[]')//[] Serialize jobs: $(cat /sys/devices/platform/13040000.mali/scheduling/serialize_jobs | grep -o '\[.*\]' | tr -d '[]')//"
+				gpu_menu_options="${gpu_menu_options}Mali Serialize Job\nMali Power Policy\n"
 			fi
 		else
 			gpu_menu_options="Set Governor\nSet max freq\nSet min freq\n"
