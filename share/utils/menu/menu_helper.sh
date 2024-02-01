@@ -76,3 +76,20 @@ menu_value_tune() {
 		echo $number >${2} 2>/dev/null
 	done
 }
+
+print_existing_folders() {
+	directory="$1"
+	shift
+
+	existing_folders=()
+
+	for folder in "$@"; do
+		if [ -d "$directory/$folder" ]; then
+			existing_folders+=("$folder")
+		fi
+	done
+
+	if [ ! ${#existing_folders[@]} -eq 0 ]; then
+		echo "${existing_folders[*]}"
+	fi
+}
