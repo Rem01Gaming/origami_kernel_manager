@@ -25,7 +25,7 @@ thermal_gov_set() {
 }
 
 io_sched_set() {
-	export block_target=$(fzf_select "$(print_existing_folders /sys/block mmcblk0 mmcblk1 sda sdb dm-0)" "Select block you wanted to change I/O sched: ")
+	export block_target=$(fzf_select "$(print_existing_folders /sys/block mmcblk0 mmcblk1 $(echo sd{a..z}) dm-0)" "Select block you wanted to change I/O sched: ")
 	echo $(fzf_select "$(cat /sys/block/${block_target}/queue/scheduler | sed 's/\[//g; s/\]//g')" "Select I/O Scheduler: ") >/sys/block/${block_target}/queue/scheduler
 }
 
