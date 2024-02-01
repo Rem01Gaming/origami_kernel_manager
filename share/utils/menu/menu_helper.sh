@@ -76,8 +76,3 @@ menu_value_tune() {
 		echo $number >${2} 2>/dev/null
 	done
 }
-
-clear() {
-	echo -e "\033[H\033[2J\033[3J$"
-	tput cuu 1
-}
