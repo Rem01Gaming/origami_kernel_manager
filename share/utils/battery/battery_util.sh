@@ -34,6 +34,14 @@ elif [ -d /sys/devices/platform/battery/power_supply/battery ]; then
 	battery_level_node="/sys/devices/platform/battery/power_supply/battery/capacity"
 	battery_health_node="/sys/devices/platform/battery/power_supply/battery/health"
 	battery_type_node="/sys/devices/platform/battery/power_supply/battery/technology"
+elif [ -d /sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery ]; then
+	node_path="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery"
+	current_now_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/current_now"
+	status_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/status"
+	battery_capacity_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/charge_full_design"
+	battery_level_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/capacity"
+	battery_health_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/health"
+	battery_type_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/technology"
 fi
 
 test_chg_switches() {
