@@ -81,6 +81,14 @@ mtk_dram_force_maxfreq() {
 	fi
 }
 
+slmk_minfree() {
+	menu_value_tune "Simple LMK minfree\nfree at least this much memory per reclaim." /sys/module/simple_lmk/parameters/slmk_minfree 512 8 2
+}
+
+slmk_timeout() {
+	menu_value_tune "Simple LMK timeout\nwait until all of the victims it kills have their memory freed." /sys/module/simple_lmk/parameters/slmk_timeout 1000 50 2
+}
+
 memory_menu() {
 	while true; do
 
@@ -91,8 +99,12 @@ memory_menu() {
 		fi
 
 		if [ -d /sys/kernel/mm/lru_gen ]; then
-			memory_menu_info="[] MGLRU mode: $(cat /sys/kernel/mm/lru_gen)"
+			memory_menu_info="[] MGLRU mode: $(cat /sys/kernel/mm/lru_gen)\n"
 			memory_menu_options="${memory_menu_options}MGLRU mode\nMGLRU time-to-live\n"
+		fi
+
+		if [ -d /sys/module/simple_lmk ]; then
+			memory_menu_options="${memory_menu_options}Simple LMK minfree\nSimple LMK timeout\n"
 		fi
 
 		clear
@@ -127,6 +139,8 @@ memory_menu() {
 		"Dirty expire centisecs") memory_dirty_expire_centisecs ;;
 		"Kill allocating task") oom_kill_alloc ;;
 		"Laptop mode") laptop_mode ;;
+		"Simple LMK minfree") slmk_minfree ;;
+		"Simple LMK timeout") slmk_timeout ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
 	done
