@@ -23,7 +23,7 @@ fzf_select() {
 }
 
 fzy_select() {
-	selected_option=$(echo -e "${1}" | fzy -l 15 -p "$2")
+	selected_option=$(echo -e "${1}" | fzy -l 30 -p "$2")
 	echo $selected_option
 }
 
