@@ -19,6 +19,7 @@
 # Battery node detection
 # I hate OEM fragmentation
 if [ -d /sys/devices/platform/charger/power_supply/battery ]; then
+	node_path="/sys/devices/platform/charger/power_supply"
 	current_now_node="/sys/devices/platform/charger/power_supply/battery/current_now"
 	status_node="/sys/devices/platform/charger/power_supply/battery/status"
 	battery_capacity_node="/sys/devices/platform/charger/power_supply/battery/charge_full"
@@ -26,6 +27,7 @@ if [ -d /sys/devices/platform/charger/power_supply/battery ]; then
 	battery_health_node="/sys/devices/platform/charger/power_supply/battery/health"
 	battery_type_node="/sys/devices/platform/charger/power_supply/battery/technology"
 elif [ -d /sys/devices/platform/battery/power_supply/battery ]; then
+	node_path="/sys/devices/platform/battery/power_supply"
 	current_now_node="/sys/devices/platform/battery/power_supply/battery/current_now"
 	status_node="/sys/devices/platform/battery/power_supply/battery/status"
 	battery_capacity_node="/sys/devices/platform/battery/power_supply/battery/charge_full_design | cut -c 1-4"
@@ -39,15 +41,15 @@ test_chg_switches() {
 
 	# format: node normal_chg_value idle_chg_value
 	switches=(
-		"/sys/devices/platform/charger/power_supply/battery/batt_slate_mode 0 1"
-		"/sys/devices/platform/charger/power_supply/battery/battery_input_suspend 0 1"
-		"/sys/devices/platform/charger/power_supply/battery/bd_trickle_cnt 0 1"
-		"/sys/devices/platform/charger/power_supply/battery/device/Charging_Enable 1 0"
-		"/sys/devices/platform/charger/power_supply/battery/op_disable_charge 0 1"
-		"/sys/devices/platform/charger/power_supply/battery/store_mode 0 1"
-		"/sys/devices/platform/charger/power_supply/battery/test_mode 2 1"
-		"/sys/devices/platform/charger/power_supply/battery_ext/smart_charging_interruption 0 1"
-		"/sys/devices/platform/charger/power_supply/battery/siop_level 100 0"
+		"${node_path}/battery/batt_slate_mode 0 1"
+		"${node_path}/battery/battery_input_suspend 0 1"
+		"${node_path}/battery/bd_trickle_cnt 0 1"
+		"${node_path}/battery/device/Charging_Enable 1 0"
+		"${node_path}/battery/op_disable_charge 0 1"
+		"${node_path}/battery/store_mode 0 1"
+		"${node_path}/battery/test_mode 2 1"
+		"${node_path}/battery_ext/smart_charging_interruption 0 1"
+		"${node_path}/battery/siop_level 100 0"
 		"/sys/class/hw_power/charger/charge_data/enable_charger 1 0"
 		"/sys/class/qcom-battery/input_suspend 0 1"
 		"/sys/devices/platform/huawei_charger/enable_charger 1 0"
@@ -59,9 +61,9 @@ test_chg_switches() {
 		"/sys/kernel/debug/google_charger/input_suspend 0 1"
 		"/sys/kernel/nubia_charge/charger_bypass off on"
 		"/proc/mtk_battery_cmd/current_cmd 0::0 0::1"
-		"/sys/devices/platform/charger/power_supply/battery/mmi_charging_enable 1 0"
-		"/sys/devices/platform/charger/power_supply/battery/stop_charging_enable 0 1"
-		"/sys/devices/platform/charger/power_supply/battery/store_mode 0 1"
+		"${node_path}/battery/mmi_charging_enable 1 0"
+		"${node_path}/battery/stop_charging_enable 0 1"
+		"${node_path}/battery/store_mode 0 1"
 	)
 
 	# Nuke tested switches before test
