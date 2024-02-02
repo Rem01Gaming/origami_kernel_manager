@@ -25,7 +25,7 @@ fi
 
 if [[ $chipset == *MT* || $chipset == *mt* ]]; then
 	export soc=Mediatek
-elif [[ $chipset == *MSM* || $chipset == *QCOM* || $chipset == *msm* || $chipset == *qcom* ]]; then
+elif [[ $chipset == *SM* || $chipset == *QCOM* || $chipset == *sm* || $chipset == *qcom* ]]; then
 	export soc=Qualcomm
 elif [[ $chipset == *exynos* ]]; then
 	export soc=Exynos
