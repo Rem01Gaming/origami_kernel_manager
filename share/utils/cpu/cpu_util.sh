@@ -88,19 +88,6 @@ cpu_set_freq() {
 	fi
 }
 
-mtk_sched_switch() {
-	chmod 0644 /sys/devices/system/cpu/eas/enable
-
-	case $(fzf_select "EAS HMP Hybrid" "Select Scheduler: ") in
-	EAS) export sched=1 ;;
-	HMP) export sched=0 ;;
-	Hybrid) export sched=2 ;;
-	esac
-
-	echo $sched >/sys/devices/system/cpu/eas/enable
-	chmod +r /sys/devices/system/cpu/eas/enable
-}
-
 mtk_cpufreq_cci_mode() {
 	case $(fzf_select "Normal Performance" "Mediatek CPU CCI mode: ") in
 	Performance) echo 1 >/proc/cpufreq/cpufreq_cci_mode ;;
@@ -188,8 +175,8 @@ cpu_menu() {
 		cpu_menu_options="Set Governor\nGovernor parameter\nSet max freq\nSet min freq\n"
 
 		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-			cpu_menu_info="${cpu_menu_info}[] Scheduler: $(cat /sys/devices/system/cpu/eas/enable | awk '{print $2}')//[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')//[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)//"
-			cpu_menu_options="$(echo "$cpu_menu_options")EAS/HMP Scheduler Switch\nMediatek Processor Power Management\nMediatek CCI mode\nMediatek Power mode"
+			cpu_menu_info="${cpu_menu_info}[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')//[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)//[] CPU CCI mode: $(cat /proc/cpufreq/cpufreq_cci_mode)//"
+			cpu_menu_options="$(echo "$cpu_menu_options")Mediatek Processor Power Management\nMediatek CCI mode\nMediatek Power mode"
 		fi
 
 		clear
@@ -215,7 +202,6 @@ cpu_menu() {
 		"Governor parameter") cpu_gov_param ;;
 		"Set max freq") cpu_set_freq max ;;
 		"Set min freq") cpu_set_freq min ;;
-		"EAS/HMP Scheduler Switch") mtk_sched_switch ;;
 		"Mediatek Processor Power Management") mtk_ppm_policy ;;
 		"Mediatek CCI mode") mtk_cpufreq_cci_mode ;;
 		"Mediatek Power mode") mtk_cpufreq_power_mode ;;
