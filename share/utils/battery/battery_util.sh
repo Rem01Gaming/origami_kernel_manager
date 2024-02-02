@@ -45,6 +45,7 @@ test_chg_switches() {
 		"${node_path}/battery/battery_input_suspend 0 1"
 		"${node_path}/battery/bd_trickle_cnt 0 1"
 		"${node_path}/battery/device/Charging_Enable 1 0"
+		"${node_path}/battery/charging_enabled 1 0"
 		"${node_path}/battery/op_disable_charge 0 1"
 		"${node_path}/battery/store_mode 0 1"
 		"${node_path}/battery/test_mode 2 1"
