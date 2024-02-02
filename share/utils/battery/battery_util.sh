@@ -16,6 +16,24 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
+# Battery node detection
+# I hate OEM fragmentation
+if [ -d /sys/devices/platform/charger/power_supply/battery ]; then
+	current_now_node="/sys/devices/platform/charger/power_supply/battery/current_now"
+	status_node="/sys/devices/platform/charger/power_supply/battery/status"
+	battery_capacity_node="/sys/devices/platform/charger/power_supply/battery/charge_full"
+	battery_level_node="/sys/devices/platform/charger/power_supply/battery/capacity"
+	battery_health_node="/sys/devices/platform/charger/power_supply/battery/health"
+	battery_type_node="/sys/devices/platform/charger/power_supply/battery/technology"
+elif [ -d /sys/devices/platform/battery/power_supply/battery ]; then
+	current_now_node="/sys/devices/platform/battery/power_supply/battery/current_now"
+	status_node="/sys/devices/platform/battery/power_supply/battery/status"
+	battery_capacity_node="/sys/devices/platform/battery/power_supply/battery/charge_full_design | cut -c 1-4"
+	battery_level_node="/sys/devices/platform/battery/power_supply/battery/capacity"
+	battery_health_node="/sys/devices/platform/battery/power_supply/battery/health"
+	battery_type_node="/sys/devices/platform/battery/power_supply/battery/technology"
+fi
+
 test_chg_switches() {
 	echo -e "\n[*] Charging switches tester started..."
 
@@ -50,7 +68,7 @@ test_chg_switches() {
 	rm -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches
 	rm -f /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
 
-	if [[ ! $(cat /sys/devices/platform/charger/power_supply/battery/status) == *Charging* ]]; then
+	if [[ ! $(cat $status_node) == *Charging* ]]; then
 		echo -e "[-] \033[38;5;196merror:\033[0m Please connect device to charger first !"
 		read -r -s
 	else
@@ -62,7 +80,7 @@ test_chg_switches() {
 				echo -e "[+] Testing switch: ${switch}"
 				echo $idle_val >$node_path
 				sleep 3
-				current_now=$(cat /sys/devices/platform/charger/power_supply/battery/current_now)
+				current_now=$(cat $current_now_node)
 				if ((current_now >= -30 && current_now <= 30)); then
 					echo -e "[+] Switch $node_path is working !"
 					echo -e "$(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches 2>/dev/null)\n${switch}" >/data/data/com.termux/files/usr/share/origami-kernel/chg_switches
@@ -136,10 +154,10 @@ batt_menu() {
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] Battery level: $(cat /sys/devices/platform/charger/power_supply/battery/capacity)"
-		echo -e "   /        /\\     [] Battery capacity: $(cat /sys/devices/platform/charger/power_supply/battery/charge_full) mAh"
-		echo -e "  /        /  \\    [] Battery health: $(cat /sys/devices/platform/charger/power_supply/battery/health)"
-		echo -e " /        /    \\   [] Battery type: $(cat /sys/devices/platform/charger/power_supply/battery/technology)"
+		echo -e "    _________      [] Battery level: $(cat $battery_level_node)"
+		echo -e "   /        /\\     [] Battery capacity: $(cat $battery_capacity_node) mAh"
+		echo -e "  /        /  \\    [] Battery health: $(cat $battery_health_node)"
+		echo -e " /        /    \\   [] Battery type: $(cat $battery_type_node)"
 		echo -e "/________/      \\  $(is_idle_chg_enabled)"
 		echo -e "\\        \\      /  "
 		echo -e " \\        \\    /   "
