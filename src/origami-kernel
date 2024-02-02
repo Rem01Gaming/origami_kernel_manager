@@ -34,6 +34,7 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/memory/memory_
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/net/net_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/disp/disp_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/misc/misc_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/battery/battery_util.sh
 
 export LINE=$(stty size | awk '{print $2}')
 export ANDROID=$(getprop ro.build.version.release)
@@ -95,12 +96,13 @@ main_menu() {
 		# Hide cursor
 		tput civis
 
-		case $(fzy_select "CPU control\nGPU control\nMemory settings\nNetworking and Firewall settings\nMiscellaneous settings\nDisplay color calibration\nShow License\nDonate me\nJoin my telegram channel\nExit" "") in
+		case $(fzy_select "CPU control\nGPU control\nMemory settings\nNetworking and Firewall settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nShow License\nDonate me\nJoin my telegram channel\nExit" "") in
 		"CPU control") cpu_menu ;;
 		"GPU control") gpu_menu ;;
 		"Memory settings") memory_menu ;;
 		"Networking and Firewall settings") net_menu ;;
 		"Miscellaneous settings") misc_menu ;;
+		"Charging controller") batt_menu ;;
 		"Display color calibration") disp_menu ;;
 		"Show License") show_license ;;
 		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel >/dev/null 2>&1 ;;
