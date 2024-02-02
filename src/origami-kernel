@@ -40,7 +40,7 @@ export LINE=$(stty size | awk '{print $2}')
 export ANDROID=$(getprop ro.build.version.release)
 export ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
 export VENDOR=$(getprop "ro.product.manufacturer")
-export VERSION="v1.0.2"
+export VERSION="v1.0.3"
 
 # User agreement
 if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/agreed ]; then
