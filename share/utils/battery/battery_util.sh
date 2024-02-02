@@ -156,7 +156,7 @@ batt_menu() {
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] Battery level: $(cat $battery_level_node)"
+		echo -e "    _________      [] Battery level: $(cat $battery_level_node) %"
 		echo -e "   /        /\\     [] Battery capacity: $(cat $battery_capacity_node) mAh"
 		echo -e "  /        /  \\    [] Battery health: $(cat $battery_health_node)"
 		echo -e " /        /    \\   [] Battery type: $(cat $battery_type_node)"
