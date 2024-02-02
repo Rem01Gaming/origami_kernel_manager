@@ -19,7 +19,7 @@
 test_chg_switches() {
 	echo -e "\n[*] Charging switches tester started..."
 
-	# format: file normal_chg_value idle_chg_value
+	# format: node normal_chg_value idle_chg_value
 	switches=(
 		"/sys/devices/platform/charger/power_supply/battery/batt_slate_mode 0 1"
 		"/sys/devices/platform/charger/power_supply/battery/battery_input_suspend 0 1"
@@ -55,21 +55,21 @@ test_chg_switches() {
 		read -r -s
 	else
 		for switch in "${switches[@]}"; do
-			file_path=$(echo "$switch" | awk '{print $1}')
+			node_path=$(echo "$switch" | awk '{print $1}')
 			normal_val=$(echo "$switch" | awk '{print $2}' | sed 's/::/ /g')
 			idle_val=$(echo "$switch" | awk '{print $3}' | sed 's/::/ /g')
-			if [ -f $file_path ]; then
+			if [ -f $node_path ]; then
 				echo -e "[+] Testing switch: ${switch}"
-				echo $idle_val >$file_path
+				echo $idle_val >$node_path
 				sleep 3
 				current_now=$(cat /sys/devices/platform/charger/power_supply/battery/current_now)
 				if ((current_now >= -30 && current_now <= 30)); then
-					echo -e "[+] Switch $file_path is working !"
+					echo -e "[+] Switch $node_path is working !"
 					echo -e "$(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches 2>/dev/null)\n${switch}" >/data/data/com.termux/files/usr/share/origami-kernel/chg_switches
 				else
-					echo -e "[-] Switch $file_path is not working !"
+					echo -e "[-] Switch $node_path is not working !"
 				fi
-				echo $normal_val >$file_path
+				echo $normal_val >$node_path
 			fi
 		done
 		if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches ]; then
@@ -92,13 +92,13 @@ do_idle_chg() {
 		fi
 
 		use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
-		file_path=$(echo $use_chg_switch | awk '{print $1}')
+		node_path=$(echo $use_chg_switch | awk '{print $1}')
 		normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
 		idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
 
 		case $(fzf_select "enable disable" "Enable or Disable Idle charging: ") in
-		enable) echo $idle_val >$file_path ;;
-		disable) echo $normal_val >$file_path ;;
+		enable) echo $idle_val >$node_path ;;
+		disable) echo $normal_val >$node_path ;;
 		esac
 	fi
 }
@@ -112,18 +112,18 @@ change_use_chg_switch() {
 	fi
 }
 
-is_idle_chg_enabeled() {
+is_idle_chg_enabled() {
 	if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches ] || [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch ]; then
 		echo "[ϟ] Idle charging: Undefined"
 	else
 		use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
-		file_path=$(echo $use_chg_switch | awk '{print $1}')
+		node_path=$(echo $use_chg_switch | awk '{print $1}')
 		normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
 		idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
 
-		if [ "$(cat $file_path)" == "$idle_val" ]; then
+		if [ "$(cat $node_path)" == "$idle_val" ]; then
 			echo "[ϟ] Idle charging: Enabled"
-		elif [ "$(cat $file_path)" == "$normal_val" ]; then
+		elif [ "$(cat $node_path)" == "$normal_val" ]; then
 			echo "[ϟ] Idle charging: Disabled"
 		else
 			echo "[ϟ] Idle charging: Undefined"
@@ -140,7 +140,7 @@ batt_menu() {
 		echo -e "   /        /\\     [] Battery capacity: $(cat /sys/devices/platform/charger/power_supply/battery/charge_full) mAh"
 		echo -e "  /        /  \\    [] Battery health: $(cat /sys/devices/platform/charger/power_supply/battery/health)"
 		echo -e " /        /    \\   [] Battery type: $(cat /sys/devices/platform/charger/power_supply/battery/technology)"
-		echo -e "/________/      \\  $(is_idle_chg_enabeled)"
+		echo -e "/________/      \\  $(is_idle_chg_enabled)"
 		echo -e "\\        \\      /  "
 		echo -e " \\        \\    /   "
 		echo -e "  \\        \\  /    "
