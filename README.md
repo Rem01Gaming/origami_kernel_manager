@@ -7,7 +7,7 @@
 Another yet kernel manager.
 
 [![Latest release](https://img.shields.io/github/v/release/rem01gaming/origami_kernel_manager?label=Release&logo=github)](https://github.com/rem01gaming/origami_kernel_manager/releases/latest)
-[![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram)](https://t.me/rem01channel)
+[![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram)](https://t.me/rem01schannel)
 [![GitHub License](https://img.shields.io/github/license/rem01gaming/origami_kernel_manager?logo=gnu)](/LICENSE)
 
 ## About
