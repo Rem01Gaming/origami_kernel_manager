@@ -2,6 +2,14 @@
 
 ![Hero image for Origami Kernel Manager](.assets/new_hero_img.png)
 
+---
+
+Another yet kernel manager.
+
+[![Latest release](https://img.shields.io/github/v/release/rem01gaming/origami_kernel_manager?label=Release&logo=github)](https://github.com/rem01gaming/origami_kernel_manager/releases/latest)
+[![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram)](https://t.me/rem01channel)
+[![GitHub License](https://img.shields.io/github/license/rem01gaming/origami_kernel_manager?logo=gnu)](/LICENSE)
+
 ## About
 
 The Origami Kernel Manager script is a versatile tool designed to empower users with an array of features, facilitating kernel adjustments, management, and optimization through the command line interface (CLI). It aims to deliver a comprehensive solution for enhancing device performance and customization by providing various settings for kernel fine-tuning.
@@ -12,7 +20,7 @@ The Origami Kernel Manager script is a versatile tool designed to empower users 
   - Fine-tune CPU frequencies, governor profiles, and memory management for enhanced system performance.
 
 - Battery Life Improvement
-  - Optimize power-related settings to extend battery life by efficiently managing CPU power and power-saving features.
+  - Optimize power-related settings to extend battery life by efficiently managing CPU power, power-saving features, and charging control.
 
 - Customization and Features
   - Customize additional features on kernel that not available in your settings, such as display color calibration, Selinux, low memory killer, or advanced network settings.
@@ -25,7 +33,7 @@ The Origami Kernel Manager script is a versatile tool designed to empower users 
 ### Requirements
 - Rooted Android device
 - Termux app installed
-- Installed following dependencies: `tsu, fzf, fzy, jq`
+- Installed following dependencies: `tsu fzf fzy jq`
 - Working brain 🧠 with minimal cli knowledge
 
 ### Installation with deb package
