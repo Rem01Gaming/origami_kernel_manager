@@ -137,7 +137,7 @@ change_use_chg_switch() {
 		echo -e "\nerror: Charging switch not defined, please run 'Test charging switches'"
 		read -r -s
 	else
-		echo $(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches | fzf --reverse --cycle --prompt "Select a charging switch for first time: ") >/data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
+		echo $(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches | fzf --reverse --cycle --prompt "Select a charging switch: ") >/data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
 	fi
 }
 
