@@ -137,6 +137,10 @@ change_use_chg_switch() {
 		echo -e "\nerror: Charging switch not defined, please run 'Test charging switches'"
 		read -r -s
 	else
+		use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
+		node_path=$(echo $use_chg_switch | awk '{print $1}')
+		normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
+		echo $normal_val >$node_path
 		echo $(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches | fzf --reverse --cycle --prompt "Select a charging switch: ") >/data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
 	fi
 }
