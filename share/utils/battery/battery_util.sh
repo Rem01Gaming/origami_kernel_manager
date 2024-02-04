@@ -100,7 +100,7 @@ test_chg_switches() {
 				average_current=$(echo "${current_samples[@]}" | awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; else print "0" }')
 				unset current_samples
 
-				if ((average_current <= 30)); then
+				if ((average_current <= 52)); then
 					echo -e "[+] Switch $node_path is working !"
 					echo -e "$(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches 2>/dev/null)\n${switch}" >/data/data/com.termux/files/usr/share/origami-kernel/chg_switches
 				else
