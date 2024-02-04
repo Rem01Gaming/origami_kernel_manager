@@ -66,14 +66,14 @@ test_chg_switches() {
 		"${battery_node_path}/store_mode 0 1"
 	)
 
-	# Nuke tested switches before test
-	rm -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches
-	rm -f /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
-
 	if [[ ! $(cat $status_node) == *Charging* ]]; then
 		echo -e "[-] \033[38;5;196merror:\033[0m Please connect device to charger first !"
 		read -r -s
 	else
+		# Nuke tested switches before test
+		rm -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches
+		rm -f /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
+
 		if [ $(cat $current_now_node | tr -d '-') -gt 10000 ]; then
 			# current unit is microamps
 			export current_unit_microamps=1
