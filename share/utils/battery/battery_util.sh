@@ -64,6 +64,11 @@ test_chg_switches() {
 		echo -e "[-] \033[38;5;196merror:\033[0m Please connect device to charger first !"
 		read -r -s
 	else
+		if [ $(cat $current_now_node) -gt 10000 ]; then
+			# current unit is microamps
+			current_unit_microamps=1
+		fi
+
 		for switch in "${switches[@]}"; do
 			node_path=$(echo "$switch" | awk '{print $1}')
 			normal_val=$(echo "$switch" | awk '{print $2}' | sed 's/::/ /g')
@@ -72,7 +77,15 @@ test_chg_switches() {
 				echo -e "[+] Testing switch: ${switch}"
 				echo $idle_val >$node_path
 				sleep 3
-				current_now=$(cat $current_now_node)
+
+				# get charging current_now
+				# if current unit is microamps (μA), divine with 1000
+				if [[ $current_unit_microamps == 1 ]]; then
+					current_now=$(expr $(cat $current_now_node) / 1000)
+				else
+					current_now=$(cat $current_now_node)
+				fi
+
 				if ((current_now >= -30 && current_now <= 30)); then
 					echo -e "[+] Switch $node_path is working !"
 					echo -e "$(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches 2>/dev/null)\n${switch}" >/data/data/com.termux/files/usr/share/origami-kernel/chg_switches
