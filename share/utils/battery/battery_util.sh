@@ -17,29 +17,29 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 # Battery node
-node_path="/sys/class/power_supply/battery"
-current_now_node="${node_path}/current_now"
-status_node="${node_path}/status"
-battery_capacity_node="${node_path}/charge_full"
-battery_level_node="${node_path}/capacity"
-battery_health_node="${node_path}/health"
-battery_type_node="${node_path}/technology"
+battery_node_path="/sys/class/power_supply/battery"
+current_now_node="${battery_node_path}/current_now"
+status_node="${battery_node_path}/status"
+battery_capacity_node="${battery_node_path}/charge_full"
+battery_level_node="${battery_node_path}/capacity"
+battery_health_node="${battery_node_path}/health"
+battery_type_node="${battery_node_path}/technology"
 
 test_chg_switches() {
 	echo -e "\n[*] Charging switches tester started..."
 
 	# format: node normal_chg_value idle_chg_value
 	switches=(
-		"${node_path}/batt_slate_mode 0 1"
-		"${node_path}/battery_input_suspend 0 1"
-		"${node_path}/bd_trickle_cnt 0 1"
-		"${node_path}/device/Charging_Enable 1 0"
-		"${node_path}/charging_enabled 1 0"
-		"${node_path}/op_disable_charge 0 1"
-		"${node_path}/store_mode 0 1"
-		"${node_path}/test_mode 2 1"
-		"${node_path}/battery_ext/smart_charging_interruption 0 1"
-		"${node_path}/siop_level 100 0"
+		"${battery_node_path}/batt_slate_mode 0 1"
+		"${battery_node_path}/battery_input_suspend 0 1"
+		"${battery_node_path}/bd_trickle_cnt 0 1"
+		"${battery_node_path}/device/Charging_Enable 1 0"
+		"${battery_node_path}/charging_enabled 1 0"
+		"${battery_node_path}/op_disable_charge 0 1"
+		"${battery_node_path}/store_mode 0 1"
+		"${battery_node_path}/test_mode 2 1"
+		"${battery_node_path}/battery_ext/smart_charging_interruption 0 1"
+		"${battery_node_path}/siop_level 100 0"
 		"/sys/class/hw_power/charger/charge_data/enable_charger 1 0"
 		"/sys/class/qcom-battery/input_suspend 0 1"
 		"/sys/devices/platform/huawei_charger/enable_charger 1 0"
@@ -51,9 +51,9 @@ test_chg_switches() {
 		"/sys/kernel/debug/google_charger/input_suspend 0 1"
 		"/sys/kernel/nubia_charge/charger_bypass off on"
 		"/proc/mtk_battery_cmd/current_cmd 0::0 0::1"
-		"${node_path}/mmi_charging_enable 1 0"
-		"${node_path}/stop_charging_enable 0 1"
-		"${node_path}/store_mode 0 1"
+		"${battery_node_path}/mmi_charging_enable 1 0"
+		"${battery_node_path}/stop_charging_enable 0 1"
+		"${battery_node_path}/store_mode 0 1"
 	)
 
 	# Nuke tested switches before test
@@ -70,9 +70,9 @@ test_chg_switches() {
 		fi
 
 		for switch in "${switches[@]}"; do
-			node_path=$(echo "$switch" | awk '{print $1}')
-			normal_val=$(echo "$switch" | awk '{print $2}' | sed 's/::/ /g')
-			idle_val=$(echo "$switch" | awk '{print $3}' | sed 's/::/ /g')
+			local node_path=$(echo "$switch" | awk '{print $1}')
+			local normal_val=$(echo "$switch" | awk '{print $2}' | sed 's/::/ /g')
+			local idle_val=$(echo "$switch" | awk '{print $3}' | sed 's/::/ /g')
 			if [ -f $node_path ]; then
 				echo -e "[+] Testing switch: ${switch}"
 				chmod +x $node_path
@@ -115,10 +115,10 @@ do_idle_chg() {
 			echo $(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches | fzf --reverse --cycle --prompt "Select a charging switch for first time: ") >/data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
 		fi
 
-		use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
-		node_path=$(echo $use_chg_switch | awk '{print $1}')
-		normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
-		idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
+		local use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
+		local node_path=$(echo $use_chg_switch | awk '{print $1}')
+		local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
+		local idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
 		chmod +x $node_path
 
 		case $(fzf_select "enable disable" "Enable or Disable Idle charging: ") in
@@ -133,9 +133,9 @@ change_use_chg_switch() {
 		echo -e "\nerror: Charging switch not defined, please run 'Test charging switches'"
 		read -r -s
 	else
-		use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
-		node_path=$(echo $use_chg_switch | awk '{print $1}')
-		normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
+		local use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
+		local node_path=$(echo $use_chg_switch | awk '{print $1}')
+		local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
 		chmod +x $node_path
 		echo $normal_val >$node_path 2>/dev/null
 		echo $(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches | fzf --reverse --cycle --prompt "Select a charging switch: ") >/data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
@@ -146,10 +146,10 @@ is_idle_chg_enabled() {
 	if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches ] || [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch ]; then
 		echo "[ϟ] Idle charging: Undefined"
 	else
-		use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
-		node_path=$(echo $use_chg_switch | awk '{print $1}')
-		normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
-		idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
+		local use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
+		local node_path=$(echo $use_chg_switch | awk '{print $1}')
+		local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
+		local idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
 
 		if [ "$(cat $node_path)" == "$idle_val" ]; then
 			echo "[ϟ] Idle charging: Enabled"
@@ -162,12 +162,6 @@ is_idle_chg_enabled() {
 }
 
 batt_menu() {
-	if [ -z $node_path ]; then
-		echo -e "[-] \033[38;5;196merror:\033[0m No battery node was found."
-		read -r -s
-		return 1
-	fi
-
 	while true; do
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
