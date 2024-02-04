@@ -75,6 +75,7 @@ test_chg_switches() {
 			idle_val=$(echo "$switch" | awk '{print $3}' | sed 's/::/ /g')
 			if [ -f $node_path ]; then
 				echo -e "[+] Testing switch: ${switch}"
+				chmod +x $node_path
 				echo $idle_val >$node_path
 				sleep 3
 
@@ -118,6 +119,7 @@ do_idle_chg() {
 		node_path=$(echo $use_chg_switch | awk '{print $1}')
 		normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
 		idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
+		chmod +x $node_path
 
 		case $(fzf_select "enable disable" "Enable or Disable Idle charging: ") in
 		enable) echo $idle_val >$node_path ;;
@@ -134,6 +136,7 @@ change_use_chg_switch() {
 		use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
 		node_path=$(echo $use_chg_switch | awk '{print $1}')
 		normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
+		chmod +x $node_path
 		echo $normal_val >$node_path
 		echo $(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches | fzf --reverse --cycle --prompt "Select a charging switch: ") >/data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
 	fi
