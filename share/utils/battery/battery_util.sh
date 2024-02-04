@@ -16,49 +16,30 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-# Battery node detection
-# I hate OEM fragmentation
-if [ -d /sys/devices/platform/charger/power_supply/battery ]; then
-	node_path="/sys/devices/platform/charger/power_supply"
-	current_now_node="/sys/devices/platform/charger/power_supply/battery/current_now"
-	status_node="/sys/devices/platform/charger/power_supply/battery/status"
-	battery_capacity_node="/sys/devices/platform/charger/power_supply/battery/charge_full"
-	battery_level_node="/sys/devices/platform/charger/power_supply/battery/capacity"
-	battery_health_node="/sys/devices/platform/charger/power_supply/battery/health"
-	battery_type_node="/sys/devices/platform/charger/power_supply/battery/technology"
-elif [ -d /sys/devices/platform/battery/power_supply/battery ]; then
-	node_path="/sys/devices/platform/battery/power_supply"
-	current_now_node="/sys/devices/platform/battery/power_supply/battery/current_now"
-	status_node="/sys/devices/platform/battery/power_supply/battery/status"
-	battery_capacity_node="/sys/devices/platform/battery/power_supply/battery/charge_full_design"
-	battery_level_node="/sys/devices/platform/battery/power_supply/battery/capacity"
-	battery_health_node="/sys/devices/platform/battery/power_supply/battery/health"
-	battery_type_node="/sys/devices/platform/battery/power_supply/battery/technology"
-elif [ -d /sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery ]; then
-	node_path="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery"
-	current_now_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/current_now"
-	status_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/status"
-	battery_capacity_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/charge_full_design"
-	battery_level_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/capacity"
-	battery_health_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/health"
-	battery_type_node="/sys/devices/platform/soc/10026000.pwrap/10026000.pwrap:mt6366/mt6358-gauge/power_supply/battery/technology"
-fi
+# Battery node
+node_path="/sys/class/power_supply/battery"
+current_now_node="${node_path}/current_now"
+status_node="${node_path}/status"
+battery_capacity_node="${node_path}/charge_full"
+battery_level_node="${node_path}/capacity"
+battery_health_node="${node_path}/health"
+battery_type_node="${node_path}/technology"
 
 test_chg_switches() {
 	echo -e "\n[*] Charging switches tester started..."
 
 	# format: node normal_chg_value idle_chg_value
 	switches=(
-		"${node_path}/battery/batt_slate_mode 0 1"
-		"${node_path}/battery/battery_input_suspend 0 1"
-		"${node_path}/battery/bd_trickle_cnt 0 1"
-		"${node_path}/battery/device/Charging_Enable 1 0"
-		"${node_path}/battery/charging_enabled 1 0"
-		"${node_path}/battery/op_disable_charge 0 1"
-		"${node_path}/battery/store_mode 0 1"
-		"${node_path}/battery/test_mode 2 1"
+		"${node_path}/batt_slate_mode 0 1"
+		"${node_path}/battery_input_suspend 0 1"
+		"${node_path}/bd_trickle_cnt 0 1"
+		"${node_path}/device/Charging_Enable 1 0"
+		"${node_path}/charging_enabled 1 0"
+		"${node_path}/op_disable_charge 0 1"
+		"${node_path}/store_mode 0 1"
+		"${node_path}/test_mode 2 1"
 		"${node_path}/battery_ext/smart_charging_interruption 0 1"
-		"${node_path}/battery/siop_level 100 0"
+		"${node_path}/siop_level 100 0"
 		"/sys/class/hw_power/charger/charge_data/enable_charger 1 0"
 		"/sys/class/qcom-battery/input_suspend 0 1"
 		"/sys/devices/platform/huawei_charger/enable_charger 1 0"
@@ -70,9 +51,9 @@ test_chg_switches() {
 		"/sys/kernel/debug/google_charger/input_suspend 0 1"
 		"/sys/kernel/nubia_charge/charger_bypass off on"
 		"/proc/mtk_battery_cmd/current_cmd 0::0 0::1"
-		"${node_path}/battery/mmi_charging_enable 1 0"
-		"${node_path}/battery/stop_charging_enable 0 1"
-		"${node_path}/battery/store_mode 0 1"
+		"${node_path}/mmi_charging_enable 1 0"
+		"${node_path}/stop_charging_enable 0 1"
+		"${node_path}/store_mode 0 1"
 	)
 
 	# Nuke tested switches before test
