@@ -4,7 +4,7 @@
 
 ---
 
-Another yet kernel manager.
+Yet another kernel manager.
 
 [![Latest release](https://img.shields.io/github/v/release/rem01gaming/origami_kernel_manager?label=Release&logo=github)](https://github.com/rem01gaming/origami_kernel_manager/releases/latest)
 [![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram)](https://t.me/rem01schannel)
@@ -62,8 +62,15 @@ Contributions are encouraged! Whether it's through issue submissions or pull req
 
 ## License
 
-This script operates under the GNU General Public License v3.0. Refer to the LICENSE file for detailed licensing information.
+This project is licensed under the GNU General Public License v3.0 or later. Refer to the [LICENSE](/LICENSE) file for detailed licensing information.
 
----
+## Warning
 
-**Note:** As licensed under GNU General Public License v3.0, this software is came with ABSOLUTELY NO WARRANTY. By using this software, you accept all responsibility using it and agree that am not responsible for any actions you make that has an adverse effect on your device.
+The author assumes no responsibility under anything that might break due to the use/misuse of this software. By choosing to use/misuse it, you agree to do so at your own risk!
+
+One of feature of Origami Kernel Managers, Charging controller manipulates Android low level (kernel) parameters which control the charging circuitry. Some devices, notably from Xiaomi (e.g., Poco X3 Pro), have a faulty PMIC (Power Management Integrated Circuit) that can be triggered by Charging controller feature. The issue blocks charging. Ensure the battery does not discharge too low.
+
+Refer to [this XDA post](https://xdaforums.com/t/rom-official-arrowos-11-0-android-11-0-vayu-bhima.4267263/page-14#post-85119331) for additional details.
+
+[lybxlpsv](https://github.com/lybxlpsv) suggests booting into bootloader/fastboot and then back into system to reset the PMIC.
+
