@@ -50,6 +50,38 @@ tcp_reuse_socket() {
 	esac
 }
 
+tcp_ecn() {
+	case $(fzf_select "0 1 2" "TCP Explicit Congestion Notification (ECN): ") in
+	0) echo 0 >/proc/sys/net/ipv4/tcp_ecn ;;
+	1) echo 1 >/proc/sys/net/ipv4/tcp_ecn ;;
+	2) echo 2 >/proc/sys/net/ipv4/tcp_ecn ;;
+	esac
+}
+
+tcp_fastopen() {
+	case $(fzf_select "0 1 2 3" "TCP Fastopen (TFO): ") in
+	0) echo 0 >/proc/sys/net/ipv4/tcp_fastopen ;;
+	1) echo 1 >/proc/sys/net/ipv4/tcp_fastopen ;;
+	2) echo 2 >/proc/sys/net/ipv4/tcp_fastopen ;;
+	3) echo 3 >/proc/sys/net/ipv4/tcp_fastopen ;;
+	esac
+}
+
+tcp_sack() {
+	case $(fzf_select "Disable Enable" "TCP Select Acknowledgments (SACKS): ") in
+	Disable) echo 0 >/proc/sys/net/ipv4/tcp_sack ;;
+	Enable) echo 1 >/proc/sys/net/ipv4/tcp_sack ;;
+	esac
+}
+
+tcp_timestamps() {
+	case $(fzf_select "0 1 2" "TCP Timestamps: ") in
+	0) echo 0 >/proc/sys/net/ipv4/tcp_timestamps ;;
+	1) echo 1 >/proc/sys/net/ipv4/tcp_timestamps ;;
+	2) echo 2 >/proc/sys/net/ipv4/tcp_timestamps ;;
+	esac
+}
+
 bpf_jit_harden() {
 	case $(fzf_select "Disable enable-for-unprivileged-users enable-for-all-users" "BPF JIT harden: ") in
 	enable-for-all-users) echo 2 >/proc/sys/net/core/bpf_jit_harden ;;
@@ -68,23 +100,27 @@ net_menu() {
 		echo -e "  /        /  \\    [] TCP SYN Cookies: $(cat /proc/sys/net/ipv4/tcp_syncookies)"
 		echo -e " /        /    \\   [] BPF JIT harden: $(cat /proc/sys/net/core/bpf_jit_harden)"
 		echo -e "/________/      \\  [] TCP Reuse socket: $(cat /proc/sys/net/ipv4/tcp_tw_reuse)"
-		echo -e "\\        \\      /  "
-		echo -e " \\        \\    /   "
-		echo -e "  \\        \\  /    "
-		echo -e "   \\________\\/     "
+		echo -e "\\        \\      /  [] TCP ECN: $(cat /proc/sys/net/ipv4/tcp_ecn)"
+		echo -e " \\        \\    /   [ϟ] TCP Fastopen: $(cat /proc/sys/net/ipv4/tcp_fastopen)"
+		echo -e "  \\        \\  /    [] TCP SACK: $(cat /proc/sys/net/ipv4/tcp_sack)"
+		echo -e "   \\________\\/     [] TCP Timestamps: $(cat /proc/sys/net/ipv4/tcp_timestamps)"
 		echo -e "\n//////////////"
 		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
 		echo -e "[] Networking and Firewall Settings\033[0m"
 
 		tput civis
 
-		case $(fzy_select "Change TCP Congestion algorithm\nTCP Low latency mode\nTCP SYN Cookies\nTCP Max SYN backlog\nTCP Keep alive time\nTCP Reuse socket\nBPF JIT harden\nBack to main menu" "") in
+		case $(fzy_select "Change TCP Congestion algorithm\nTCP Low latency mode\nTCP SYN Cookies\nTCP Max SYN backlog\nTCP Keep alive time\nTCP Reuse socket\nTCP Explicit Congestion Notification\nTCP Fastopen\nTCP Select Acknowledgments\nTCP Timestamps\nBPF JIT harden\nBack to main menu" "") in
 		"Change TCP Congestion algorithm") tcp_congestion_change ;;
 		"TCP Low latency mode") tcp_low_latency ;;
 		"TCP SYN Cookies") tcp_syncookies ;;
 		"TCP Max SYN backlog") tcp_max_syn_backlog ;;
 		"TCP Keep alive time") tcp_keepalive_time ;;
 		"TCP Reuse socket") tcp_reuse_socket ;;
+		"TCP Explicit Congestion Notification") tcp_ecn ;;
+		"TCP Fastopen") tcp_fastopen ;;
+		"TCP Select Acknowledgments") tcp_sack ;;
+		"TCP Timestamps") tcp_timestamps ;;
 		"BPF JIT harden") bpf_jit_harden ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
