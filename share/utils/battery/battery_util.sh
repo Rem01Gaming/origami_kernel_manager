@@ -25,6 +25,16 @@ battery_level_node="${battery_node_path}/capacity"
 battery_health_node="${battery_node_path}/health"
 battery_type_node="${battery_node_path}/technology"
 
+# get charging current_now
+# if current unit is microamps (μA), divine with 1000
+get_charging_current_now() {
+	if [[ $current_unit_microamps == 1 ]]; then
+		echo "$(expr $(cat $current_now_node | tr -d '-') / 1000)"
+	else
+		echo "$(cat $current_now_node | tr -d '-')"
+	fi
+}
+
 test_chg_switches() {
 	echo -e "\n[*] Charging switches tester started..."
 
@@ -66,7 +76,7 @@ test_chg_switches() {
 	else
 		if [ $(cat $current_now_node | tr -d '-') -gt 10000 ]; then
 			# current unit is microamps
-			current_unit_microamps=1
+			export current_unit_microamps=1
 		fi
 
 		for switch in "${switches[@]}"; do
@@ -77,17 +87,20 @@ test_chg_switches() {
 				echo -e "[+] Testing switch: ${switch}"
 				chmod +x $node_path
 				echo $idle_val >$node_path 2>/dev/null
-				sleep 3
+				sleep 2
 
-				# get charging current_now
-				# if current unit is microamps (μA), divine with 1000
-				if [[ $current_unit_microamps == 1 ]]; then
-					current_now=$(expr $(cat $current_now_node | tr -d '-') / 1000)
-				else
-					current_now=$(cat $current_now_node | tr -d '-')
-				fi
+				current_samples=()
+				for i in {1..7}; do
+					sleep 1
+					current_now=$(get_charging_current_now)
+					echo -e "[*] Current now: ${current_now} mA"
+					current_samples+=("$current_now")
+				done
 
-				if ((current_now <= 30)); then
+				average_current=$(echo "${current_samples[@]}" | awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; else print "0" }')
+				unset current_samples
+
+				if ((average_current <= 30)); then
 					echo -e "[+] Switch $node_path is working !"
 					echo -e "$(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches 2>/dev/null)\n${switch}" >/data/data/com.termux/files/usr/share/origami-kernel/chg_switches
 				else
