@@ -68,6 +68,13 @@ mtk_vibrator_ctrl() {
 	menu_value_tune "Mediatek Vibrator control\nSet strength of vibration globally on Mediatek devices" /sys/kernel/thunderquake_engine/level $(cat /sys/kernel/thunderquake_engine/max) $(cat /sys/kernel/thunderquake_engine/min) 1
 }
 
+mtk_pbm_switch() {
+	case $(fzf_select "Enable Disable" "Mediatek Power Budget Management:  ") in
+	Enable) echo "stop 0" >/proc/pbm/pbm_stop ;;
+	Disable) echo "stop 1" >/proc/pbm/pbm_stop ;;
+	esac
+}
+
 misc_menu() {
 	while true; do
 
@@ -94,6 +101,11 @@ misc_menu() {
 		if [ -f /proc/touchpanel/oplus_tp_direction ]; then
 			misc_menu_info="${misc_menu_info}[] Touchpanel direction fix: $(cat /proc/touchpanel/oplus_tp_direction)//"
 			misc_menu_options="${misc_menu_options}Touchpanel direction fix\n"
+		fi
+
+		if [ -d /ppm/pbm ]; then
+			misc_menu_info="${misc_menu_info}[] MTK Power Budged: $(cat /proc/pbm/pbm_stop | awk '{print $3}')//"
+			misc_menu_options="${misc_menu_options}MTK Power Budged\n"
 		fi
 
 		clear
@@ -125,6 +137,7 @@ misc_menu() {
 		"Touchpanel game mode") touchpanel_game_mode ;;
 		"Touchpanel limit") touchpanel_limit ;;
 		"Touchpanel direction fix") touchpanel_direction_fix ;;
+		"MTK Power Budged") mtk_pbm_switch ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
 	done
