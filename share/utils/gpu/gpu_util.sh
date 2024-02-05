@@ -161,7 +161,7 @@ gpu_menu() {
 			fi
 
 			if [ -d /proc/mtk_batoc_throttling ]; then
-				gpu_menu_info="${gpu_menu_info}[] GPU Current limit: $(cat /proc/mtk_batoc_throttling/mtk_batoc_gpu_current_limit)"
+				gpu_menu_info="${gpu_menu_info}[] GPU Current limit: $(cat /proc/mtk_batoc_throttling/battery_oc_protect_stop)"
 				gpu_menu_options="${gpu_menu_options}GPU Current limit\n"
 			fi
 
