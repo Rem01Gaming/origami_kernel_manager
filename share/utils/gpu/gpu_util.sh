@@ -140,7 +140,7 @@ gpu_menu() {
 			if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 				gpu_menu_info="${gpu_menu_info}[] Fixed freq: $(sed -n 1p /proc/gpufreq/gpufreq_opp_freq | awk '{print $5}')//"
 			else
-				gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $2 $8}')//"
+				gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(if [ $(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $2}') == "fix" ]; then echo "Disabled"; else echo "Enabled"; fi)//"
 				gpu_menu_options="${gpu_menu_options}Set voltage (NO DVFS)\nReset DVFS\n"
 			fi
 
