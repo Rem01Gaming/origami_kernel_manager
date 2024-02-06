@@ -17,8 +17,6 @@
 
 O = out
 .PHONY: all
-
-SCRIPT_NAME = origami-kernel
 PREFIX = $(shell echo $$PREFIX)
 
 all:
@@ -30,23 +28,29 @@ all:
 	@echo "make clear : Clear generated files"
 
 install:
-	cp ./src/origami-kernel $(PREFIX)/bin/$(SCRIPT_NAME)
+	cp ./src/origami-kernel $(PREFIX)/bin/origami-kernel
 	mkdir $(PREFIX)/share/origami-kernel
 	cp -r ./share/* $(PREFIX)/share/origami-kernel
-	chmod +x $(PREFIX)/bin/$(SCRIPT_NAME)
-	@echo "$(SCRIPT_NAME) installed to $(PREFIX)/bin"
+	chmod +x $(PREFIX)/bin/origami-kernel
+	@printf "\033[1;38;2;254;228;208m    .^.   .^.\n"
+	@printf "    /⋀\\_ﾉ_/⋀\\ \n"
+	@printf "   /ﾉｿﾉ\\ﾉｿ丶)|\n"
+	@printf "  |ﾙﾘﾘ >   )ﾘ\n"
+	@printf "  ﾉノ㇏ Ｖ ﾉ|ﾉ\n"
+	@printf "        ⠁⠁\n"
+	@printf "\033[1;38;2;254;228;208m[+] origami-kernel installed, run with sudo origami-kernel\033[0m\n"
 
 uninstall:
-	rm -f $(PREFIX)/bin/$(SCRIPT_NAME)
+	rm -f $(PREFIX)/bin/origami-kernel
 	rm -rf $(PREFIX)/share/origami-kernel
-	@echo "$(SCRIPT_NAME) uninstalled from $(PREFIX)/bin"
+	@printf "\033[1;38;2;254;228;208m[+] origami-kernel uninstalled\033[0m\n"
 
 install-dependence:
 	@echo "[+] Installing dependencines..."
 	@pkg install make fzf fzy git tsu jq
 
 pack-deb:
-	@if [ ! -d $(O) ]; then mkdir -v $(O); fi
+	@mkdir -v $(O)
 	@mkdir -v $(O)/deb
 	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr
 	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/bin/
