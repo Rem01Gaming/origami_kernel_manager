@@ -17,7 +17,7 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 # Check dependencies
-if ! hash whoami fzf fzy tput jq 2>/dev/null; then
+if ! hash whoami fzf fzy tput 2>/dev/null; then
 	echo -e "\033[38;5;196m[!] hash whoami fzf fzy tput jq\nerror:\033[0m Environment has missing dependencies" && exit 127
 fi
 

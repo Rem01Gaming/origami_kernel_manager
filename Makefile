@@ -47,7 +47,7 @@ uninstall:
 
 install-dependence:
 	@echo "[+] Installing dependencines..."
-	@pkg install make fzf fzy git tsu jq
+	@pkg install fzf fzy git tsu
 
 pack-deb:
 	@mkdir -v $(O)

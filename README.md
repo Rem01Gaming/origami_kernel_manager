@@ -33,7 +33,7 @@ The Origami Kernel Manager script is a versatile tool designed to empower users 
 ### Requirements
 - Rooted Android device
 - Termux app installed
-- Installed following dependencies: `tsu fzf fzy jq`
+- Installed following dependencies: `tsu fzf fzy`
 - Working brain 🧠 with minimal cli knowledge
 
 ### Installation with deb package

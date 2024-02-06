@@ -4,5 +4,5 @@ Maintainer: Rem01Gaming
 Installed-Size: 1000
 Version: 1.0.4
 Homepage: https://github.com/Rem01Gaming/origami_kernel_manager
-Depends: tsu, fzf, fzy, jq
+Depends: tsu, fzf, fzy
 Description: Yet another kernel manager.
