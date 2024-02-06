@@ -90,7 +90,7 @@ test_chg_switches() {
 				sleep 2
 
 				current_samples=()
-				for i in {1..7}; do
+				for i in {1..15}; do
 					sleep 1
 					current_now=$(get_charging_current_now)
 					echo -e "[*] Current now: ${current_now} mA"
