@@ -71,12 +71,12 @@ mtk_dram_force_maxfreq() {
 	if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 		case $(fzf_select "No Yes" "Force DRAM to maximum frequency: ") in
 		Yes) echo 0 >/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp ;;
-		No) echo 1 >/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp ;;
+		No) echo -1 >/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp ;;
 		esac
 	else
 		case $(fzf_select "No Yes" "Force DRAM to maximum frequency: ") in
 		Yes) echo 0 >/sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ;;
-		No) echo 1 >/sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ;;
+		No) echo -1 >/sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ;;
 		esac
 	fi
 }
