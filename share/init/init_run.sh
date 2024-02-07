@@ -23,15 +23,12 @@ if [ -z "$chipset" ]; then
 	export chipset=$(getprop "ro.hardware")
 fi
 
-if [[ $chipset == *MT* || $chipset == *mt* ]]; then
-	export soc=Mediatek
-elif [[ $chipset == *SM* || $chipset == *QCOM* || $chipset == *sm* || $chipset == *qcom* ]]; then
-	export soc=Qualcomm
-elif [[ $chipset == *exynos* ]]; then
-	export soc=Exynos
-else
-	export soc=unknown
-fi
+case $chipset in
+*mt* | *MT*) export soc=Mediatek ;;
+*sm* | *qcom* | *SM* | *QCOM*) export soc=Qualcomm ;;
+*exynos*) export soc=Exynos ;;
+*) export soc=unknown ;;
+esac
 
 cores=$(($(nproc --all) - 1))
 
