@@ -75,6 +75,13 @@ mtk_pbm_switch() {
 	esac
 }
 
+mtk_apu_force_maxfreq() {
+	case $(fzf_select "No Yes" "Force Mediatek APU to highest:  ") in
+	Yes) echo "0" >/sys/module/mmdvfs_pmqos/parameters/force_step ;;
+	No) echo "-1" >/sys/module/mmdvfs_pmqos/parameters/force_step ;;
+	esac
+}
+
 misc_menu() {
 	while true; do
 
@@ -108,6 +115,10 @@ misc_menu() {
 			misc_menu_options="${misc_menu_options}MTK Power Budged\n"
 		fi
 
+		if [ -d /sys/module/mmdvfs_pmqos ]; then
+			misc_menu_options="${misc_menu_options}Force Mediatek APU to highest freq\n"
+		fi
+
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
@@ -138,6 +149,7 @@ misc_menu() {
 		"Touchpanel limit") touchpanel_limit ;;
 		"Touchpanel direction fix") touchpanel_direction_fix ;;
 		"MTK Power Budged") mtk_pbm_switch ;;
+		"Force Mediatek APU to highest freq") mtk_apu_force_maxfreq ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
 	done
