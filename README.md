@@ -12,7 +12,9 @@ Yet another kernel manager.
 
 ## About
 
-The Origami Kernel Manager script is a versatile tool designed to empower users with an array of features, facilitating kernel adjustments, management, and optimization through the command line interface (CLI). It aims to deliver a comprehensive solution for enhancing device performance and customization by providing various settings for kernel fine-tuning.
+Origami Kernel Manager is a set of utilities for power users to tune, adjust, and manage the kernel parameters through the command line interface (CLI), specifically on termux. It aims to deliver a comprehensive solution for enhancing device performance and customization by providing various settings for kernel fine-tuning.
+
+More info and documentation on [Origami Kernel Manager wiki](https://github.com/Rem01Gaming/origami_kernel_manager/wiki).
 
 ## Why need a kernel manager?
 
