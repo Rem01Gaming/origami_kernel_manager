@@ -155,6 +155,13 @@ change_use_chg_switch() {
 	fi
 }
 
+mtk_batoc_batt_current_limit() {
+	case $(fzf_select "Enable Disable" "GPU Current limit:  ") in
+	Enable) echo "stop 0" >/proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
+	Disable) echo "stop 1" >/proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
+	esac
+}
+
 is_idle_chg_enabled() {
 	if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches ] || [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch ]; then
 		echo "[ϟ] Idle charging: Undefined"
@@ -175,6 +182,11 @@ is_idle_chg_enabled() {
 }
 
 batt_menu() {
+	if [ -d /proc/mtk_batoc_throttling ]; then
+		battery_menu_info="${battery_menu_info}[] Battery Current limit: $(cat /proc/mtk_batoc_throttling/battery_oc_protect_stop)"
+		battery_menu_options="${battery_menu_options}Battery Current limit\n"
+	fi
+
 	while true; do
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
@@ -185,9 +197,9 @@ batt_menu() {
 		echo -e " /        /    \\   [] Battery type: $(cat $battery_type_node)"
 		echo -e "/________/      \\  [] Battery status: $(cat $status_node)"
 		echo -e "\\        \\      /  $(is_idle_chg_enabled)"
-		echo -e " \\        \\    /   "
-		echo -e "  \\        \\  /    "
-		echo -e "   \\________\\/     "
+		echo -e " \\        \\    /   $(echo "$battery_menu_info" | awk -F '//' '{print $1}')"
+		echo -e "  \\        \\  /    $(echo "$battery_menu_info" | awk -F '//' '{print $2}')"
+		echo -e "   \\________\\/     $(echo "$battery_menu_info" | awk -F '//' '{print $3}')"
 		echo -e "\n//////////////"
 		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
 		echo -e "[] Charging Control\033[0m"
@@ -198,6 +210,7 @@ batt_menu() {
 		"Test charging switches") test_chg_switches ;;
 		"Enable idle charging") do_idle_chg ;;
 		"Change charging switch") change_use_chg_switch ;;
+		"Battery Current limit") mtk_batoc_batt_current_limit ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
 	done
