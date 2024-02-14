@@ -88,6 +88,44 @@ cpu_set_freq() {
 	fi
 }
 
+cpu_core_ctrl() {
+	tput cuu 1
+	tput el
+	echo -e "\e[38;2;254;228;208m[] CPU Core control\033[0m"
+	cpu_dir="/sys/devices/system/cpu"
+
+	while true; do
+		options=("cpu0 Online (system essential) ✅")
+
+		# Add options for each CPU core
+		for ((cpu = 1; cpu < cores; cpu++)); do
+			online_status=$(<"${cpu_dir}/cpu${cpu}/online")
+			if [[ $online_status == 1 ]]; then
+				status_label="Online ✅"
+			else
+				status_label="Offline ❌"
+			fi
+			options+=("cpu${cpu} $status_label")
+		done
+
+		# Add a separator and "Back to the main menu" option
+		options+=(" " "Back to the main menu")
+
+		selected=$(printf '%s\n' "${options[@]}" | fzy -l 15 -p "")
+
+		case $selected in
+		"Back to the main menu") break ;;
+		" ") ;;
+		*)
+			cpu_number=$(echo "${selected}" | cut -d' ' -f1 | sed 's/cpu//')
+			online_status=$(<"${cpu_dir}/cpu${cpu_number}/online")
+			new_status=$((1 - online_status))
+			echo "${new_status}" >"${cpu_dir}/cpu${cpu_number}/online"
+			;;
+		esac
+	done
+}
+
 mtk_cpufreq_cci_mode() {
 	case $(fzf_select "Normal Performance" "Mediatek CPU CCI mode: ") in
 	Performance) echo 1 >/proc/cpufreq/cpufreq_cci_mode ;;
@@ -172,7 +210,7 @@ cpu_menu() {
 			cpu_menu_info="[] Scaling freq: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)KHz//"
 		fi
 
-		cpu_menu_options="Set Governor\nGovernor parameter\nSet max freq\nSet min freq\n"
+		cpu_menu_options="Set Governor\nGovernor parameter\nSet max freq\nSet min freq\nCPU Core control\n"
 
 		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
 			cpu_menu_info="${cpu_menu_info}[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')//[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)//[] CPU CCI mode: $(cat /proc/cpufreq/cpufreq_cci_mode)//"
@@ -202,6 +240,7 @@ cpu_menu() {
 		"Governor parameter") cpu_gov_param ;;
 		"Set max freq") cpu_set_freq max ;;
 		"Set min freq") cpu_set_freq min ;;
+		"CPU Core control") cpu_core_ctrl ;;
 		"Mediatek Processor Power Management") mtk_ppm_policy ;;
 		"Mediatek CCI mode") mtk_cpufreq_cci_mode ;;
 		"Mediatek Power mode") mtk_cpufreq_power_mode ;;
