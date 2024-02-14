@@ -98,7 +98,7 @@ cpu_core_ctrl() {
 		options=("cpu0 Online (system essential) ✅")
 
 		# Add options for each CPU core
-		for ((cpu = 1; cpu < cores; cpu++)); do
+		for ((cpu = 1; cpu <= cores; cpu++)); do
 			online_status=$(<"${cpu_dir}/cpu${cpu}/online")
 			if [[ $online_status == 1 ]]; then
 				status_label="Online ✅"
