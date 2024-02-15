@@ -74,6 +74,13 @@ mtk_gpu_power_limit() {
 	done
 }
 
+mtk_batoc_gpu_current_limit() {
+	case $(fzf_select "Enable Disable" "GPU Current limit:  ") in
+	Enable) echo "stop 0" >/proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
+	Disable) echo "stop 1" >/proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
+	esac
+}
+
 mtk_gpu_mali_power_policy() {
 	echo $(fzf_select "$(cat /sys/devices/platform/13040000.mali/power_policy | sed 's/\[//g; s/\]//g')" "Select GPU power policy: ") >/sys/devices/platform/13040000.mali/power_policy
 }
@@ -153,6 +160,11 @@ gpu_menu() {
 				gpu_menu_options="${gpu_menu_options}GPU Power limit settings\n"
 			fi
 
+			if [ -d /proc/mtk_batoc_throttling ]; then
+				gpu_menu_info="${gpu_menu_info}[] GPU Current limit: $(cat /proc/mtk_batoc_throttling/battery_oc_protect_stop)"
+				gpu_menu_options="${gpu_menu_options}GPU Current limit\n"
+			fi
+
 			if [ -d /sys/devices/platform/13040000.mali ]; then
 				gpu_menu_info="${gpu_menu_info}[] Power policy: $(cat /sys/devices/platform/13040000.mali/power_policy | grep -o '\[.*\]' | tr -d '[]')//[] Serialize jobs: $(cat /sys/devices/platform/13040000.mali/scheduling/serialize_jobs | grep -o '\[.*\]' | tr -d '[]')//"
 				gpu_menu_options="${gpu_menu_options}Mali Serialize Job\nMali Power Policy\n"
@@ -194,6 +206,7 @@ gpu_menu() {
 		"GED GPU boost") mtk_ged_gpu_boost ;;
 		"GED Game Mode") mtk_ged_game_mode ;;
 		"GPU Power limit settings") mtk_gpu_power_limit ;;
+		"GPU Current limit") mtk_batoc_gpu_current_limit ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
 	done
