@@ -30,6 +30,18 @@ More info and documentation on [Origami Kernel Manager wiki](https://github.com/
 - Stability and Reliability
   - Switch between different configurations to find a balance between performance and stability, ideal for users experimenting with kernel stuff.
 
+## Features
+- CPU and GPU control such as changing governor, set max and min freq, Core control, and governor settings
+- Memory parameters setting, DDR freq lock (Mediatek)
+- Networking and Firewall settings, such as TCP Congestion algorithm, SYN Cookies, TCP Low latency mode, BPF JIT Harden etc
+- Idle Charging controller
+- Selinux switch mode
+- Cyanogen MTK Videox Livedisplay and KCAL Display color calibration
+- Thermal Governor setting
+- Touchpanel settings, Double Tap To Wake switch
+- I/O Scheduler setting
+- Mediatek tailored features such as APUs frequency, GPU Extension Device, Processor Power Management, Power Budget Management and more
+
 ## Installation and running Origami Kernel Manager
 
 ### Requirements
@@ -39,14 +51,12 @@ More info and documentation on [Origami Kernel Manager wiki](https://github.com/
 - Working brain 🧠 with minimal cli knowledge
 
 ### Installation with deb package
-
 - Download deb package from GitHub release
 - Navigate to the Download directory
 - Execute the following command for installation: `apt install ./origami-kernel.deb`. To uninstall, use `apt remove origami-kernel`.
 - Once installed, run with `sudo origami-kernel`
 
 ### Installation with make
-
 - Clone this repository
 - Navigate to the repository directory
 - Execute the following command for installation: `make install`. To uninstall, use `make uninstall`.
