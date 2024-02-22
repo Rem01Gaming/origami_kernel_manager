@@ -42,6 +42,8 @@ export ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/ker
 export VENDOR=$(getprop "ro.product.manufacturer")
 export VERSION="v1.0.4"
 
+trap "tput cnorm" EXIT
+
 # User agreement
 if [ ! -f /data/origami-kernel/agreed ]; then
 	clear
@@ -107,7 +109,7 @@ main_menu() {
 		"Show License") show_license ;;
 		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel >/dev/null 2>&1 ;;
 		"Donate me") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/about_wisnu/21 >/dev/null 2>&1 ;;
-		"Exit") tput cnorm && clear && exit 0 ;;
+		"Exit") clear && exit 0 ;;
 		esac
 	done
 }
