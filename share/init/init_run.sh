@@ -48,3 +48,6 @@ gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n'
 if [ ! -d /sys/kernel/gpu ] && [ ! -d /proc/gpufreq ] && [ ! -d /proc/gpufreqv2 ]; then
 	is_gpu_unsupported=1
 fi
+
+# Kernel version
+export kernelverc=$(uname -r | cut -d'.' -f1,2 | sed 's/\.//')

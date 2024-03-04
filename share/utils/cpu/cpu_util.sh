@@ -28,7 +28,7 @@ cpu_set_gov() {
 }
 
 cpu_set_freq() {
-	if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
+	if [[ $soc == Mediatek ]] && [ ! "$kernelverc" -gt 500 ]; then
 		if [[ ! "$(cat /proc/ppm/enabled)" == "ppm is enabled" ]]; then
 			clear && echo -e "\033[38;5;196merror:\033[0m Enable Processor Power Management First."
 			read -r -s
@@ -68,14 +68,14 @@ cpu_set_freq() {
 			;;
 		esac
 
-		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
+		if [[ $soc == Mediatek ]] && [ ! "$kernelverc" -gt 500 ]; then
 			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
 			freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
 			echo $freq >/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scalling_${1}_freq
 		fi
 	else
-		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
+		if [[ $soc == Mediatek ]] && [ ! "$kernelverc" -gt 500 ]; then
 			echo 0 $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
 			freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ")
@@ -217,7 +217,7 @@ cpu_menu() {
 
 		cpu_menu_options="Set Governor\nGovernor parameter\nSet max freq\nSet min freq\nCPU Core control\n"
 
-		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
+		if [[ $soc == Mediatek ]] && [ ! "$kernelverc" -gt 500 ]; then
 			cpu_menu_info="${cpu_menu_info}[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')//[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)//[] CPU CCI mode: $(cat /proc/cpufreq/cpufreq_cci_mode)//"
 			cpu_menu_options="$(echo "$cpu_menu_options")Mediatek Processor Power Management\nMediatek CCI mode\nMediatek Power mode"
 		fi

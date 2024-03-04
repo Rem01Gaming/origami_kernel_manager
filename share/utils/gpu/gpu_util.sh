@@ -25,7 +25,7 @@ gpu_universal_set_gov() {
 }
 
 mtk_gpu_freq_set() {
-	if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
+	if [ ! "$kernelverc" -gt 500 ]; then
 		export freq=$(fzf_select "0 $(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n)" "Set frequency for GPU (NO DVFS): ")
 		echo $freq >/proc/gpufreq/gpufreq_opp_freq 2>/dev/null
 	else
@@ -137,7 +137,7 @@ gpu_menu() {
 		if [[ $soc == Mediatek ]]; then
 			gpu_menu_options="Set freq (NO DVFS)\n"
 
-			if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
+			if [ ! "$kernelverc" -gt 500 ]; then
 				gpu_menu_info="${gpu_menu_info}[] Fixed freq: $(sed -n 1p /proc/gpufreq/gpufreq_opp_freq | awk '{print $5}')//"
 			else
 				gpu_menu_info="${gpu_menu_info}[] Fixed freq & volt: $(if [ $(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $2}') == "fix" ]; then echo "Disabled"; else echo "Enabled"; fi)//"
