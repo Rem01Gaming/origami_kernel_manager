@@ -69,21 +69,17 @@ cpu_set_freq() {
 		esac
 
 		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/cpu${first_cpu_oncluster}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
+			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
-			freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpu${first_cpu_oncluster}/cpufreq/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
-			for cpu in ${cpus_cluster_selected}; do
-				echo $freq >/sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_${1}_freq
-			done
+			freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
+			echo $freq >/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scalling_${1}_freq
 		fi
 	else
 		if [[ $soc == Mediatek ]] && [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-			echo 0 $(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies)" "Select ${1} CPU frequency: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
+			echo 0 $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
-			freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies)" "Select ${1} CPU frequency: ")
-			for cpu in cpu[0-${cores}]*; do
-				echo $freq >/sys/devices/system/cpu/${cpu}/cpufreq/scaling_${1}_freq
-			done
+			freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ")
+			echo $freq >/sys/devices/system/cpu/cpufreq/policy0/scalling_${1}_freq
 		fi
 	fi
 }
