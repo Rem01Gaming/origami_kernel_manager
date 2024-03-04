@@ -25,6 +25,10 @@ battery_level_node="${battery_node_path}/capacity"
 battery_health_node="${battery_node_path}/health"
 battery_type_node="${battery_node_path}/technology"
 
+# Origami battery data path
+chg_switches_path="/data/origami-kernel/chg_switches"
+use_chg_switch_path="/data/origami-kernel/use_chg_switch"
+
 # get charging current_now
 # if current unit is microamps (μA), divine with 1000
 get_charging_current_now() {
@@ -71,8 +75,8 @@ test_chg_switches() {
 		read -r -s
 	else
 		# Nuke tested switches before test
-		rm -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches
-		rm -f /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
+		rm -f "$chg_switches_path"
+		rm -f "$use_chg_switch_path"
 
 		if [ $(cat $current_now_node | tr -d '-') -gt 10000 ]; then
 			# current unit is microamps
@@ -102,17 +106,17 @@ test_chg_switches() {
 
 				if ((average_current <= 52)); then
 					echo -e "[+] Switch $node_path is working !"
-					echo -e "$(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches 2>/dev/null)\n${switch}" >/data/data/com.termux/files/usr/share/origami-kernel/chg_switches
+					echo -e "$(cat "$chg_switches_path" 2>/dev/null)\n${switch}" >"$chg_switches_path"
 				else
 					echo -e "[-] Switch $node_path is not working !"
 				fi
 				echo $normal_val >$node_path 2>/dev/null
 			fi
 		done
-		if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches ]; then
+		if [ ! -f "$chg_switches_path" ]; then
 			echo -e "[-] No working charging switch was found :("
 		else
-			sed -i '/^$/d' /data/data/com.termux/files/usr/share/origami-kernel/chg_switches # Remove empty lines
+			sed -i '/^$/d' "$chg_switches_path" # Remove empty lines
 		fi
 		echo -e "[*] Charging switches tester finished\n[*] Hit enter to back to main menu"
 		read -r -s
@@ -120,15 +124,15 @@ test_chg_switches() {
 }
 
 do_idle_chg() {
-	if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches ]; then
+	if [ ! -f "$chg_switches_path" ]; then
 		echo -e "\nerror: Charging switch not defined, please run 'Test charging switches'"
 		read -r -s
 	else
-		if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch ]; then
-			echo $(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches | fzf --reverse --cycle --prompt "Select a charging switch for first time: ") >/data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
+		if [ ! -f "$use_chg_switch_path" ]; then
+			echo $(cat "$chg_switches_path" | fzf --reverse --cycle --prompt "Select a charging switch for first time: ") >"$use_chg_switch_path"
 		fi
 
-		local use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
+		local use_chg_switch=$(cat "$use_chg_switch_path")
 		local node_path=$(echo $use_chg_switch | awk '{print $1}')
 		local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
 		local idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
@@ -142,24 +146,24 @@ do_idle_chg() {
 }
 
 change_use_chg_switch() {
-	if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches ]; then
+	if [ ! -f "$chg_switches_path" ]; then
 		echo -e "\nerror: Charging switch not defined, please run 'Test charging switches'"
 		read -r -s
 	else
-		local use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
+		local use_chg_switch=$(cat "$use_chg_switch_path")
 		local node_path=$(echo $use_chg_switch | awk '{print $1}')
 		local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
 		chmod +x $node_path
 		echo $normal_val >$node_path 2>/dev/null
-		echo $(cat /data/data/com.termux/files/usr/share/origami-kernel/chg_switches | fzf --reverse --cycle --prompt "Select a charging switch: ") >/data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch
+		echo $(cat "$chg_switches_path" | fzf --reverse --cycle --prompt "Select a charging switch: ") >"$use_chg_switch_path"
 	fi
 }
 
 is_idle_chg_enabled() {
-	if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/chg_switches ] || [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch ]; then
+	if [ ! -f "$chg_switches_path" ] || [ ! -f "$use_chg_switch_path" ]; then
 		echo "[ϟ] Idle charging: Undefined"
 	else
-		local use_chg_switch=$(cat /data/data/com.termux/files/usr/share/origami-kernel/use_chg_switch)
+		local use_chg_switch=$(cat "$use_chg_switch_path")
 		local node_path=$(echo $use_chg_switch | awk '{print $1}')
 		local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
 		local idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
