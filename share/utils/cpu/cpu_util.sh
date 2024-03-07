@@ -90,20 +90,13 @@ cpu_core_ctrl() {
 	echo -e "\e[38;2;254;228;208m[] CPU Core control\033[0m"
 	cpu_dir="/sys/devices/system/cpu"
 
-	declare -A core_statuses
-
-	# Pre-read online status for all cores
-	for ((cpu = 1; cpu <= cores; cpu++)); do
-		core_statuses["cpu${cpu}"]=$(<"${cpu_dir}/cpu${cpu}/online")
-	done
-
 	while true; do
-		options=()
-		options+=("cpu0 Online (system essential) ✅")
+		options=("cpu0 Online (system essential) ✅")
 
-		# Build options list
+		# Add options for each CPU core
 		for ((cpu = 1; cpu <= cores; cpu++)); do
-			if [[ ${core_statuses["cpu${cpu}"]} == 1 ]]; then
+			online_status=$(<"${cpu_dir}/cpu${cpu}/online")
+			if [[ $online_status == 1 ]]; then
 				status_label="Online ✅"
 			else
 				status_label="Offline ❌"
@@ -111,21 +104,19 @@ cpu_core_ctrl() {
 			options+=("cpu${cpu} $status_label")
 		done
 
-		# Add separator and "Back" option
-		options+=(" ")
-		options+=("Back to the main menu")
+		# Add a separator and "Back to the main menu" option
+		options+=(" " "Back to the main menu")
 
 		selected=$(printf '%s\n' "${options[@]}" | fzy -l 15 -p "")
 
 		case $selected in
 		"Back to the main menu") break ;;
-		" " | *system*) ;;
+		" ") ;;
 		*)
-			cpu_select="$(echo $selected | awk '{print $1}')"
-			new_status=$((1 - ${core_statuses["${cpu_select}"]}))
-			chmod 0644 "${cpu_dir}/${cpu_select}/online"
-			echo "$new_status" >"${cpu_dir}/${cpu_select}/online" 2>/dev/null
-			core_statuses["${cpu_select}"]="$new_status"
+			cpu_number=$(echo "${selected}" | cut -d' ' -f1 | sed 's/cpu//')
+			online_status=$(<"${cpu_dir}/cpu${cpu_number}/online")
+			new_status=$((1 - online_status))
+			echo "${new_status}" >"${cpu_dir}/cpu${cpu_number}/online"
 			;;
 		esac
 	done
