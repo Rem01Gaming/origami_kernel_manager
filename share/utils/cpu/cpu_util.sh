@@ -136,10 +136,16 @@ mtk_cpufreq_power_mode() {
 }
 
 cpu_gov_param() {
-	echo
-	gov_param=$(fzy_select "$(ls /sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor))" "Select Governor parameter: ")
-	tput cuu 1
-	menu_value_tune "Tune $gov_param parameter\n" "/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)/$gov_param" "10000" "0" "1"
+	governor_now="/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
+	if [ ! -d $governor_now ]; then
+		echo -e "\nThis governor does't have any tuneable parameter."
+		read -r -s
+	else
+		echo
+		gov_param=$(fzy_select "$(ls $governor_now)" "Select Governor parameter: ")
+		tput cuu 1
+		menu_value_tune "Tune $gov_param parameter\n" "/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)/$gov_param" "10000" "0" "1"
+	fi
 }
 
 mtk_ppm_policy() {
