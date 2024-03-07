@@ -82,6 +82,13 @@ mtk_apu_force_maxfreq() {
 	esac
 }
 
+mtk_batoc_current_limit() {
+	case $(fzf_select "Enable Disable" "Mediatek's batoc Current limit:  ") in
+	Enable) echo "stop 0" >/proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
+	Disable) echo "stop 1" >/proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
+	esac
+}
+
 misc_menu() {
 	while true; do
 
@@ -113,6 +120,11 @@ misc_menu() {
 		if [ -d /ppm/pbm ]; then
 			misc_menu_info="${misc_menu_info}[] MTK Power Budged: $(cat /proc/pbm/pbm_stop | awk '{print $3}')//"
 			misc_menu_options="${misc_menu_options}MTK Power Budged\n"
+		fi
+
+		if [ -d /proc/mtk_batoc_throttling ]; then
+			misc_menu_info="${misc_menu_info}[] MTK batoc Current limit: $(cat /proc/mtk_batoc_throttling/battery_oc_protect_stop)"
+			misc_menu_options="${misc_menu_options}MTK batoc Current limit\n"
 		fi
 
 		if [ -d /sys/module/mmdvfs_pmqos ]; then
@@ -150,6 +162,7 @@ misc_menu() {
 		"Touchpanel direction fix") touchpanel_direction_fix ;;
 		"MTK Power Budged") mtk_pbm_switch ;;
 		"Force Mediatek APU to highest freq") mtk_apu_force_maxfreq ;;
+		"MTK batoc Current limit") mtk_batoc_current_limit ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
 	done
