@@ -85,9 +85,6 @@ cpu_set_freq() {
 }
 
 cpu_core_ctrl() {
-	tput cuu 1
-	tput el
-	echo -e "\e[38;2;254;228;208m[] CPU Core control\033[0m"
 	cpu_dir="/sys/devices/system/cpu"
 
 	while true; do
@@ -107,7 +104,7 @@ cpu_core_ctrl() {
 		# Add a separator and "Back to the main menu" option
 		options+=(" " "Back to the main menu")
 
-		selected=$(printf '%s\n' "${options[@]}" | fzy -l 15 -p "")
+		selected=$(printf '%s\n' "${options[@]}" | fzf --reverse --cycle --prompt "CPU core control")
 
 		case $selected in
 		"Back to the main menu") break ;;
