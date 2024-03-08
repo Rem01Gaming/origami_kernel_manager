@@ -89,6 +89,20 @@ mtk_batoc_current_limit() {
 	esac
 }
 
+mtk_eara_thermal_switch() {
+	case $(fzf_select "Enable Disable" "Enable Eara thermal:  ") in
+	Enable) echo "1" >/sys/kernel/eara_thermal/enable ;;
+	Disable) echo "0" >/sys/kernel/eara_thermal/enable ;;
+	esac
+}
+
+mtk_eara_thermal_fake_throttle() {
+	case $(fzf_select "Enable Disable" "Fake throttle Eara thermal:  ") in
+	Enable) echo "1" >/sys/kernel/eara_thermal/fake_throttle ;;
+	Disable) echo "0" >/sys/kernel/eara_thermal/fake_throttle ;;
+	esac
+}
+
 misc_menu() {
 	while true; do
 
@@ -123,8 +137,13 @@ misc_menu() {
 		fi
 
 		if [ -d /proc/mtk_batoc_throttling ]; then
-			misc_menu_info="${misc_menu_info}[] MTK batoc Current limit: $(cat /proc/mtk_batoc_throttling/battery_oc_protect_stop)"
+			misc_menu_info="${misc_menu_info}[] MTK batoc Current limit: $(cat /proc/mtk_batoc_throttling/battery_oc_protect_stop)//"
 			misc_menu_options="${misc_menu_options}MTK batoc Current limit\n"
+		fi
+
+		if [ -d /sys/kernel/eara_thermal ]; then
+			misc_menu_info="${misc_menu_info}[] MTK Eara thermal: $(cat /sys/kernel/eara_thermal/enable)//"
+			misc_menu_options="${misc_menu_options}Enable Eara thermal\nFake throttle Eara thermal\n"
 		fi
 
 		if [ -d /sys/module/mmdvfs_pmqos ]; then
@@ -163,6 +182,8 @@ misc_menu() {
 		"MTK Power Budged") mtk_pbm_switch ;;
 		"Force Mediatek APU to highest freq") mtk_apu_force_maxfreq ;;
 		"MTK batoc Current limit") mtk_batoc_current_limit ;;
+		"Enable Eara thermal") mtk_eara_thermal_switch ;;
+		"Fake throttle Eara thermal") mtk_eara_thermal_fake_throttle ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
 	done
