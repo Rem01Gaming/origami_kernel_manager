@@ -39,8 +39,8 @@ mtk_gpufreqv2_reset_dvfs() {
 
 mtk_gpufreqv2_menu() {
 	gpu_available_freqs="$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -n)"
-	gpu_max_freq="$(echo $gpu_available_freqs | sort -nr | head -n 1)"
-	gpu_min_freq="$(echo $gpu_available_freqs | head -n 1)"
+	gpu_max_freq="$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -n | head -n 1)"
+	gpu_min_freq="$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -nr | head -n 1)"
 
 	while true; do
 		clear

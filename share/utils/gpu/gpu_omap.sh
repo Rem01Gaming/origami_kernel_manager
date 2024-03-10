@@ -26,7 +26,7 @@ gpu_omap_set_gov() {
 
 gpu_omap_menu() {
 	gpu_available_freqs="$(cat /sys/devices/platform/omap/pvrsrvkm.0/sgxfreq/frequency_list)"
-	gpu_min_freq="$(echo $gpu_available_freqs | head -n 1)"
+	gpu_min_freq="$(cat /sys/devices/platform/omap/pvrsrvkm.0/sgxfreq/frequency_list | head -n 1)"
 	gpu_max_freq_path="/sys/devices/platform/omap/pvrsrvkm.0/sgxfreq/frequency_limit"
 	gpu_available_governors="$(cat /sys/devices/platform/omap/pvrsrvkm.0/sgxfreq/governor_list)"
 	gpu_governor_path="/sys/devices/platform/omap/pvrsrvkm.0/sgxfreq/governor"

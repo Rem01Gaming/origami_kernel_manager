@@ -26,7 +26,7 @@ gpu_qcom_kgsl3_set_gov() {
 
 gpu_qcom_kgsl3_menu() {
 	gpu_available_freqs="$(cat /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/gpu_available_frequencies)"
-	gpu_min_freq="$(echo $gpu_available_freqs | head -n 1)"
+	gpu_min_freq="$(cat /sys/devices/platform/kgsl-2d0.0/kgsl/kgsl-2d0/gpu_available_frequencies | head -n 1)"
 	gpu_max_freq_path="/sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/max_gpuclk"
 	gpu_available_governors="performance powersave ondemand simple conservative"
 	gpu_governor_path="/sys/class/kgsl/kgsl-3d0/pwrscale/trustzone/governor"
