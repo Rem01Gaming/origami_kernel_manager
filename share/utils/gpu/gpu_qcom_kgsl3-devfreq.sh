@@ -16,15 +16,9 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-gpu_available_freqs="$(cat /sys/class/kgsl/kgsl-3d0/gpu_available_frequencies)"
-gpu_min_freq_path="/sys/class/kgsl/kgsl-3d0/devfreq/min_freq /sys/class/kgsl/kgsl-3d0/min_clock_mhz"
-gpu_max_freq_path="/sys/class/kgsl/kgsl-3d0/max_gpuclk"
-gpu_available_governors="$(cat /sys/class/kgsl/kgsl-3d0/devfreq/available_governors)"
-gpu_governor_path="/sys/class/kgsl/kgsl-3d0/devfreq/governor"
-
 gpu_qcom_kgsl3-devfreq_set_freq() {
-	node_path="gpu_${1}_freq_path"
-	freq_selected="$(fzf_select "$gpu_available_freqs" "Select ${1} freq: ")"
+	local node_path="gpu_${1}_freq_path"
+	local freq_selected="$(fzf_select "$gpu_available_freqs" "Select ${1} freq: ")"
 
 	for path in $node_path; do
 		echo $freq_selected >$path
@@ -36,6 +30,12 @@ gpu_qcom_kgsl3-devfreq_set_gov() {
 }
 
 gpu_qcom_kgsl3-devfreq_menu() {
+	gpu_available_freqs="$(cat /sys/class/kgsl/kgsl-3d0/gpu_available_frequencies)"
+	gpu_min_freq_path="/sys/class/kgsl/kgsl-3d0/devfreq/min_freq /sys/class/kgsl/kgsl-3d0/min_clock_mhz"
+	gpu_max_freq_path="/sys/class/kgsl/kgsl-3d0/max_gpuclk"
+	gpu_available_governors="$(cat /sys/class/kgsl/kgsl-3d0/devfreq/available_governors)"
+	gpu_governor_path="/sys/class/kgsl/kgsl-3d0/devfreq/governor"
+
 	while true; do
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"

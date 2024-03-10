@@ -16,16 +16,16 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-gpu_available_freqs="$(cat /sys/kernel/tegra_gpu/gpu_available_rates)"
-gpu_min_freq_path="/sys/kernel/tegra_gpu/gpu_floor_rate"
-gpu_max_freq_path="/sys/kernel/tegra_gpu/gpu_cap_rate"
-
 gpu_tegra_set_freq() {
-	node_path="gpu_${1}_freq_path"
+	local node_path="gpu_${1}_freq_path"
 	echo $(fzf_select "$gpu_available_freqs" "Select ${1} freq: ") >$node_path
 }
 
 gpu_tegra_menu() {
+	gpu_available_freqs="$(cat /sys/kernel/tegra_gpu/gpu_available_rates)"
+	gpu_min_freq_path="/sys/kernel/tegra_gpu/gpu_floor_rate"
+	gpu_max_freq_path="/sys/kernel/tegra_gpu/gpu_cap_rate"
+
 	while true; do
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"

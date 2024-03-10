@@ -18,13 +18,9 @@
 
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/mtk_ged.sh
 
-gpu_available_freqs="$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n)"
-gpu_max_freq="$(echo $gpu_available_freqs | sort -nr | head -n 1)"
-gpu_min_freq="$(echo $gpu_available_freqs | head -n 1)"
-
 mtk_gpufreq_freq_set() {
-	export freq=$(fzf_select "0 $gpu_available_freqs" "Set frequency for GPU (NO DVFS): ")
-	echo $freq >/proc/gpufreq/gpufreq_opp_freq 2>/dev/null
+	local freq=$(fzf_select "0 $gpu_available_freqs" "Set frequency for GPU (NO DVFS): ")
+	echo $freq >$gpu_freq_path 2>/dev/null
 }
 
 mtk_gpu_power_limit() {
@@ -54,6 +50,11 @@ mtk_gpu_power_limit() {
 }
 
 mtk_gpufreq_menu() {
+	gpu_available_freqs=$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n)
+	gpu_max_freq="$(echo $gpu_available_freqs | sort -nr | head -n 1)"
+	gpu_min_freq="$(echo $gpu_available_freqs | head -n 1)"
+	gpu_freq_path="/proc/gpufreq/gpufreq_opp_freq"
+
 	while true; do
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
