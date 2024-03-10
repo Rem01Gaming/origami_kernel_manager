@@ -193,7 +193,7 @@ gpu_menu() {
 		"GED Extra Boost") mtk_ged_extra_boost ;;
 		"GED GPU boost") mtk_ged_gpu_boost ;;
 		"GED Game Mode") mtk_ged_game_mode ;;
-		"GPU Current limit") mtk_batoc_gpu_current_limit ;;
+		"GPU Power limit settings") mtk_gpu_power_limit ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
 	done
