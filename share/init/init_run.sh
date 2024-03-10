@@ -45,7 +45,25 @@ fi
 # GPU info
 gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
 
-if [ ! -d /sys/kernel/gpu ] && [ ! -d /proc/gpufreq ] && [ ! -d /proc/gpufreqv2 ]; then
+if [ -d /proc/gpufreq ]; then
+	gpu_node_id=1
+elif [ -d /proc/gpufreqv2 ]; then
+	gpu_node_id=2
+elif [ -d /sys/devices/platform/kgsl-2d0.0/kgsl ]; then
+	gpu_node_id=3
+elif [ -d /sys/devices/platform/kgsl-3d0.0/kgsl ]; then
+	gpu_node_id=4
+elif [ -d /sys/class/kgsl/kgsl-3d0 ]; then
+	gpu_node_id=5
+elif [ -d /sys/devices/platform/omap/pvrsrvkm.0 ]; then
+	gpu_node_id=6
+elif [ -d /sys/kernel/tegra_gpu ]; then
+	gpu_node_id=7
+elif [ -d /sys/devices/platform/dfrgx/devfreq ]; then
+	gpu_node_id=8
+elif [ -d /sys/kernel/gpu ]; then
+	gpu_node_id=9
+else
 	is_gpu_unsupported=1
 fi
 
