@@ -17,7 +17,7 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 cpu_set_gov() {
-	export gov_selected=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors)" "Select CPU Governor: ")
+	local gov_selected=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors)" "Select CPU Governor: ")
 	for ((cpu = 0; cpu < cores; cpu++)); do
 		cpu_dir="/sys/devices/system/cpu/cpu${cpu}"
 		if [ -d "$cpu_dir" ]; then
@@ -29,12 +29,14 @@ cpu_set_gov() {
 
 cpu_set_freq() {
 	if [[ $soc == Mediatek ]] && [ ! "$kernelverc" -gt 500 ]; then
-		if [[ ! "$(cat /proc/ppm/enabled)" == "ppm is enabled" ]]; then
-			clear && echo -e "\033[38;5;196merror:\033[0m Enable Processor Power Management First."
+		if [[ "$(cat /proc/ppm/enabled)" != "ppm is enabled" ]]; then
+			echo -e "\n[-] Enable Processor Power Management First"
+			echo "[*] Hit enter to back to main menu"
 			read -r -s
 			return 1
-		elif [[ ! "$(cat /proc/ppm/policy_status | grep "PPM_POLICY_HARD_USER_LIMIT")" == *enabled* ]]; then
-			clear && echo -e "\033[38;5;196merror:\033[0m Enable 'PPM_POLICY_HARD_USER_LIMIT' on Processor Power Management First."
+		elif [[ "$(cat /proc/ppm/policy_status | grep "PPM_POLICY_HARD_USER_LIMIT")" != *enabled* ]]; then
+			echo -e "\n[-] Enable 'PPM_POLICY_HARD_USER_LIMIT' on Processor Power Management First"
+			echo "[*] Hit enter to back to main menu"
 			read -r -s
 			return 1
 		fi
@@ -42,43 +44,43 @@ cpu_set_freq() {
 
 	if [[ $is_big_little == 1 ]]; then
 		if [[ $nr_clusters == 2 ]]; then
-			cluster_selected=$(fzf_select "little big" "Select cpu cluster: ")
+			local cluster_selected=$(fzf_select "little big" "Select cpu cluster: ")
 		elif [[ $nr_clusters == 3 ]]; then
-			cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ")
+			local cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ")
 		fi
 
 		case $cluster_selected in
-		little) cluster_need_set=0 ;;
-		big) cluster_need_set=1 ;;
-		prime) cluster_need_set=2 ;;
+		little) local cluster_need_set=0 ;;
+		big) local cluster_need_set=1 ;;
+		prime) local cluster_need_set=2 ;;
 		esac
 
 		case $cluster_need_set in
 		0)
-			export first_cpu_oncluster=$(echo ${cluster0} | awk '{print $1}')
-			export cpus_cluster_selected=${cluster0}
+			local first_cpu_oncluster=$(echo ${cluster0} | awk '{print $1}')
+			local cpus_cluster_selected=${cluster0}
 			;;
 		1)
-			export first_cpu_oncluster=$(echo ${cluster1} | awk '{print $1}')
-			export cpus_cluster_selected=${cluster1}
+			local first_cpu_oncluster=$(echo ${cluster1} | awk '{print $1}')
+			local cpus_cluster_selected=${cluster1}
 			;;
 		2)
-			export first_cpu_oncluster=$(echo ${cluster2} | awk '{print $1}')
-			export cpus_cluster_selected=${cluster2}
+			local first_cpu_oncluster=$(echo ${cluster2} | awk '{print $1}')
+			local cpus_cluster_selected=${cluster2}
 			;;
 		esac
 
 		if [[ $soc == Mediatek ]] && [ ! "$kernelverc" -gt 500 ]; then
 			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
-			freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
+			local freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
 			echo $freq >/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scalling_${1}_freq
 		fi
 	else
 		if [[ $soc == Mediatek ]] && [ ! "$kernelverc" -gt 500 ]; then
 			echo 0 $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
-			freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ")
+			local freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ")
 			echo $freq >/sys/devices/system/cpu/cpufreq/policy0/scalling_${1}_freq
 		fi
 	fi
@@ -151,7 +153,6 @@ cpu_gov_param() {
 mtk_ppm_policy() {
 	tput cuu 1
 	tput el
-
 	echo -e "\e[38;2;254;228;208m[] Processor Power Management Menu\033[0m"
 
 	while true; do
@@ -174,16 +175,15 @@ mtk_ppm_policy() {
 
 		selected=$(printf '%s\n' "${options[@]}" | fzy -l 15 -p "")
 
-		if [[ "$selected" == "Back to the main menu" ]]; then
+		if [[ $selected == "Back to the main menu" ]]; then
 			break
 		elif [[ "$(echo $selected | awk '{print $1}')" == "PPM" ]]; then
 			case "$(cat /proc/ppm/enabled | awk '{print $3}')" in
 			enabled) echo 0 >/proc/ppm/enabled ;;
 			disabled) echo 1 >/proc/ppm/enabled ;;
 			esac
-		elif [[ ! "$selected" == " " ]]; then
+		elif [[ $selected != " " ]]; then
 			idx=$(echo "$selected" | awk '{print $1}' | tr -d ')')
-
 			current_status=$(echo $selected | awk '{print $3}')
 
 			if [[ $current_status == *enabled* ]]; then
@@ -217,7 +217,7 @@ cpu_menu() {
 		fi
 
 		clear
-		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
+		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] CPU: ${soc} ${chipset}"
 		echo -e "   /        /\\     [] Governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"

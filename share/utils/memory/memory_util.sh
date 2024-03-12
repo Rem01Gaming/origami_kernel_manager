@@ -108,7 +108,7 @@ memory_menu() {
 		fi
 
 		clear
-		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
+		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] Memory Total: $(sed -n 1p /proc/meminfo | awk '{print $2}') kB" | cut -c 1-${LINE}
 		echo -e "   /        /\\     [] Laptop mode: $(cat /proc/sys/vm/laptop_mode)"

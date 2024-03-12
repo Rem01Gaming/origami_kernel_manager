@@ -17,7 +17,7 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 thermal_gov_set() {
-	export thermal_policy=$(fzf_select "$(chmod 0644 /sys/class/thermal/thermal_zone0/available_policies && cat /sys/class/thermal/thermal_zone0/available_policies)" "Select Thermal governor (apply globally): ")
+	local thermal_policy=$(fzf_select "$(chmod 0644 /sys/class/thermal/thermal_zone0/available_policies && cat /sys/class/thermal/thermal_zone0/available_policies)" "Select Thermal governor (apply globally): ")
 	for thermal in /sys/class/thermal/thermal_zone*; do
 		chmod 0644 ${thermal}/policy
 		echo $thermal_policy >${thermal}/policy
@@ -25,7 +25,7 @@ thermal_gov_set() {
 }
 
 io_sched_set() {
-	export block_target=$(fzf_select "$(print_existing_folders /sys/block mmcblk0 mmcblk1 $(echo sd{a..z}) dm-0)" "Select block you wanted to change I/O sched: ")
+	local block_target=$(fzf_select "$(print_existing_folders /sys/block mmcblk0 mmcblk1 $(echo sd{a..z}) dm-0)" "Select block you wanted to change I/O sched: ")
 	echo $(fzf_select "$(cat /sys/block/${block_target}/queue/scheduler | sed 's/\[//g; s/\]//g')" "Select I/O Scheduler: ") >/sys/block/${block_target}/queue/scheduler
 }
 
@@ -151,7 +151,7 @@ misc_menu() {
 		fi
 
 		clear
-		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
+		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] Thermal Governor: $(chmod 0644 /sys/class/thermal/thermal_zone0/policy && cat /sys/class/thermal/thermal_zone0/policy)"
 		echo -e "   /        /\\     [] SELINUX: $(getenforce)"

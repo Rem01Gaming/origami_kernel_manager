@@ -70,8 +70,8 @@ test_chg_switches() {
 		"${battery_node_path}/store_mode 0 1"
 	)
 
-	if [[ ! $(cat $status_node) == *Charging* ]]; then
-		echo -e "[-] \033[38;5;196merror:\033[0m Please connect device to charger first !"
+	if [[ $(cat $status_node) != *Charging* ]]; then
+		echo "[-] Please connect device to charger first !"
 		read -r -s
 	else
 		# Nuke tested switches before test
@@ -80,7 +80,7 @@ test_chg_switches() {
 
 		if [ $(cat $current_now_node | tr -d '-') -gt 10000 ]; then
 			# current unit is microamps
-			export current_unit_microamps=1
+			current_unit_microamps=1
 		fi
 
 		for switch in "${switches[@]}"; do
@@ -95,10 +95,12 @@ test_chg_switches() {
 
 				current_samples=()
 				for i in {1..15}; do
-					sleep 1
 					current_now=$(get_charging_current_now)
 					echo -e "[*] Current now: ${current_now} mA"
 					current_samples+=("$current_now")
+					sleep 1
+					tput cuu 1
+					tput el
 				done
 
 				average_current=$(echo "${current_samples[@]}" | awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; else print "0" }')
@@ -125,7 +127,8 @@ test_chg_switches() {
 
 do_idle_chg() {
 	if [ ! -f "$chg_switches_path" ]; then
-		echo -e "\nerror: Charging switch not defined, please run 'Test charging switches'"
+		echo -e "\n[-]Charging switch not defined, please run 'Test charging switches'"
+		echo "[*] Hit enter to back to main menu"
 		read -r -s
 	else
 		if [ ! -f "$use_chg_switch_path" ]; then
@@ -147,7 +150,8 @@ do_idle_chg() {
 
 change_use_chg_switch() {
 	if [ ! -f "$chg_switches_path" ]; then
-		echo -e "\nerror: Charging switch not defined, please run 'Test charging switches'"
+		echo -e "\n[-] Charging switch not defined, please run 'Test charging switches'"
+		echo "[*] Hit enter to back to main menu"
 		read -r -s
 	else
 		local use_chg_switch=$(cat "$use_chg_switch_path")
@@ -189,9 +193,9 @@ batt_menu() {
 		echo -e " /        /    \\   [] Battery type: $(cat $battery_type_node)"
 		echo -e "/________/      \\  [] Battery status: $(cat $status_node)"
 		echo -e "\\        \\      /  $(is_idle_chg_enabled)"
-		echo -e " \\        \\    /   "
-		echo -e "  \\        \\  /    "
-		echo -e "   \\________\\/     "
+		echo -e ' \        \    /   '
+		echo -e '  \        \  /    '
+		echo -e '   \________\/     '
 		echo -e "\n//////////////"
 		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
 		echo -e "[] Charging Control\033[0m"

@@ -28,7 +28,8 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_generi
 
 gpu_menu() {
 	if [[ $is_gpu_unsupported == 1 ]]; then
-		echo -e "\n\033[38;5;196error:\033[0m interface (sysfs or procfs) of your GPU is not supported :("
+		echo -e "\n[-] Interface (sysfs or procfs) of your GPU is not supported"
+		echo "[*] Hit enter to back to main menu"
 		read -r -s
 		clear && main_menu
 	else

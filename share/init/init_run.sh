@@ -16,30 +16,32 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
+echo -e "\33[2K\r\033[1;34m[*] Gathering information about your hardware...\033[0m\n"
+
 # CPU info
-export chipset=$(grep "Hardware" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')
+chipset=$(grep "Hardware" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')
 
 if [ -z "$chipset" ]; then
-	export chipset=$(getprop "ro.hardware")
+	chipset=$(getprop "ro.hardware")
 fi
 
 case $chipset in
-*mt* | *MT*) export soc=Mediatek ;;
-*sm* | *qcom* | *SM* | *QCOM*) export soc=Qualcomm ;;
-*exynos*) export soc=Exynos ;;
-*) export soc=unknown ;;
+*mt* | *MT*) soc=Mediatek ;;
+*sm* | *qcom* | *SM* | *QCOM* | *Qualcomm*) soc=Qualcomm ;;
+*exynos*) soc=Exynos ;;
+*) soc=unknown ;;
 esac
 
 cores=$(($(nproc --all) - 1))
 
 policy_folders=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
-export nr_clusters=$(echo ${#policy_folders[@]})
+nr_clusters=$(echo ${#policy_folders[@]})
 
 if [ $nr_clusters -gt 1 ]; then
-	export is_big_little=1
-	export cluster0=$(cat $(echo ${policy_folders[0]})/related_cpus 2>/dev/null)
-	export cluster1=$(cat $(echo ${policy_folders[1]})/related_cpus 2>/dev/null)
-	export cluster2=$(cat $(echo ${policy_folders[2]})/related_cpus 2>/dev/null)
+	is_big_little=1
+	cluster0=$(cat $(echo ${policy_folders[0]})/related_cpus 2>/dev/null)
+	cluster1=$(cat $(echo ${policy_folders[1]})/related_cpus 2>/dev/null)
+	cluster2=$(cat $(echo ${policy_folders[2]})/related_cpus 2>/dev/null)
 fi
 
 # GPU info
@@ -68,4 +70,4 @@ else
 fi
 
 # Kernel version
-export kernelverc=$(uname -r | cut -d'.' -f1,2 | sed 's/\.//')
+kernelverc=$(uname -r | cut -d'.' -f1,2 | sed 's/\.//')

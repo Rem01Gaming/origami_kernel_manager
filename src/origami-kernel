@@ -18,7 +18,7 @@
 
 # Check dependencies
 if ! hash whoami fzf fzy tput 2>/dev/null; then
-	echo -e "\033[38;5;196m[!] hash whoami fzf fzy tput jq\nerror:\033[0m Environment has missing dependencies" && exit 127
+	echo -e "\033[38;5;196m[!] hash whoami fzf fzy tput jq\033[0m\n[-] Environment has missing dependencies" && exit 127
 fi
 
 # Check the root
@@ -36,11 +36,11 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/disp/disp_util
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/misc/misc_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/battery/battery_util.sh
 
-export LINE=$(stty size | awk '{print $2}')
-export ANDROID=$(getprop ro.build.version.release)
-export ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
-export VENDOR=$(getprop "ro.product.manufacturer")
-export VERSION="v1.0.4"
+LINE=$(stty size | awk '{print $2}')
+ANDROID=$(getprop ro.build.version.release)
+ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
+VENDOR=$(getprop "ro.product.manufacturer")
+VERSION="v1.0.4"
 
 trap "tput cnorm" EXIT
 
@@ -54,7 +54,7 @@ if [ ! -f /data/origami-kernel/agreed ]; then
 	read -p "Type 'I AGREE' to continue: " a1
 	case $a1 in
 	"I AGREE") mkdir /data/origami-kernel && touch /data/origami-kernel/agreed ;;
-	*) clear && echo -e "\033[38;5;196m[*] Not agreed, Aborted.\033[0m" && exit 0 ;;
+	*) clear && echo -e "\033[38;5;196m[-] Not agreed, Aborted.\033[0m" && exit 0 ;;
 	esac
 fi
 
@@ -72,7 +72,7 @@ Report problems and questions to https://t.me/rem01shideout or https://github.co
 Rem01Gaming <Rem01_Gaming@proton.me>
 
 
-[!] Press enter to back into main menu
+[*] Press enter to back into main menu
 " | fold -s -w ${LINE}
 	read -r -s
 }
@@ -84,7 +84,7 @@ main_menu() {
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] DEVICE: $(getprop "ro.product.system.model")"
 		echo -e "   /        /\\     [] MANUFACTURER: ${VENDOR}"
-		echo -e "  /        /  \\    [] CPU: ${soc} ${chipset}"
+		echo -e "  /        /  \\    [] CPU: ${chipset}"
 		echo -e " /        /    \\   [] GPU: ${gpu}" | cut -c 1-${LINE}
 		echo -e "/________/      \\  [] KERNEL VERSION: $(uname -r)" | cut -c 1-${LINE}
 		echo -e "\\        \\      /  [] UPTIME: $(uptime -p)"
