@@ -71,3 +71,34 @@ fi
 
 # Kernel version
 kernelverc=$(uname -r | cut -d'.' -f1,2 | sed 's/\.//')
+
+# DRAM info
+
+if [[ $soc == "Mediatek" ]]; then
+	# Check for DRAM path, whatever it's devfreq or Mediatek's Gibberish.
+	mtk_dram_devfreq_paths_array=(
+		"/sys/class/devfreq/mtk-dvfsrc-devfreq"
+		"/sys/devices/platform/soc/1c00f000.dvfsrc/mtk-dvfsrc-devfreq/devfreq/mtk-dvfsrc-devfreq"
+	)
+
+	for path in ${mtk_dram_devfreq_paths_array[@]}; do
+		if [ -d $path ]; then
+			mtk_dram_devfreq_path="$path"
+			break
+		fi
+	done
+
+	if [ -z $mtk_dram_devfreq_path ]; then
+		mtk_dram_paths_array=(
+			"/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp"
+			"/sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp"
+		)
+
+		for path in ${mtk_dram_paths_array[@]}; do
+			if [ -f $path ]; then
+				mtk_dram_path="$path"
+				break
+			fi
+		done
+	fi
+fi

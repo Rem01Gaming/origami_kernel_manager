@@ -16,6 +16,10 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
+if [[ $soc == "Mediatek" ]]; then
+	source /data/data/com.termux/files/usr/share/origami-kernel/utils/memory/mtk_dram.sh
+fi
+
 memory_drop_cache() {
 	echo $(fzf_select "0 1 2 3" "Memory drop cache mode: ") >/proc/sys/vm/drop_caches
 }
@@ -67,20 +71,6 @@ oom_kill_alloc() {
 	esac
 }
 
-mtk_dram_force_maxfreq() {
-	if [ ! $(uname -r | cut -d'.' -f1,2 | sed 's/\.//') -gt 500 ]; then
-		case $(fzf_select "No Yes" "Force DRAM to maximum frequency: ") in
-		Yes) echo 0 >/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp ;;
-		No) echo -1 >/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp ;;
-		esac
-	else
-		case $(fzf_select "No Yes" "Force DRAM to maximum frequency: ") in
-		Yes) echo 0 >/sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ;;
-		No) echo -1 >/sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ;;
-		esac
-	fi
-}
-
 slmk_minfree() {
 	menu_value_tune "Simple LMK minfree\nfree at least this much memory per reclaim." /sys/module/simple_lmk/parameters/slmk_minfree 512 8 2
 }
@@ -91,12 +81,7 @@ slmk_timeout() {
 
 memory_menu() {
 	while true; do
-
-		memory_menu_options="Memory drop cache\nSwappiness\nMinimum amount of free memory\nExtra free kbytes\nVFS Cache pressure\nOvercommit ratio\nDirty ratio\nDirty background ratio\nDirty writeback centisecs\nDirty expire centisecs\nKill allocating task\nLaptop mode\n"
-
-		if [ -f /sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ] || [ -f /sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp ]; then
-			memory_menu_options="${memory_menu_options}Force DRAM to maximum freq\n"
-		fi
+		memory_menu_options="Memory drop cache\nSwappiness\nMinimum amount of free memory\nExtra free kbytes\nVFS Cache pressure\nOvercommit ratio\nDirty ratio\nDirty background ratio\nDirty writeback centisecs\nDirty expire centisecs\nKill allocating task\nLaptop mode\nForce DRAM to maximum freq\n"
 
 		if [ -d /sys/kernel/mm/lru_gen ]; then
 			memory_menu_info="[] MGLRU mode: $(cat /sys/kernel/mm/lru_gen)\n"
@@ -105,6 +90,10 @@ memory_menu() {
 
 		if [ -d /sys/module/simple_lmk ]; then
 			memory_menu_options="${memory_menu_options}Simple LMK minfree\nSimple LMK timeout\n"
+		fi
+
+		if [[ $soc == "Mediatek" ]]; then
+			memory_menu_options="${memory_menu_options}MTK DRAM Control\n"
 		fi
 
 		clear
@@ -126,7 +115,7 @@ memory_menu() {
 		tput civis
 
 		case $(fzy_select "$(echo -e "$memory_menu_options")\nBack to main menu" "") in
-		"Force DRAM to maximum freq") mtk_dram_force_maxfreq ;;
+		"MTK DRAM Control") mtk_dram_menu ;;
 		"Memory drop cache") memory_drop_cache ;;
 		"Swappiness") memory_swappiness ;;
 		"Minimum amount of free memory") memory_min_free_kbytes ;;
