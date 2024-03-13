@@ -74,14 +74,14 @@ cpu_set_freq() {
 			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
 			local freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
-			echo $freq >/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scalling_${1}_freq
+			echo $freq >/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_${1}_freq
 		fi
 	else
 		if [[ $soc == Mediatek ]] && [ ! "$kernelverc" -gt 500 ]; then
 			echo 0 $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
 			local freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ")
-			echo $freq >/sys/devices/system/cpu/cpufreq/policy0/scalling_${1}_freq
+			echo $freq >/sys/devices/system/cpu/cpufreq/policy0/scaling_${1}_freq
 		fi
 	fi
 }
