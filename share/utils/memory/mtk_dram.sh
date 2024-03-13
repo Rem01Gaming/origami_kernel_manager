@@ -34,7 +34,7 @@ mtk_dram_devfreq_set_gov() {
 mtk_dram_menu() {
 	while true; do
 		if [ ! -z $mtk_dram_devfreq_path ]; then
-			mtk_dram_menu_info="[] GPU Scalling freq: $(cat ${mtk_dram_devfreq_path}/max_freq) - $(cat ${mtk_dram_devfreq_path}/min_freq)//[] GPU Governor: $(cat ${mtk_dram_devfreq_path}/governor)\\"
+			mtk_dram_menu_info="[] GPU Scalling freq: $(cat ${mtk_dram_devfreq_path}/max_freq) - $(cat ${mtk_dram_devfreq_path}/min_freq)//[] GPU Governor: $(cat ${mtk_dram_devfreq_path}/governor)//"
 			mtk_dram_menu_options="Set max freq\nSet min freq\nSet Governor\n"
 		elif [ ! -z $mtk_dram_path ]; then
 			mtk_dram_menu_options="Force DRAM to maximum freq\n"
