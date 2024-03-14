@@ -66,7 +66,7 @@ PS: You need `make` and `git` installed on your termux for this method.
 
 ## Compatibility state
 
-Currently, Origami Kernel Manager complete support is available for Mediatek chipsets, other should be supported with no GPU tuning.
+All arm and arm64 chipsets should supported.
 
 ## Contribution
 
