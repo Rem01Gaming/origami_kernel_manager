@@ -186,5 +186,7 @@ misc_menu() {
 		"Fake throttle Eara thermal") mtk_eara_thermal_fake_throttle ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
+
+		unset misc_menu_info misc_menu_options
 	done
 }

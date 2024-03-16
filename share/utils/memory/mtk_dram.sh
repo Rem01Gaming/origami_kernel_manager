@@ -70,5 +70,7 @@ mtk_dram_menu() {
 		"Force DRAM to maximum freq") mtk_dram_force_maxfreq ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
+
+		unset mtk_dram_menu_info mtk_dram_menu_options
 	done
 }

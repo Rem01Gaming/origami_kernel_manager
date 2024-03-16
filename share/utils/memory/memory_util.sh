@@ -132,5 +132,7 @@ memory_menu() {
 		"Simple LMK timeout") slmk_timeout ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
+
+		unset memory_menu_info memory_menu_options
 	done
 }

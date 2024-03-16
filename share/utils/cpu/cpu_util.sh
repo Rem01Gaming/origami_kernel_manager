@@ -245,5 +245,7 @@ cpu_menu() {
 		"Mediatek Power mode") mtk_cpufreq_power_mode ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
+
+		unset cpu_menu_info cpu_menu_options
 	done
 }
