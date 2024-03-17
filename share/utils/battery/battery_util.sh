@@ -54,6 +54,7 @@ test_chg_switches() {
 		"${battery_node_path}/test_mode 2 1"
 		"${battery_node_path}/battery_ext/smart_charging_interruption 0 1"
 		"${battery_node_path}/siop_level 100 0"
+		"${battery_node_path}/battery_charging_enabled 1 0"
 		"/sys/class/hw_power/charger/charge_data/enable_charger 1 0"
 		"/sys/class/qcom-battery/input_suspend 0 1"
 		"/sys/devices/platform/huawei_charger/enable_charger 1 0"
