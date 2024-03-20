@@ -139,14 +139,16 @@ mtk_cpufreq_power_mode() {
 
 cpu_gov_param() {
 	governor_now="/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
-	if [ ! -d $governor_now ]; then
-		echo -e "\nThis governor does't have any tuneable parameter."
-		read -r -s
+	[ ! -d $governor_now ] && echo -e "\n[-] '${governor_now}' is not tuneable\n[*] Hit enter to back to main menu" && read -r -s
+	echo -e "\nSelect Governor parameter:"
+	gov_param=$(fzy_select "$(ls $governor_now)" "")
+	tput cuu 1
+	if [[ $gov_param == *freq* ]]; then
+		local freq=$(fzf_select "0 $(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Tune $gov_param parameter: ")
+		echo $freq >/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)/$gov_param
 	else
-		echo
-		gov_param=$(fzy_select "$(ls $governor_now)" "Select Governor parameter: ")
 		tput cuu 1
-		menu_value_tune "Tune $gov_param parameter\n" "/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)/$gov_param" "10000" "0" "1"
+		menu_value_tune "Tune $gov_param parameter" "/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)/$gov_param" "100000000" "0" "1"
 	fi
 }
 
