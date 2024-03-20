@@ -139,7 +139,7 @@ mtk_cpufreq_power_mode() {
 
 cpu_gov_param() {
 	governor_now="/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
-	[ ! -d $governor_now ] && echo -e "\n[-] '${governor_now}' is not tuneable\n[*] Hit enter to back to main menu" && read -r -s
+	[ ! -d $governor_now ] && echo -e "\n[-] '$(basename ${governor_now})' is not tuneable\n[*] Hit enter to back to main menu" && read -r -s && return 0
 	echo -e "\nSelect Governor parameter:"
 	gov_param=$(fzy_select "$(ls $governor_now)" "")
 	tput cuu 1
