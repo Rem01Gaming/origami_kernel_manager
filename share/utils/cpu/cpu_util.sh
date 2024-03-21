@@ -155,7 +155,7 @@ cpu_gov_param() {
 mtk_ppm_policy() {
 	tput cuu 1
 	tput el
-	echo -e "\e[38;2;254;228;208m[] Processor Power Management Menu\033[0m"
+	echo -e "\e[38;2;254;228;208m[] Performance and Power Management Menu\033[0m"
 
 	while true; do
 		options=(
