@@ -155,11 +155,13 @@ change_use_chg_switch() {
 		echo "[*] Hit enter to back to main menu"
 		read -r -s
 	else
-		local use_chg_switch=$(cat "$use_chg_switch_path")
-		local node_path=$(echo $use_chg_switch | awk '{print $1}')
-		local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
-		chmod +x $node_path
-		echo $normal_val >$node_path 2>/dev/null
+		if [ -f "$use_chg_switch_path" ]; then
+			local use_chg_switch=$(cat "$use_chg_switch_path")
+			local node_path=$(echo $use_chg_switch | awk '{print $1}')
+			local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
+			chmod +x $node_path
+			echo $normal_val >$node_path 2>/dev/null
+		fi
 		echo $(cat "$chg_switches_path" | fzf --reverse --cycle --prompt "Select a charging switch: ") >"$use_chg_switch_path"
 	fi
 }
