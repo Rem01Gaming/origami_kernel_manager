@@ -16,7 +16,7 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-echo -e "\33[2K\r\033[1;34m[*] Gathering information about your hardware...\033[0m\n"
+echo -e "\33[2K\r\033[1;34m[*] Gathering information about your hardware...\033[0m"
 
 # CPU info
 chipset=$(grep "Hardware" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')
@@ -90,13 +90,35 @@ if [[ $soc == "Mediatek" ]]; then
 
 	if [ -z $mtk_dram_devfreq_path ]; then
 		mtk_dram_paths_array=(
-			"/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc/dvfsrc_req_ddr_opp"
-			"/sys/kernel/helio-dvfsrc/dvfsrc_force_vcore_dvfs_opp"
+			"/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc"
+			"/sys/kernel/helio-dvfsrc"
 		)
 
 		for path in ${mtk_dram_paths_array[@]}; do
-			if [ -f $path ]; then
+			if [ -d $path ]; then
 				mtk_dram_path="$path"
+				break
+			fi
+		done
+
+		mtk_dram_opp_table_paths_array=(
+			"${mtk_dram_path}/dvfsrc_opp_table"
+		)
+		mtk_dram_opp_req_paths_array=(
+			"${mtk_dram_path}/dvfsrc_req_ddr_opp"
+			"${mtk_dram_path}/dvfsrc_force_vcore_dvfs_opp"
+		)
+
+		for path in ${mtk_dram_opp_table_paths_array[@]}; do
+			if [ -f $path ]; then
+				mtk_dram_opp_table_path="$path"
+				break
+			fi
+		done
+
+		for path in ${mtk_dram_opp_req_paths_array[@]}; do
+			if [ -f $path ]; then
+				mtk_dram_req_opp_path="$path"
 				break
 			fi
 		done

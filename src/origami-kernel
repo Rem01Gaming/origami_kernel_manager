@@ -30,6 +30,7 @@ source /data/data/com.termux/files/usr/share/origami-kernel/init/init_run.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/menu/menu_helper.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/cpu/cpu_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/dram_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/memory/memory_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/net/net_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/disp/disp_util.sh
@@ -98,9 +99,10 @@ main_menu() {
 		# Hide cursor
 		tput civis
 
-		case $(fzy_select "CPU control\nGPU control\nMemory settings\nNetworking and Firewall settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nShow License\nDonate me\nJoin my telegram channel\nExit" "") in
+		case $(fzy_select "CPU control\nGPU control\nDRAM control\nMemory settings\nNetworking and Firewall settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nShow License\nDonate me\nJoin my telegram channel\nExit" "") in
 		"CPU control") cpu_menu ;;
 		"GPU control") gpu_menu ;;
+		"DRAM control") dram_menu ;;
 		"Memory settings") memory_menu ;;
 		"Networking and Firewall settings") net_menu ;;
 		"Miscellaneous settings") misc_menu ;;

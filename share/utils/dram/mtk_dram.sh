@@ -16,11 +16,10 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-mtk_dram_force_maxfreq() {
-	case $(fzf_select "No Yes" "Force DRAM to maximum frequency: ") in
-	Yes) echo 0 >$mtk_dram_path ;;
-	No) echo -1 >$mtk_dram_path ;;
-	esac
+mtk_dram_set_freq() {
+	opp_selected="$(fzf_select "[OPP-1] Enable DVFS\n$(cat $mtk_dram_opp_table_path | awk '{sub(/\n$/,""); printf("%s\\n", $0)}' | grep "^\[")" "Set frequency for DRAM (NO DVFS): " -n)"
+	opp_num=$(echo "$opp_selected" | grep -o '\[[^]]*\]' | grep -oE '[+-]?[0-9]+')
+	echo $opp_num >$mtk_dram_req_opp_path
 }
 
 mtk_dram_devfreq_set_freq() {
@@ -36,13 +35,13 @@ mtk_dram_menu() {
 		if [ ! -z $mtk_dram_devfreq_path ]; then
 			mtk_dram_menu_info="[] GPU Scalling freq: $(cat ${mtk_dram_devfreq_path}/max_freq) - $(cat ${mtk_dram_devfreq_path}/min_freq)//[] GPU Governor: $(cat ${mtk_dram_devfreq_path}/governor)//"
 			mtk_dram_menu_options="Set max freq\nSet min freq\nSet Governor\n"
-		elif [ ! -z $mtk_dram_path ]; then
-			mtk_dram_menu_options="Force DRAM to maximum freq\n"
+		elif [ ! -z $mtk_dram_path ] && [ ! -z $mtk_dram_opp_table_path ] && [ ! -z $mtk_dram_req_opp_path ]; then
+			mtk_dram_menu_options="Set freq (NO DVFS)\n"
 		else
 			echo -e "\n[-] Interface (sysfs or procfs) of your DRAM is not supported"
 			echo "[*] Hit enter to back to main menu"
 			read -r -s
-			clear && main_menu
+			clear && return 0
 		fi
 
 		clear
@@ -67,7 +66,7 @@ mtk_dram_menu() {
 		"Set max freq") mtk_dram_devfreq_set_freq max ;;
 		"Set min freq") mtk_dram_devfreq_set_freq min ;;
 		"Set Governor") mtk_dram_devfreq_set_gov ;;
-		"Force DRAM to maximum freq") mtk_dram_force_maxfreq ;;
+		"Set freq (NO DVFS)") mtk_dram_set_freq ;;
 		"Back to main menu") clear && main_menu ;;
 		esac
 

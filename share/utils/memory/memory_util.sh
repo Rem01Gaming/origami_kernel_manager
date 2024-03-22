@@ -16,10 +16,6 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-if [[ $soc == "Mediatek" ]]; then
-	source /data/data/com.termux/files/usr/share/origami-kernel/utils/memory/mtk_dram.sh
-fi
-
 memory_drop_cache() {
 	echo $(fzf_select "0 1 2 3" "Memory drop cache mode: ") >/proc/sys/vm/drop_caches
 }
@@ -92,10 +88,6 @@ memory_menu() {
 			memory_menu_options="${memory_menu_options}Simple LMK minfree\nSimple LMK timeout\n"
 		fi
 
-		if [[ $soc == "Mediatek" ]]; then
-			memory_menu_options="${memory_menu_options}MTK DRAM Control\n"
-		fi
-
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
@@ -115,7 +107,6 @@ memory_menu() {
 		tput civis
 
 		case $(fzy_select "$(echo -e "$memory_menu_options")\nBack to main menu" "") in
-		"MTK DRAM Control") mtk_dram_menu ;;
 		"Memory drop cache") memory_drop_cache ;;
 		"Swappiness") memory_swappiness ;;
 		"Minimum amount of free memory") memory_min_free_kbytes ;;

@@ -18,7 +18,7 @@
 
 fzf_select() {
 	options=($(echo $1))
-	selected_option=$(printf "%s\n" "${options[@]}" | fzf --reverse --cycle --prompt "$2")
+	selected_option=$(echo -e "${options[@]}" | fzf $([[ $3 == "-n" ]] && echo "--select-1") --reverse --cycle --prompt "$2")
 	echo $selected_option
 }
 
