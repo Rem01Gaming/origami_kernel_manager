@@ -17,7 +17,7 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 mtk_dram_set_freq() {
-	opp_selected="$(fzf_select_n "[OPP-1] Enable DVFS\n$(cat $mtk_dram_opp_table_path | awk '{sub(/\n$/,""); printf("%s\\n", $0)}' | grep "^\[")" "Set frequency for DRAM (NO DVFS): ")"
+	opp_selected="$(fzf_select_n "[OPP-1]: Enable DVFS\n$(cat $mtk_dram_opp_table_path | awk '{sub(/\n$/,""); printf("%s\\n", $0)}' | grep "^\[")" "Set frequency for DRAM (NO DVFS): ")"
 	opp_num=$(echo "$opp_selected" | grep -o '\[[^]]*\]' | grep -oE '[+-]?[0-9]+')
 	echo $opp_num >$mtk_dram_req_opp_path
 }
@@ -67,7 +67,7 @@ mtk_dram_menu() {
 		"Set min freq") mtk_dram_devfreq_set_freq min ;;
 		"Set Governor") mtk_dram_devfreq_set_gov ;;
 		"Set freq (NO DVFS)") mtk_dram_set_freq ;;
-		"Back to main menu") clear && main_menu ;;
+		"Back to main menu") clear && break ;;
 		esac
 
 		unset mtk_dram_menu_info mtk_dram_menu_options

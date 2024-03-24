@@ -122,7 +122,7 @@ net_menu() {
 		"TCP Select Acknowledgments") tcp_sack ;;
 		"TCP Timestamps") tcp_timestamps ;;
 		"BPF JIT harden") bpf_jit_harden ;;
-		"Back to main menu") clear && main_menu ;;
+		"Back to main menu") clear && return 0 ;;
 		esac
 	done
 }

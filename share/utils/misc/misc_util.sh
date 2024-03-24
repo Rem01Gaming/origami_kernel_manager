@@ -184,7 +184,7 @@ misc_menu() {
 		"MTK batoc Current limit") mtk_batoc_current_limit ;;
 		"Enable Eara thermal") mtk_eara_thermal_switch ;;
 		"Fake throttle Eara thermal") mtk_eara_thermal_fake_throttle ;;
-		"Back to main menu") clear && main_menu ;;
+		"Back to main menu") clear && return 0 ;;
 		esac
 
 		unset misc_menu_info misc_menu_options

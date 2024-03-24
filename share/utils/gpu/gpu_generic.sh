@@ -55,7 +55,7 @@ gpu_generic_menu() {
 		"Set max freq") gpu_generic_set_freq max ;;
 		"Set min freq") gpu_generic_set_freq min ;;
 		"Set Governor") gpu_generic_set_gov ;;
-		"Back to main menu") clear && main_menu ;;
+		"Back to main menu") clear && return 0 ;;
 		esac
 	done
 }

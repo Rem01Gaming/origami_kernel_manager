@@ -89,7 +89,7 @@ test_chg_switches() {
 			local normal_val=$(echo "$switch" | awk '{print $2}' | sed 's/::/ /g')
 			local idle_val=$(echo "$switch" | awk '{print $3}' | sed 's/::/ /g')
 			if [ -f $node_path ]; then
-				echo -e "[+] Testing switch: ${switch}"
+				echo "[*] Testing switch: ${switch}"
 				chmod +x $node_path
 				echo $idle_val >$node_path 2>/dev/null
 				sleep 2
@@ -97,7 +97,7 @@ test_chg_switches() {
 				current_samples=()
 				for i in {1..15}; do
 					current_now=$(get_charging_current_now)
-					echo -e "[*] Current now: ${current_now} mA"
+					echo "[*] Current now: ${current_now} mA"
 					current_samples+=("$current_now")
 					sleep 1
 					tput cuu 1
@@ -128,7 +128,7 @@ test_chg_switches() {
 
 do_idle_chg() {
 	if [ ! -f "$chg_switches_path" ]; then
-		echo -e "\n[-]Charging switch not defined, please run 'Test charging switches'"
+		echo -e "\n[-] Charging switch not defined, please run 'Test charging switches'"
 		echo "[*] Hit enter to back to main menu"
 		read -r -s
 	else
@@ -175,13 +175,11 @@ is_idle_chg_enabled() {
 		local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
 		local idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
 
-		if [ "$(cat $node_path)" == "$idle_val" ]; then
-			echo "[ϟ] Idle charging: Enabled"
-		elif [ "$(cat $node_path)" == "$normal_val" ]; then
-			echo "[ϟ] Idle charging: Disabled"
-		else
-			echo "[ϟ] Idle charging: Undefined"
-		fi
+		case "$(cat $node_path)" in
+		"$idle_val") echo "[ϟ] Idle charging: Enabled" ;;
+		"$normal_val") echo "[ϟ] Idle charging: Disabled" ;;
+		*) echo "[ϟ] Idle charging: Undefined" ;;
+		esac
 	fi
 }
 
@@ -209,7 +207,7 @@ batt_menu() {
 		"Test charging switches") test_chg_switches ;;
 		"Enable idle charging") do_idle_chg ;;
 		"Change charging switch") change_use_chg_switch ;;
-		"Back to main menu") clear && main_menu ;;
+		"Back to main menu") clear && return 0 ;;
 		esac
 	done
 }

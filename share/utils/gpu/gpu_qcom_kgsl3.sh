@@ -53,7 +53,7 @@ gpu_qcom_kgsl3_menu() {
 		case $(fzy_select "Set max freq\nSet min freq\nSet Governor\nBack to main menu" "") in
 		"Set max freq") gpu_qcom_kgsl3_set_max_freq ;;
 		"Set Governor") gpu_qcom_kgsl3_set_gov ;;
-		"Back to main menu") clear && main_menu ;;
+		"Back to main menu") clear && return 0 ;;
 		esac
 	done
 }

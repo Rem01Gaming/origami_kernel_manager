@@ -17,9 +17,9 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 fzf_select() {
-options=($(echo $1))
-selected_option=$(printf "%s\n" "${options[@]}" | fzf --reverse --cycle --prompt "$2")
-echo $selected_option
+	options=($(echo $1))
+	selected_option=$(printf "%s\n" "${options[@]}" | fzf --reverse --cycle --prompt "$2")
+	echo $selected_option
 }
 
 fzf_select_n() {

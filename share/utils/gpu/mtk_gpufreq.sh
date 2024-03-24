@@ -51,8 +51,8 @@ mtk_gpu_power_limit() {
 
 mtk_gpufreq_menu() {
 	gpu_available_freqs="$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n)"
-	gpu_max_freq="$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n | head -n 1)"
-	gpu_min_freq="$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -nr | head -n 1)"
+	gpu_max_freq="$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -nr | head -n 1)"
+	gpu_min_freq="$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n | head -n 1)"
 	gpu_freq_path="/proc/gpufreq/gpufreq_opp_freq"
 
 	while true; do
@@ -82,7 +82,7 @@ mtk_gpufreq_menu() {
 		"GED GPU boost") mtk_ged_gpu_boost ;;
 		"GED Game Mode") mtk_ged_game_mode ;;
 		"GPU Power limit settings") mtk_gpu_power_limit ;;
-		"Back to main menu") clear && main_menu ;;
+		"Back to main menu") clear && return 0 ;;
 		esac
 	done
 }

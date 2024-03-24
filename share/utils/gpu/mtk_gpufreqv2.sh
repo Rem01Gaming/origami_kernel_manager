@@ -39,8 +39,8 @@ mtk_gpufreqv2_reset_dvfs() {
 
 mtk_gpufreqv2_menu() {
 	gpu_available_freqs="$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -n)"
-	gpu_max_freq="$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -n | head -n 1)"
-	gpu_min_freq="$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -nr | head -n 1)"
+	gpu_max_freq="$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -nr | head -n 1)"
+	gpu_min_freq="$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -n | head -n 1)"
 
 	while true; do
 		clear
@@ -68,7 +68,7 @@ mtk_gpufreqv2_menu() {
 		"GED GPU DVFS") mtk_ged_dvfs ;;
 		"GED Boost") mtk_ged_boost ;;
 		"GED GPU boost") mtk_ged_gpu_boost ;;
-		"Back to main menu") clear && main_menu ;;
+		"Back to main menu") clear && return 0 ;;
 		esac
 	done
 }

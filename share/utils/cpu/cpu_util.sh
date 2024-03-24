@@ -245,7 +245,7 @@ cpu_menu() {
 		"Mediatek Processor Power Management") mtk_ppm_policy ;;
 		"Mediatek CCI mode") mtk_cpufreq_cci_mode ;;
 		"Mediatek Power mode") mtk_cpufreq_power_mode ;;
-		"Back to main menu") clear && main_menu ;;
+		"Back to main menu") clear && return 0 ;;
 		esac
 
 		unset cpu_menu_info cpu_menu_options

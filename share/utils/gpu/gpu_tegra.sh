@@ -48,7 +48,7 @@ gpu_tegra_menu() {
 		case $(fzy_select "Set max freq\nSet min freq\nBack to main menu" "") in
 		"Set max freq") gpu_tegra_set_freq max ;;
 		"Set min freq") gpu_tegra_set_freq min ;;
-		"Back to main menu") clear && main_menu ;;
+		"Back to main menu") clear && return 0 ;;
 		esac
 	done
 }
