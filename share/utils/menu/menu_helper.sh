@@ -23,7 +23,7 @@ fzf_select() {
 }
 
 fzf_select_n() {
-	selected_option=$(echo -e "$1" | fzf --select-1 --reverse --cycle --prompt "$2")
+	selected_option=$(echo -e "${1%\\n\\n}" | fzf --select-1 --reverse --cycle --prompt "$2")
 	echo $selected_option
 }
 
