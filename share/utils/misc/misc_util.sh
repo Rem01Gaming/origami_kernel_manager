@@ -75,11 +75,9 @@ mtk_pbm_switch() {
 	esac
 }
 
-mtk_apu_force_maxfreq() {
-	case $(fzf_select "No Yes" "Force Mediatek APU to highest:  ") in
-	Yes) echo "0" >/sys/module/mmdvfs_pmqos/parameters/force_step ;;
-	No) echo "-1" >/sys/module/mmdvfs_pmqos/parameters/force_step ;;
-	esac
+mtk_apu_set_freq() {
+	opp_selected=$(fzf_select_n "$(seq -1 $(cat /sys/module/mmdvfs_pmqos/parameters/dump_setting | grep -o '\[[^]]*\]' | grep -oE '[+-]?[0-9]+' | sort -n | tail -n 1))" "Select frequency for APUs (NO DVFS) :  ")
+	echo $opp_selected >/sys/module/mmdvfs_pmqos/parameters/force_step
 }
 
 mtk_batoc_current_limit() {
@@ -147,7 +145,7 @@ misc_menu() {
 		fi
 
 		if [ -d /sys/module/mmdvfs_pmqos ]; then
-			misc_menu_options="${misc_menu_options}Force Mediatek APU to highest freq\n"
+			misc_menu_options="${misc_menu_options}Set APUs freq (NO DVFS)\n"
 		fi
 
 		clear
@@ -180,7 +178,7 @@ misc_menu() {
 		"Touchpanel limit") touchpanel_limit ;;
 		"Touchpanel direction fix") touchpanel_direction_fix ;;
 		"MTK Power Budged") mtk_pbm_switch ;;
-		"Force Mediatek APU to highest freq") mtk_apu_force_maxfreq ;;
+		"Set APUs freq (NO DVFS)") mtk_apu_set_freq ;;
 		"MTK batoc Current limit") mtk_batoc_current_limit ;;
 		"Enable Eara thermal") mtk_eara_thermal_switch ;;
 		"Fake throttle Eara thermal") mtk_eara_thermal_fake_throttle ;;
