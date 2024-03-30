@@ -69,9 +69,6 @@ else
 	is_gpu_unsupported=1
 fi
 
-# Kernel version
-kernelverc=$(uname -r | cut -d'.' -f1,2 | sed 's/\.//')
-
 # DRAM info
 
 if [[ $soc == "Mediatek" ]]; then
