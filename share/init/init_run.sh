@@ -121,3 +121,20 @@ if [[ $soc == "Mediatek" ]]; then
 		done
 	fi
 fi
+
+# DT2W
+dt2w_path_search=(
+	"/sys/touchpanel/double_tap"
+	"/sys/class/sec/tsp/dt2w_enable"
+	"/proc/touchpanel/double_tap_enable"
+	"/proc/tp_gesture"
+	"/sys/android_touch/doubletap2wake"
+	"/sys/android_touch/doubletap_wake"
+)
+
+for path in ${dt2w_path_search[@]}; do
+	if [ -f $path ]; then
+		dt2w_path="$path"
+		break
+	fi
+done

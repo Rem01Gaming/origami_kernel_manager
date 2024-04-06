@@ -31,8 +31,8 @@ io_sched_set() {
 
 dt2w_switch() {
 	case $(fzf_select "Enable Disable" "Double tap to wake: ") in
-	Enable) echo 1 >/proc/touchpanel/double_tap_enable ;;
-	Disable) echo 0 >/proc/touchpanel/double_tap_enable ;;
+	Enable) echo 1 >$dt2w_path ;;
+	Disable) echo 0 >$dt2w_path ;;
 	esac
 }
 
@@ -104,8 +104,8 @@ mtk_eara_thermal_fake_throttle() {
 misc_menu() {
 	while true; do
 
-		if [ -f /proc/touchpanel/double_tap_enable ]; then
-			misc_menu_info="[] DT2W: $(cat /proc/touchpanel/double_tap_enable)//"
+		if [ ! -z $dt2w_path ]; then
+			misc_menu_info="[] DT2W: $(cat $dt2w_path)//"
 			misc_menu_options="Double tap to wake\n"
 		fi
 
