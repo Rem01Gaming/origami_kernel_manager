@@ -16,20 +16,21 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-mtk_dram_set_freq() {
-	opp_table="[OPP-1]: Enable DVFS\n$(cat $mtk_dram_opp_table_path | awk '{sub(/\n$/,""); printf("%s\\n", $0)}' | grep "^\[")"
-	opp_selected="$(fzf_select_n "${opp_table%\\n}" "Set frequency for DRAM (NO DVFS): ")"
-	opp_num=$(echo "$opp_selected" | grep -o '\[[^]]*\]' | grep -oE '[+-]?[0-9]+')
-	echo $opp_num >$mtk_dram_req_opp_path
+dram_devfreq_set_freq() {
+	echo $(fzf_select "$(cat ${dram_devfreq_path}/available_frequencies)" "Select ${1} freq: ") >${dram_devfreq_path}/${1}_freq
 }
 
-mtk_dram_menu() {
+dram_devfreq_set_gov() {
+	echo $(fzf_select "$(cat ${dram_devfreq_path}/available_governors)" "Select Governor: ") >${dram_devfreq_path}/governor
+}
+
+dram_devfreq_menu() {
 	while true; do
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      "
-		echo -e "   /        /\\     "
+		echo -e "    _________      [] GPU Scalling freq: $(cat ${dram_devfreq_path}/max_freq) - $(cat ${dram_devfreq_path}/min_freq)"
+		echo -e "   /        /\\     [] GPU Governor: $(cat ${dram_devfreq_path}/governor)"
 		echo -e "  /        /  \\    "
 		echo -e ' /        /    \   '
 		echo -e '/________/      \  '
@@ -43,11 +44,13 @@ mtk_dram_menu() {
 
 		tput civis
 
-		case $(fzy_select "Set freq (NO DVFS)\nBack to main menu" "") in
-		"Set freq (NO DVFS)") mtk_dram_set_freq ;;
+		case $(fzy_select "Set max freq\nSet min freq\nSet Governor\nBack to main menu" "") in
+		"Set max freq") dram_devfreq_set_freq max ;;
+		"Set min freq") dram_devfreq_set_freq min ;;
+		"Set Governor") dram_devfreq_set_gov ;;
 		"Back to main menu") clear && break ;;
 		esac
 
-		unset mtk_dram_menu_info mtk_dram_menu_options
+		unset dram_menu_info dram_menu_options
 	done
 }

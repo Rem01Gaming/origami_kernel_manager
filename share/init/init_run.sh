@@ -70,56 +70,55 @@ else
 fi
 
 # DRAM info
+# Check for Devfreq DRAM path
+dram_devfreq_paths_array=(
+	"/sys/class/devfreq/mtk-dvfsrc-devfreq"
+	"/sys/devices/platform/soc/1c00f000.dvfsrc/mtk-dvfsrc-devfreq/devfreq/mtk-dvfsrc-devfreq"
+	"/sys/devices/system/cpu/bus_dcvs/DDR"
+)
 
+for path in ${dram_devfreq_paths_array[@]}; do
+	if [ -d $path ]; then
+		dram_devfreq_path="$path"
+		break
+	fi
+done
+
+# Check for Mediatek's DRAM gebbrish implementation
 if [[ $soc == "Mediatek" ]]; then
-	# Check for DRAM path, whatever it's devfreq or Mediatek's Gibberish.
-	mtk_dram_devfreq_paths_array=(
-		"/sys/class/devfreq/mtk-dvfsrc-devfreq"
-		"/sys/devices/platform/soc/1c00f000.dvfsrc/mtk-dvfsrc-devfreq/devfreq/mtk-dvfsrc-devfreq"
+	mtk_dram_paths_array=(
+		"/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc"
+		"/sys/kernel/helio-dvfsrc"
 	)
 
-	for path in ${mtk_dram_devfreq_paths_array[@]}; do
+	for path in ${mtk_dram_paths_array[@]}; do
 		if [ -d $path ]; then
-			mtk_dram_devfreq_path="$path"
+			mtk_dram_path="$path"
 			break
 		fi
 	done
 
-	if [ -z $mtk_dram_devfreq_path ]; then
-		mtk_dram_paths_array=(
-			"/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc"
-			"/sys/kernel/helio-dvfsrc"
-		)
+	mtk_dram_opp_table_paths_array=(
+		"${mtk_dram_path}/dvfsrc_opp_table"
+	)
+	mtk_dram_opp_req_paths_array=(
+		"${mtk_dram_path}/dvfsrc_req_ddr_opp"
+		"${mtk_dram_path}/dvfsrc_force_vcore_dvfs_opp"
+	)
 
-		for path in ${mtk_dram_paths_array[@]}; do
-			if [ -d $path ]; then
-				mtk_dram_path="$path"
-				break
-			fi
-		done
+	for path in ${mtk_dram_opp_table_paths_array[@]}; do
+		if [ -f $path ]; then
+			mtk_dram_opp_table_path="$path"
+			break
+		fi
+	done
 
-		mtk_dram_opp_table_paths_array=(
-			"${mtk_dram_path}/dvfsrc_opp_table"
-		)
-		mtk_dram_opp_req_paths_array=(
-			"${mtk_dram_path}/dvfsrc_req_ddr_opp"
-			"${mtk_dram_path}/dvfsrc_force_vcore_dvfs_opp"
-		)
-
-		for path in ${mtk_dram_opp_table_paths_array[@]}; do
-			if [ -f $path ]; then
-				mtk_dram_opp_table_path="$path"
-				break
-			fi
-		done
-
-		for path in ${mtk_dram_opp_req_paths_array[@]}; do
-			if [ -f $path ]; then
-				mtk_dram_req_opp_path="$path"
-				break
-			fi
-		done
-	fi
+	for path in ${mtk_dram_opp_req_paths_array[@]}; do
+		if [ -f $path ]; then
+			mtk_dram_req_opp_path="$path"
+			break
+		fi
+	done
 fi
 
 # DT2W

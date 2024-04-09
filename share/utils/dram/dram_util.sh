@@ -19,13 +19,14 @@
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/mtk_dram.sh
 
 dram_menu() {
-	case $soc in
-	"Mediatek") mtk_dram_menu ;;
-	*)
+	if [ ! -z $dram_devfreq_path ]; then
+		dram_devfreq_menu
+	elif [ ! -z $mtk_dram_path ]; then
+		mtk_dram_menu
+	else
 		echo -e "\n[-] Interface (sysfs or procfs) of your DRAM is not supported"
 		echo "[*] Hit enter to back to main menu"
 		read -r -s
 		clear && return 0
-		;;
-	esac
+	fi
 }
