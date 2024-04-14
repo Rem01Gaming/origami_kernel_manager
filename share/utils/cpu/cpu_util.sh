@@ -30,12 +30,12 @@ cpu_set_gov() {
 cpu_set_freq() {
 	if [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
 		if [[ "$(cat /proc/ppm/enabled)" != "ppm is enabled" ]]; then
-			echo -e "\n[-] Enable Processor Power Management First"
+			echo -e "\n[-] Enable Performance and Power Management First"
 			echo "[*] Hit enter to back to main menu"
 			read -r -s
 			return 1
 		elif [[ "$(cat /proc/ppm/policy_status | grep "PPM_POLICY_HARD_USER_LIMIT")" != *enabled* ]]; then
-			echo -e "\n[-] Enable 'PPM_POLICY_HARD_USER_LIMIT' on Processor Power Management First"
+			echo -e "\n[-] Enable 'PPM_POLICY_HARD_USER_LIMIT' on Performance and Power Management First"
 			echo "[*] Hit enter to back to main menu"
 			read -r -s
 			return 1
@@ -215,7 +215,7 @@ cpu_menu() {
 
 		if [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
 			cpu_menu_info="${cpu_menu_info}[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')//[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)//[] CPU CCI mode: $(cat /proc/cpufreq/cpufreq_cci_mode)//"
-			cpu_menu_options="$(echo "$cpu_menu_options")Mediatek Processor Power Management\nMediatek CCI mode\nMediatek Power mode"
+			cpu_menu_options="$(echo "$cpu_menu_options")Mediatek Performance and Power Management\nMediatek CCI mode\nMediatek Power mode"
 		fi
 
 		clear
@@ -242,7 +242,7 @@ cpu_menu() {
 		"Set max freq") cpu_set_freq max ;;
 		"Set min freq") cpu_set_freq min ;;
 		"CPU Core control") cpu_core_ctrl ;;
-		"Mediatek Processor Power Management") mtk_ppm_policy ;;
+		"Mediatek Performance and Power Management") mtk_ppm_policy ;;
 		"Mediatek CCI mode") mtk_cpufreq_cci_mode ;;
 		"Mediatek Power mode") mtk_cpufreq_power_mode ;;
 		"Back to main menu") clear && return 0 ;;
