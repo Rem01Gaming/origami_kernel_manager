@@ -17,13 +17,13 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 # Check dependencies
-if ! hash whoami fzf fzy tput 2>/dev/null; then
-	echo -e "\033[38;5;196m[!] hash whoami fzf fzy tput jq\033[0m\n[-] Environment has missing dependencies" && exit 127
+if ! hash fzf fzy 2>/dev/null; then
+	echo -e "\033[38;5;196m[!] hash fzf fzy\033[0m\n[-] Environment has missing dependencies" && exit 127
 fi
 
 # Check the root
 if [[ ! $(whoami) == "root" ]]; then
-	echo -e "\033[38;5;196mFATAL:\033[0m Root permission not granted.\nAre you rooted?" && exit 126
+	echo "[-] Please run Origami Kernel Manager as root" && exit 126
 fi
 
 source /data/data/com.termux/files/usr/share/origami-kernel/init/init_run.sh
