@@ -17,10 +17,13 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 thermal_gov_set() {
-	local thermal_policy=$(fzf_select "$(chmod 0644 /sys/class/thermal/thermal_zone0/available_policies && cat /sys/class/thermal/thermal_zone0/available_policies)" "Select Thermal governor (apply globally): ")
-	for thermal in /sys/class/thermal/thermal_zone*; do
-		chmod 0644 ${thermal}/policy
-		echo $thermal_policy >${thermal}/policy
+	chmod 0644 /sys/class/thermal/thermal_zone0/available_policies
+	local thermal_policy=$(fzf_select "$(cat /sys/class/thermal/thermal_zone0/available_policies)" "Select Thermal governor (apply globally): ")
+	for thermal in $(ls /sys/class/thermal); do
+		if [ -f /sys/class/thermal/${thermal}/policy ]; then
+			chmod 0644 /sys/class/thermal/${thermal}/policy
+			echo $thermal_policy >/sys/class/thermal/${thermal}/policy
+		fi
 	done &
 }
 
