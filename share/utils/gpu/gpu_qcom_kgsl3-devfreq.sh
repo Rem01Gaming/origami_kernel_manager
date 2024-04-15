@@ -38,33 +38,33 @@ gpu_qcom_kgsl3-devfreq_menu() {
 	gpu_available_governors="$(cat /sys/class/kgsl/kgsl-3d0/devfreq/available_governors)"
 	gpu_governor_path="/sys/class/kgsl/kgsl-3d0/devfreq/governor"
 
-	gpu_qcom_kgsl3-devfreq_menu_options="Set max freq\nSet min freq\nSet Governor\n"
+	gpu_menu_options="Set max freq\nSet min freq\nSet Governor\n"
 
 	while true; do
 		if [ -d /sys/module/simple_gpu_algorithm ]; then
-			gpu_qcom_kgsl3-devfreq_menu_options="${gpu_qcom_kgsl3-devfreq_menu_options}Enable Simple GPU Algorithm\nSimple GPU Laziness\nSimple GPU Ramp threshold\n"
-			gpu_qcom_kgsl3-devfreq_menu_info="[] Simple GPU: $(cat /sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate)//[] Simple GPU Laziness: $(cat /sys/module/simple_gpu_algorithm/parameters/simple_laziness)//[] Simple GPU Ramp threshold: $(cat /sys/module/simple_gpu_algorithm/parameters/simple_ramp_threshold)//"
+			gpu_menu_options="${gpu_menu_options}Enable Simple GPU Algorithm\nSimple GPU Laziness\nSimple GPU Ramp threshold\n"
+			gpu_menu_info="[] Simple GPU: $(cat /sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate)//[] Simple GPU Laziness: $(cat /sys/module/simple_gpu_algorithm/parameters/simple_laziness)//[] Simple GPU Ramp threshold: $(cat /sys/module/simple_gpu_algorithm/parameters/simple_ramp_threshold)//"
 		fi
 
 		clear
-		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
+		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))"q" | tr -d "\n")\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] GPU: ${gpu}" | cut -c 1-${LINE}
 		echo -e "   /        /\\     [] GPU Scalling freq: $(cat $gpu_min_freq_path | head -n 1) - $(cat $gpu_max_freq_path)"
 		echo -e "  /        /  \\    [] GPU Governor: $(cat $gpu_governor_path)"
-		echo -e ' /        /    \   $(echo "$gpu_qcom_kgsl3-devfreq_menu_info" | awk -F '//' '{print $1}')'
-		echo -e '/________/      \  $(echo "$gpu_qcom_kgsl3-devfreq_menu_info" | awk -F '//' '{print $2}')'
-		echo -e '\        \      /  $(echo "$gpu_qcom_kgsl3-devfreq_menu_info" | awk -F '//' '{print $3}')'
-		echo -e ' \        \    /   '
-		echo -e '  \        \  /    '
-		echo -e '   \________\/     '
+		echo -e " /        /    \   $(echo "$gpu_menu_info" | awk -F "//" "{print $1}")"
+		echo -e "/________/      \  $(echo "$gpu_menu_info" | awk -F "//" "{print $2}")"
+		echo -e "\        \      /  $(echo "$gpu_menu_info" | awk -F "//" "{print $3}")"
+		echo -e " \        \    /   "
+		echo -e "  \        \  /    "
+		echo -e "   \________\/     "
 		echo -e "\n//////////////"
-		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
+		echo -e "$(yes "─" | sed ${LINE}"q" | tr -d "\n")\n"
 		echo -e "[] GPU Control\033[0m"
 
 		tput civis
 
-		case $(fzy_select "$(echo -e "$gpu_qcom_kgsl3-devfreq_menu_options")\nBack to main menu" "") in
+		case $(fzy_select "$(echo -e "$gpu_menu_options")\nBack to main menu" "") in
 		"Set max freq") gpu_qcom_kgsl3-devfreq_set_freq max ;;
 		"Set min freq") gpu_qcom_kgsl3-devfreq_set_freq min ;;
 		"Set Governor") gpu_qcom_kgsl3-devfreq_set_gov ;;
@@ -74,6 +74,6 @@ gpu_qcom_kgsl3-devfreq_menu() {
 		"Back to main menu") clear && return 0 ;;
 		esac
 
-		unset gpu_qcom_kgsl3-devfreq_menu_info gpu_qcom_kgsl3-devfreq_menu_options
+		unset gpu_menu_info gpu_menu_options
 	done
 }
