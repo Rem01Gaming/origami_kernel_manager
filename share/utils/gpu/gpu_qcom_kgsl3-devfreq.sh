@@ -17,6 +17,7 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/simple_gpu_algo.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/adreno_idler.sh
 
 gpu_qcom_kgsl3-devfreq_set_freq() {
 	local node_path="gpu_${1}_freq_path"
@@ -46,6 +47,11 @@ gpu_qcom_kgsl3-devfreq_menu() {
 			gpu_menu_info="[] Simple GPU: $(cat /sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate)//[] Simple GPU Laziness: $(cat /sys/module/simple_gpu_algorithm/parameters/simple_laziness)//[] Simple GPU Ramp threshold: $(cat /sys/module/simple_gpu_algorithm/parameters/simple_ramp_threshold)//"
 		fi
 
+		if [ -d /sys/module/adreno_idler/parameters ]; then
+			gpu_menu_options="${gpu_menu_options}Enable Adreno Idler\nAdreno Idle Workload\nAdreno Wait Idle\nAdreno Idle Differential\n"
+			gpu_menu_info="[] Adreno Idler: $(cat /sys/module/adreno_idler/parameters/adreno_idler_active)//[] Adreno Idle Workload: $(cat /sys/module/adreno_idler/parameters/adreno_idler_idleworkload)//"
+		fi
+
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))"q" | tr -d "\n")\033[0m"
 		echo -e "\e[38;2;254;228;208m"
@@ -55,9 +61,9 @@ gpu_qcom_kgsl3-devfreq_menu() {
 		echo -e " /        /    \   $(echo "$gpu_menu_info" | awk -F "//" "{print $1}")"
 		echo -e "/________/      \  $(echo "$gpu_menu_info" | awk -F "//" "{print $2}")"
 		echo -e "\        \      /  $(echo "$gpu_menu_info" | awk -F "//" "{print $3}")"
-		echo -e " \        \    /   "
-		echo -e "  \        \  /    "
-		echo -e "   \________\/     "
+		echo -e " \        \    /   $(echo "$gpu_menu_info" | awk -F "//" "{print $4}")"
+		echo -e "  \        \  /    $(echo "$gpu_menu_info" | awk -F "//" "{print $5}")"
+		echo -e "   \________\/     $(echo "$gpu_menu_info" | awk -F "//" "{print $6}")"
 		echo -e "\n//////////////"
 		echo -e "$(yes "─" | sed ${LINE}"q" | tr -d "\n")\n"
 		echo -e "[] GPU Control\033[0m"
@@ -71,6 +77,10 @@ gpu_qcom_kgsl3-devfreq_menu() {
 		"Enable Simple GPU Algorithm") simple_gpu_switch ;;
 		"Simple GPU Laziness") simple_gpu_laziness ;;
 		"Simple GPU Ramp threshold") simple_gpu_ramp_threshold ;;
+		"Enable Adreno Idler") adreno_idler_switch ;;
+		"Adreno Idle Workload") adreno_idler_workload ;;
+		"Adreno Wait Idle") adreno_idler_wait ;;
+		"Adreno Idle Differential") adreno_idler_down_diferential ;;
 		"Back to main menu") clear && return 0 ;;
 		esac
 
