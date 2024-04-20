@@ -16,6 +16,26 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
+ged_max_freq() {
+	if [[ $gpu_node_id == 1 ]]; then
+		index=$(grep "$(fzf_select "$gpu_available_freqs" "Maximum GPU Frequency: ")" /proc/gpufreq/gpufreq_opp_dump | awk '{print $1}')
+	elif [[ $gpu_node_id == 2 ]]; then
+		index=$(grep "$(fzf_select "$gpu_available_freqs" "Maximum GPU Frequency: ")" /proc/gpufreqv2/gpu_working_opp_table | awk '{print $1}')
+	fi
+
+	echo ${index:1:-1} >/sys/kernel/ged/hal/custom_upbound_gpu_freq
+}
+
+ged_min_freq() {
+	if [[ $gpu_node_id == 1 ]]; then
+		index=$(grep "$(fzf_select "$gpu_available_freqs" "Maximum GPU Frequency: ")" /proc/gpufreq/gpufreq_opp_dump | awk '{print $1}')
+	elif [[ $gpu_node_id == 2 ]]; then
+		index=$(grep "$(fzf_select "$gpu_available_freqs" "Maximum GPU Frequency: ")" /proc/gpufreqv2/gpu_working_opp_table | awk '{print $1}')
+	fi
+
+	echo ${index:1:-1} >/sys/kernel/ged/hal/custom_boost_gpu_freq
+}
+
 mtk_ged_dvfs() {
 	case $(fzf_select "Enable Disable" "GPU DVFS:  ") in
 	Enable) echo 1 >/sys/module/ged/parameters/gpu_dvfs_enable ;;

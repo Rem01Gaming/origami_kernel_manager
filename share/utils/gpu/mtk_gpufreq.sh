@@ -18,7 +18,7 @@
 
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/mtk_ged.sh
 
-mtk_gpufreq_freq_set() {
+mtk_gpufreq_lock_freq() {
 	local freq=$(fzf_select "0 $gpu_available_freqs" "Set frequency for GPU (NO DVFS): ")
 	echo $freq >$gpu_freq_path 2>/dev/null
 }
@@ -51,11 +51,12 @@ mtk_gpu_power_limit() {
 
 mtk_gpufreq_menu() {
 	gpu_available_freqs="$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n)"
-	gpu_max_freq="$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -nr | head -n 1)"
-	gpu_min_freq="$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n | head -n 1)"
 	gpu_freq_path="/proc/gpufreq/gpufreq_opp_freq"
 
 	while true; do
+		gpu_max_freq="$(cat /sys/module/ged/parameters/gpu_cust_upbound_freq)"
+		gpu_min_freq="$(cat /sys/module/ged/parameters/gpu_cust_boost_freq)"
+
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
@@ -74,8 +75,10 @@ mtk_gpufreq_menu() {
 
 		tput civis
 
-		case $(fzy_select "Set freq (NO DVFS)\nGED GPU DVFS\nGED Boost\nGED Extra Boost\nGED GPU boost\nGED Game Mode\nGPU Power limit settings\nBack to main menu" "") in
-		"Set freq (NO DVFS)") mtk_gpufreq_freq_set ;;
+		case $(fzy_select "Set max freq\nSet min freq\nLock freq (NO DVFS)\nGED GPU DVFS\nGED Boost\nGED Extra Boost\nGED GPU boost\nGED Game Mode\nGPU Power limit settings\nBack to main menu" "") in
+		"Set max freq") ged_max_freq ;;
+		"Set min freq") ged_min_freq ;;
+		"Lock freq (NO DVFS)") mtk_gpufreq_lock_freq ;;
 		"GED GPU DVFS") mtk_ged_dvfs ;;
 		"GED Boost") mtk_ged_boost ;;
 		"GED Extra Boost") mtk_ged_extra_boost ;;
