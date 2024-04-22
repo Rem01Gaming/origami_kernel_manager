@@ -48,7 +48,7 @@ mtk_gpufreqv2_menu() {
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] GPU: ${gpu}" | cut -c 1-${LINE}
-		echo -e "   /        /\\     [] GPU Scalling freq: $gpu_min_freq - $gpu_max_freq"
+		echo -e "   /        /\\     [] GPU Scalling freq: $gpu_min_freq KHz - $gpu_max_freq KHz"
 		echo -e "  /        /  \\    [] Fixed freq & volt: $(if [ $(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $2}') == "fix" ]; then echo "Disabled"; else echo "Enabled"; fi)"
 		echo -e " /        /    \\   [] GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)"
 		echo -e "/________/      \\  [ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)"
