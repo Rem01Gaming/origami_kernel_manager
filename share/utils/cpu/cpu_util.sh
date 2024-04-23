@@ -200,6 +200,14 @@ mtk_ppm_policy() {
 	done
 }
 
+mtk_cpu_volt_offset() {
+	case $(fzf_select_n "Little cluster\nBig cluster\nCache Coherent Interconnect (CCI)" "Select CPU Part to voltage offset: ") in
+	"Little cluster") menu_value_tune "Offset Voltage for CPU Little cluster\nOffset will take original voltage from Operating Performance Point (OPP) and add or subtract the given voltage, you can use it for Overvolting or Undervolting." /proc/eem/EEM_DET_L/eem_offset 50 -50 1 ;;
+	"Big cluster") menu_value_tune "Offset Voltage for CPU Big cluster\nOffset will take original voltage from Operating Performance Point (OPP) and add or subtract the given voltage, you can use it for Overvolting or Undervolting." /proc/eem/EEM_DET_B/eem_offset 50 -50 1 ;;
+	"Cache Coherent Interconnect (CCI)") menu_value_tune "Offset Voltage for CPU CCI\nOffset will take original voltage from Operating Performance Point (OPP) and add or subtract the given voltage, you can use it for Overvolting or Undervolting." /proc/eem/EEM_DET_CCI/eem_offset 50 -50 1 ;;
+	esac
+}
+
 cpu_menu() {
 	while true; do
 		if [[ $is_big_little == 1 ]]; then
@@ -215,7 +223,11 @@ cpu_menu() {
 
 		if [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
 			cpu_menu_info="${cpu_menu_info}[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')//[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)//[] CPU CCI mode: $(cat /proc/cpufreq/cpufreq_cci_mode)//"
-			cpu_menu_options="$(echo "$cpu_menu_options")Mediatek Performance and Power Management\nMediatek CCI mode\nMediatek Power mode"
+			cpu_menu_options="$(echo "$cpu_menu_options")Mediatek Performance and Power Management\nMediatek CCI mode\nMediatek Power mode\n"
+		fi
+
+		if [[ $soc == Mediatek ]] && [ -d /proc/eem ]; then
+			cpu_menu_options="$(echo "$cpu_menu_options")CPU Voltage offset\n"
 		fi
 
 		clear
@@ -245,6 +257,7 @@ cpu_menu() {
 		"Mediatek Performance and Power Management") mtk_ppm_policy ;;
 		"Mediatek CCI mode") mtk_cpufreq_cci_mode ;;
 		"Mediatek Power mode") mtk_cpufreq_power_mode ;;
+		"CPU Voltage offset") mtk_cpu_volt_offset ;;
 		"Back to main menu") clear && return 0 ;;
 		esac
 
