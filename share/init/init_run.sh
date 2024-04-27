@@ -86,7 +86,7 @@ for path in ${dram_devfreq_paths_array[@]}; do
 done
 
 # Check for Mediatek's DRAM gebbrish implementation
-if [[ $soc == "Mediatek" ]]; then
+if [[ $soc == "Mediatek" ]] && [ -z $dram_devfreq_path ]; then
 	mtk_dram_paths_array=(
 		"/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc"
 		"/sys/kernel/helio-dvfsrc"
