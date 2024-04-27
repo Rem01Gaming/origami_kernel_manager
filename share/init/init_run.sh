@@ -75,6 +75,7 @@ dram_devfreq_paths_array=(
 	"/sys/class/devfreq/mtk-dvfsrc-devfreq"
 	"/sys/devices/platform/soc/1c00f000.dvfsrc/mtk-dvfsrc-devfreq/devfreq/mtk-dvfsrc-devfreq"
 	"/sys/devices/system/cpu/bus_dcvs/DDR"
+	"/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw"
 )
 
 for path in ${dram_devfreq_paths_array[@]}; do
