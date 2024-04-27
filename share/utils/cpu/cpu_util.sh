@@ -233,7 +233,7 @@ cpu_menu() {
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] CPU: ${soc} ${chipset}"
+		echo -e "    _________      [] CPU: ${chipset}"
 		echo -e "   /        /\\     [] Governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
 		echo -e "  /        /  \\    [] big.LITTLE: ${is_big_little}"
 		echo -e " /        /    \\   $(echo "$cpu_menu_info" | awk -F '//' '{print $1}')"
