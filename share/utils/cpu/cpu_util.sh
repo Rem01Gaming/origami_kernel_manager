@@ -256,6 +256,7 @@ cpu_menu() {
 			fi
 		else
 			cpu_menu_info="[] Scaling freq: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)KHz//"
+			cpu_gov_info="[] Governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
 		fi
 
 		cpu_menu_options="Set Governor\nGovernor parameter\nSet max freq\nSet min freq\nCPU Core control\n"
