@@ -17,14 +17,46 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 cpu_set_gov() {
-	local gov_selected=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors)" "Select CPU Governor: ")
-	for ((cpu = 0; cpu < cores; cpu++)); do
-		cpu_dir="/sys/devices/system/cpu/cpu${cpu}"
-		if [ -d "$cpu_dir" ]; then
-			chmod 0644 "${cpu_dir}/cpufreq/scaling_governor"
-			echo "$gov_selected" >"${cpu_dir}/cpufreq/scaling_governor"
+	if [[ $is_big_little == 1 ]]; then
+		if [[ $nr_clusters == 2 ]]; then
+			local cluster_selected=$(fzf_select "little big" "Select cpu cluster: ")
+		elif [[ $nr_clusters == 3 ]]; then
+			local cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ")
 		fi
-	done
+
+		case $cluster_selected in
+		little) local cluster_need_set=0 ;;
+		big) local cluster_need_set=1 ;;
+		prime) local cluster_need_set=2 ;;
+		esac
+
+		case $cluster_need_set in
+		0)
+			local first_cpu_oncluster=$(echo ${cluster0} | awk '{print $1}')
+			local cpus_cluster_selected=${cluster0}
+			;;
+		1)
+			local first_cpu_oncluster=$(echo ${cluster1} | awk '{print $1}')
+			local cpus_cluster_selected=${cluster1}
+			;;
+		2)
+			local first_cpu_oncluster=$(echo ${cluster2} | awk '{print $1}')
+			local cpus_cluster_selected=${cluster2}
+			;;
+		esac
+
+		local gov_selected=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors)" "Select CPU Governor: ")
+		echo $gov_selected >/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor
+	else
+		local gov_selected=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors)" "Select CPU Governor: ")
+		for ((cpu = 0; cpu < cores; cpu++)); do
+			cpu_dir="/sys/devices/system/cpu/cpu${cpu}"
+			if [ -d "$cpu_dir" ]; then
+				chmod 0644 "${cpu_dir}/cpufreq/scaling_governor"
+				echo "$gov_selected" >"${cpu_dir}/cpufreq/scaling_governor"
+			fi
+		done
+	fi
 }
 
 cpu_set_freq() {
@@ -212,6 +244,13 @@ cpu_menu() {
 	while true; do
 		if [[ $is_big_little == 1 ]]; then
 			cpu_menu_info="[] big.LITTLE Clusters: ${nr_clusters}//[] Little Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//[] Big Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//"
+
+			for policy in ${policy_folders[@]}; do
+				gov_tmp="${gov_tmp}$(cat $policy/scaling_governor) "
+			done
+			cpu_gov_info="[] Governor: ${gov_tmp}"
+			unset gov_tmp
+
 			if [[ $nr_clusters == 3 ]]; then
 				cpu_menu_info="${cpu_menu_info}[] Prime Scaling freq: $(cat /sys/devices/system/cpu/$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//"
 			fi
@@ -234,7 +273,7 @@ cpu_menu() {
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] CPU: ${chipset}"
-		echo -e "   /        /\\     [] Governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
+		echo -e "   /        /\\     $cpu_gov_info"
 		echo -e "  /        /  \\    [] big.LITTLE: ${is_big_little}"
 		echo -e " /        /    \\   $(echo "$cpu_menu_info" | awk -F '//' '{print $1}')"
 		echo -e "/________/      \\  $(echo "$cpu_menu_info" | awk -F '//' '{print $2}')"
@@ -261,6 +300,6 @@ cpu_menu() {
 		"Back to main menu") clear && return 0 ;;
 		esac
 
-		unset cpu_menu_info cpu_menu_options
+		unset cpu_menu_info cpu_menu_options cpu_gov_info
 	done
 }
