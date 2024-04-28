@@ -207,7 +207,7 @@ cpu_gov_param() {
 	gov_param=$(fzf_select "$(ls $path_gov_param)" "Select Governor parameter: ")
 	tput cuu 1
 	if [[ $gov_param == *freq* ]]; then
-		local freq=$(fzf_select "0 $(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Tune $gov_param parameter: ")
+		local freq=$(fzf_select "0 $(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Tune $gov_param parameter: ")
 		echo $freq >$path_gov_param/$gov_param
 	else
 		tput cuu 1
