@@ -170,17 +170,48 @@ mtk_cpufreq_power_mode() {
 }
 
 cpu_gov_param() {
-	governor_now="/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
-	[ ! -d $governor_now ] && echo -e "\n[-] '$(basename ${governor_now})' is not tuneable\n[*] Hit enter to back to main menu" && read -r -s && return 0
-	echo -e "\nSelect Governor parameter:"
-	gov_param=$(fzy_select "$(ls $governor_now)" "")
+	if [[ $is_big_little == 1 ]]; then
+		if [[ $nr_clusters == 2 ]]; then
+			local cluster_selected=$(fzf_select "little big" "Select cpu cluster: ")
+		elif [[ $nr_clusters == 3 ]]; then
+			local cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ")
+		fi
+
+		case $cluster_selected in
+		little) local cluster_need_set=0 ;;
+		big) local cluster_need_set=1 ;;
+		prime) local cluster_need_set=2 ;;
+		esac
+
+		case $cluster_need_set in
+		0)
+			local first_cpu_oncluster=$(echo ${cluster0} | awk '{print $1}')
+			local cpus_cluster_selected=${cluster0}
+			;;
+		1)
+			local first_cpu_oncluster=$(echo ${cluster1} | awk '{print $1}')
+			local cpus_cluster_selected=${cluster1}
+			;;
+		2)
+			local first_cpu_oncluster=$(echo ${cluster2} | awk '{print $1}')
+			local cpus_cluster_selected=${cluster2}
+			;;
+		esac
+
+		local path_gov_param="/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor)"
+	else
+		local path_gov_param="/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
+	fi
+
+	[ ! -d $path_gov_param ] && echo -e "\n[-] '$(basename ${path_gov_param})' is not tuneable\n[*] Hit enter to back to main menu" && read -r -s && return 0
+	gov_param=$(fzf_select "$(ls $path_gov_param)" "Select Governor parameter: ")
 	tput cuu 1
 	if [[ $gov_param == *freq* ]]; then
 		local freq=$(fzf_select "0 $(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Tune $gov_param parameter: ")
-		echo $freq >/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)/$gov_param
+		echo $freq >$path_gov_param/$gov_param
 	else
 		tput cuu 1
-		menu_value_tune "Tune $gov_param parameter" "/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)/$gov_param" "100000000" "0" "1"
+		menu_value_tune "Tune $gov_param parameter" "$path_gov_param/$gov_param" "100000000" "0" "1"
 	fi
 }
 
