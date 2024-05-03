@@ -31,16 +31,18 @@ More info and documentation on [Origami Kernel Manager wiki](https://github.com/
   - Switch between different configurations to find a balance between performance and stability, ideal for users experimenting with kernel stuff.
 
 ## Features
-- CPU and GPU control such as changing governor, set max and min freq, Core control, and governor settings
-- Memory parameters setting, DDR freq lock (Mediatek)
-- Networking and Firewall settings, such as TCP Congestion algorithm, SYN Cookies, TCP Low latency mode, BPF JIT Harden etc
+- CPU and GPU control such as changing Governor, set max and min freq, Core control, and Governor parameter tuning
+- GPU Extension Device (GED) Tune for Mediatek
+- Adreno Idler and Simple GPU tune for Qualcomm Snapdragon
+- Memory parameters setting, DRAM Control for Mediatek and Qualcomm Snapdragon
+- Networking and Firewall settings, such as TCP Congestion algorithm, SYN Cookies, TCP Low latency mode, BPF JIT Harden, etc.
 - Idle Charging controller
 - Selinux switch mode
-- Cyanogen MTK Videox Livedisplay and KCAL Display color calibration
+- MTK Videox Livedisplay and KCAL Display color calibration
 - Thermal Governor setting
-- Touchpanel settings, Double Tap To Wake switch
+- Touchpanel settings for oplus devices (Oppo/Realme/OnePlus), Double Tap To Wake switch
 - I/O Scheduler setting
-- Mediatek tailored features such as APUs frequency, GPU Extension Device, Processor Power Management, Power Budget Management and more
+- Mediatek tailored features such as APUs frequency, Performance and Power Management, Power Budget Management and more
 
 ## Installation and running Origami Kernel Manager
 
@@ -63,10 +65,6 @@ More info and documentation on [Origami Kernel Manager wiki](https://github.com/
 - Once installed, run with `sudo origami-kernel`
 
 PS: You need `make` and `git` installed on your termux for this method.
-
-## Compatibility state
-
-All arm and arm64 chipsets should supported.
 
 ## Contribution
 
