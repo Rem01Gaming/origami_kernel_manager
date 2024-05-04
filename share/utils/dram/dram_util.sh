@@ -17,6 +17,7 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/mtk_dram.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/dram_devfreq.sh
 
 dram_menu() {
 	if [ ! -z $dram_devfreq_path ]; then
