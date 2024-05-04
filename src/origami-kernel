@@ -41,7 +41,7 @@ LINE=$(stty size | awk '{print $2}')
 ANDROID=$(getprop ro.build.version.release)
 ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
 VENDOR=$(getprop "ro.product.manufacturer")
-VERSION="v1.0.6"
+VERSION="v1.0.7"
 
 trap "tput cnorm" EXIT
 
