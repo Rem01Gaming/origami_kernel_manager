@@ -34,7 +34,7 @@ More info and documentation on [Origami Kernel Manager wiki](https://github.com/
 - CPU and GPU control such as changing Governor, set max and min freq, Core control, and Governor parameter tuning
 - GPU Extension Device (GED) Tune for Mediatek
 - Adreno Idler and Simple GPU tune for Qualcomm Snapdragon
-- Memory parameters setting, DRAM Control for Mediatek and Qualcomm Snapdragon
+- Memory parameters setting, DRAM Control for Mediatek
 - Networking and Firewall settings, such as TCP Congestion algorithm, SYN Cookies, TCP Low latency mode, BPF JIT Harden, etc.
 - Idle Charging controller
 - Selinux switch mode
