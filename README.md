@@ -6,9 +6,12 @@
 
 Yet another kernel manager.
 
-[![Latest release](https://img.shields.io/github/v/release/rem01gaming/origami_kernel_manager?label=Release&logo=github)](https://github.com/rem01gaming/origami_kernel_manager/releases/latest)
-[![Channel](https://img.shields.io/badge/Follow-Telegram-blue.svg?logo=telegram)](https://t.me/rem01schannel)
-[![GitHub License](https://img.shields.io/github/license/rem01gaming/origami_kernel_manager?logo=gnu)](/LICENSE)
+[![License](https://img.shields.io/badge/GNU-white?style=for-the-badge&logo=andela&logoColor=white&label=License&labelColor=222)](./LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/rem01gaming/origami_kernel_manager?label=Release&style=for-the-badge&logo=github&logoColor=white&labelColor=222)](https://github.com/rem01gaming/origami_kernel_manager/releases/latest)
+[![Channel](https://img.shields.io/badge/Follow-Telegram-white.svg?style=for-the-badge&logo=telegram&logoColor=white&labelColor=222)](https://t.me/rem01schannel)
+[![Download count](https://img.shields.io/github/downloads/rem01gaming/origami_kernel_manager/total?style=for-the-badge&logoColor=white&labelColor=222)](https://github.com/Rem01Gaming/origami_kernel_manager/releases)
+[![Saweria](https://img.shields.io/badge/donate-white?style=for-the-badge&logo=iconjar&logoColor=white&label=Saweria&labelColor=222)](https://saweria.co/Rem01Gaming)
+[![Buymeacoffee](https://img.shields.io/badge/donate-white?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white&label=Buymeacoffee&labelColor=222)](https://www.buymeacoffee.com/Rem01Gaming)
 
 ## About
 
