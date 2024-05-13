@@ -46,8 +46,9 @@ uninstall:
 	@printf "\033[1;38;2;254;228;208m[+] origami-kernel uninstalled\033[0m\n"
 
 install-dependence:
-	@echo "[+] Installing dependencines..."
-	@pkg install fzf fzy git tsu
+	@echo "\033[1;38;2;254;228;208m[+] Installing dependencines...\033[0m"
+	@apt install root-repo -y
+	@apt install fzf fzy git tsu -y
 
 pack-deb:
 	@mkdir -v $(O)
