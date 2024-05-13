@@ -78,6 +78,13 @@ Rem01Gaming <Rem01_Gaming@proton.me>
 	read -r -s
 }
 
+donate() {
+	case $(fzf_select "Saweria Buymeacoffee" "Select donate platform: ") in
+	"Saweria") nohup /system/bin/am start -a android.intent.action.VIEW -d https://saweria.co/Rem01Gaming >/dev/null 2>&1 ;;
+	"Buymeacoffee") nohup /system/bin/am start -a android.intent.action.VIEW -d https://www.buymeacoffee.com/Rem01Gaming >/dev/null 2>&1 ;;
+	esac
+}
+
 main_menu() {
 	while true; do
 		clear
@@ -110,7 +117,7 @@ main_menu() {
 		"Display color calibration") disp_menu ;;
 		"Show License") show_license ;;
 		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel >/dev/null 2>&1 ;;
-		"Donate me") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/about_wisnu/21 >/dev/null 2>&1 ;;
+		"Donate me") donate ;;
 		"Exit") clear && exit 0 ;;
 		esac
 	done
