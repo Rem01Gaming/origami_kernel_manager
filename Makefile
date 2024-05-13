@@ -25,7 +25,6 @@ all:
 	@echo "make uninstall : Uninstall from your termux"
 	@echo "make install-dependence : Install needed dependencines"
 	@echo "make pack-deb : Build deb package"
-	@echo "make clear : Clear generated files"
 
 install:
 	cp ./src/origami-kernel $(PREFIX)/bin/origami-kernel
@@ -73,6 +72,4 @@ pack-deb:
 	@printf "  ﾉノ㇏ Ｖ ﾉ|ﾉ\n"
 	@printf "        ⠁⠁\n"
 	@printf "\033[1;38;2;254;228;208m[*] Build done,package: origami-kernel.deb\033[0m\n"
-
-clear:
-	rm -rf ./out
+	@rm -rf ./out
