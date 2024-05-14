@@ -59,13 +59,13 @@ More info and documentation on [Origami Kernel Manager wiki](https://github.com/
 - Download deb package from GitHub release
 - Navigate to the Download directory
 - Execute the following command for installation: `apt install ./origami-kernel.deb`. To uninstall, use `apt remove origami-kernel`.
-- Once installed, run with `sudo origami-kernel`
+- Once installed, run with `origami-kernel`
 
 ### Installation with make
 - Clone this repository
 - Navigate to the repository directory
 - Execute the following command for installation: `make install`. To uninstall, use `make uninstall`.
-- Once installed, run with `sudo origami-kernel`
+- Once installed, run with `origami-kernel`
 
 PS: You need `make` and `git` installed on your termux for this method.
 
