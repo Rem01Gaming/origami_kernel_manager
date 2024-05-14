@@ -27,20 +27,22 @@ all:
 	@echo "make pack-deb : Build deb package"
 
 install:
-	cp ./src/origami-kernel $(PREFIX)/bin/origami-kernel
+	cp ./src/origami-kernel $(PREFIX)/bin
+	cp ./src/origami-sudo $(PREFIX)/bin
 	mkdir $(PREFIX)/share/origami-kernel
 	cp -r ./share/* $(PREFIX)/share/origami-kernel
 	chmod +x $(PREFIX)/bin/origami-kernel
+	chmod +x $(PREFIX)/bin/origami-sudo
 	@printf "\033[1;38;2;254;228;208m    .^.   .^.\n"
 	@printf "    /⋀\\_ﾉ_/⋀\\ \n"
 	@printf "   /ﾉｿﾉ\\ﾉｿ丶)|\n"
 	@printf "  |ﾙﾘﾘ >   )ﾘ\n"
 	@printf "  ﾉノ㇏ Ｖ ﾉ|ﾉ\n"
 	@printf "        ⠁⠁\n"
-	@printf "\033[1;38;2;254;228;208m[+] origami-kernel installed, run with sudo origami-kernel\033[0m\n"
+	@printf "\033[1;38;2;254;228;208m[+] origami-kernel installed, run with origami-kernel\033[0m\n"
 
 uninstall:
-	rm -f $(PREFIX)/bin/origami-kernel
+	rm -f $(PREFIX)/bin/origami-kernel $(PREFIX)/bin/origami-sudo
 	rm -rf $(PREFIX)/share/origami-kernel
 	@printf "\033[1;38;2;254;228;208m[+] origami-kernel uninstalled\033[0m\n"
 
