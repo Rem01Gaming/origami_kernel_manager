@@ -47,7 +47,7 @@ uninstall:
 install-dependence:
 	@echo "\033[1;38;2;254;228;208m[+] Installing dependencines...\033[0m"
 	@apt install root-repo -y
-	@apt install fzf fzy git tsu -y
+	@apt install fzf fzy git -y
 
 pack-deb:
 	@mkdir -v $(O)
@@ -57,13 +57,14 @@ pack-deb:
 	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/
 	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/doc
 	@cp -rv share/* $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/
-	@cp -rv src/origami-kernel $(O)/deb/data/data/com.termux/files/usr/bin/
-	@cp -rv doc/ $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/doc
+	@cp -rv src/* $(O)/deb/data/data/com.termux/files/usr/bin/
+	@cp -rv doc/* $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/doc
 	@cp -rv dpkg-conf $(O)/deb/DEBIAN
 	@printf "\033[1;38;2;254;228;208m[+] Build packages.\033[0m\n"&&sleep 1s
 	@chmod -Rv 755 $(O)/deb/DEBIAN
 	@chmod -Rv 755 $(O)/deb/data/data/com.termux/files/usr/bin
 	@chmod -Rv 777 $(O)/deb/data/data/com.termux/files/usr/bin/origami-kernel
+	@chmod -Rv 777 $(O)/deb/data/data/com.termux/files/usr/bin/origami-sudo
 	@cd $(O)/deb&&dpkg -b . ../../origami-kernel.deb
 	@printf "\033[1;38;2;254;228;208m    .^.   .^.\n"
 	@printf "    /⋀\\_ﾉ_/⋀\\ \n"
