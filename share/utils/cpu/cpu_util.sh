@@ -218,29 +218,16 @@ cpu_gov_param() {
 }
 
 mtk_ppm_policy() {
+fetch_state() {
+cat /proc/ppm/policy_status | grep 'PPM_' | while read line; do echo $line; done
+}
+
 	tput cuu 1
 	tput el
 	echo -e "\e[38;2;254;228;208m[] Performance and Power Management Menu\033[0m"
 
 	while true; do
-		options=(
-			"PPM $(cat /proc/ppm/enabled | awk '{print $3}')"
-			" "
-			"$(sed -n 1p /proc/ppm/policy_status | sed -e 's/\[//g; s/\] /) /g' | tr -d ':')"
-			"$(sed -n 2p /proc/ppm/policy_status | sed -e 's/\[//g; s/\] /) /g' | tr -d ':')"
-			"$(sed -n 3p /proc/ppm/policy_status | sed -e 's/\[//g; s/\] /) /g' | tr -d ':')"
-			"$(sed -n 4p /proc/ppm/policy_status | sed -e 's/\[//g; s/\] /) /g' | tr -d ':')"
-			"$(sed -n 5p /proc/ppm/policy_status | sed -e 's/\[//g; s/\] /) /g' | tr -d ':')"
-			"$(sed -n 6p /proc/ppm/policy_status | sed -e 's/\[//g; s/\] /) /g' | tr -d ':')"
-			"$(sed -n 7p /proc/ppm/policy_status | sed -e 's/\[//g; s/\] /) /g' | tr -d ':')"
-			"$(sed -n 8p /proc/ppm/policy_status | sed -e 's/\[//g; s/\] /) /g' | tr -d ':')"
-			"$(sed -n 9p /proc/ppm/policy_status | sed -e 's/\[//g; s/\] /) /g' | tr -d ':')"
-			"$(sed -n 10p /proc/ppm/policy_status | sed -e 's/\[//g; s/\] /) /g' | tr -d ':')"
-			" "
-			"Back to the main menu"
-		)
-
-		selected=$(printf '%s\n' "${options[@]}" | fzy -l 15 -p "")
+		selected=$(fzy_select "PPM $(cat /proc/ppm/enabled | awk '{print $3}')\n \n$(fetch_state)\n \nBack to the main menu" "")
 
 		if [[ $selected == "Back to the main menu" ]]; then
 			break
@@ -250,7 +237,7 @@ mtk_ppm_policy() {
 			disabled) echo 1 >/proc/ppm/enabled ;;
 			esac
 		elif [[ $selected != " " ]]; then
-			idx=$(echo "$selected" | awk '{print $1}' | tr -d ')')
+			idx=$(echo "$selected" | awk '{print $1}' | awk -F'[][]' '{print $2}')
 			current_status=$(echo $selected | awk '{print $3}')
 
 			if [[ $current_status == *enabled* ]]; then
