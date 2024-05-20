@@ -48,7 +48,7 @@ color_blocks() {
 	done
 }
 
-# Usage: menu_value_tune "prompt comment" <max value> <min value> <increment/decrement by ..>
+# Usage: menu_value_tune "prompt comment" <path> <max value> <min value> <increment/decrement by ..>
 menu_value_tune() {
 	echo
 	echo -e "${1}" | fold -s -w ${LINE}
