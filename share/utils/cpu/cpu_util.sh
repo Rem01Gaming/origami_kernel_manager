@@ -16,35 +16,37 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
+cpu_cluster_handle() {
+	case $nr_clusters in
+	2) cluster_selected=$(fzf_select "little big" "Select cpu cluster: ") ;;
+	3) cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ") ;;
+	esac
+
+	case $cluster_selected in
+	little) cluster_need_set=0 ;;
+	big) cluster_need_set=1 ;;
+	prime) cluster_need_set=2 ;;
+	esac
+
+	case $cluster_need_set in
+	0)
+		first_cpu_oncluster=$(echo ${cluster0} | awk '{print $1}')
+		cpus_cluster_selected=${cluster0}
+		;;
+	1)
+		first_cpu_oncluster=$(echo ${cluster1} | awk '{print $1}')
+		cpus_cluster_selected=${cluster1}
+		;;
+	2)
+		first_cpu_oncluster=$(echo ${cluster2} | awk '{print $1}')
+		cpus_cluster_selected=${cluster2}
+		;;
+	esac
+}
+
 cpu_set_gov() {
 	if [[ $is_big_little == 1 ]]; then
-		if [[ $nr_clusters == 2 ]]; then
-			local cluster_selected=$(fzf_select "little big" "Select cpu cluster: ")
-		elif [[ $nr_clusters == 3 ]]; then
-			local cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ")
-		fi
-
-		case $cluster_selected in
-		little) local cluster_need_set=0 ;;
-		big) local cluster_need_set=1 ;;
-		prime) local cluster_need_set=2 ;;
-		esac
-
-		case $cluster_need_set in
-		0)
-			local first_cpu_oncluster=$(echo ${cluster0} | awk '{print $1}')
-			local cpus_cluster_selected=${cluster0}
-			;;
-		1)
-			local first_cpu_oncluster=$(echo ${cluster1} | awk '{print $1}')
-			local cpus_cluster_selected=${cluster1}
-			;;
-		2)
-			local first_cpu_oncluster=$(echo ${cluster2} | awk '{print $1}')
-			local cpus_cluster_selected=${cluster2}
-			;;
-		esac
-
+		cpu_cluster_handle
 		local gov_selected=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors)" "Select CPU Governor: ")
 		echo $gov_selected >/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor
 	else
@@ -75,33 +77,7 @@ cpu_set_freq() {
 	fi
 
 	if [[ $is_big_little == 1 ]]; then
-		if [[ $nr_clusters == 2 ]]; then
-			local cluster_selected=$(fzf_select "little big" "Select cpu cluster: ")
-		elif [[ $nr_clusters == 3 ]]; then
-			local cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ")
-		fi
-
-		case $cluster_selected in
-		little) local cluster_need_set=0 ;;
-		big) local cluster_need_set=1 ;;
-		prime) local cluster_need_set=2 ;;
-		esac
-
-		case $cluster_need_set in
-		0)
-			local first_cpu_oncluster=$(echo ${cluster0} | awk '{print $1}')
-			local cpus_cluster_selected=${cluster0}
-			;;
-		1)
-			local first_cpu_oncluster=$(echo ${cluster1} | awk '{print $1}')
-			local cpus_cluster_selected=${cluster1}
-			;;
-		2)
-			local first_cpu_oncluster=$(echo ${cluster2} | awk '{print $1}')
-			local cpus_cluster_selected=${cluster2}
-			;;
-		esac
-
+		cpu_cluster_handle
 		if [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
 			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
@@ -171,33 +147,7 @@ mtk_cpufreq_power_mode() {
 
 cpu_gov_param() {
 	if [[ $is_big_little == 1 ]]; then
-		if [[ $nr_clusters == 2 ]]; then
-			local cluster_selected=$(fzf_select "little big" "Select cpu cluster: ")
-		elif [[ $nr_clusters == 3 ]]; then
-			local cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ")
-		fi
-
-		case $cluster_selected in
-		little) local cluster_need_set=0 ;;
-		big) local cluster_need_set=1 ;;
-		prime) local cluster_need_set=2 ;;
-		esac
-
-		case $cluster_need_set in
-		0)
-			local first_cpu_oncluster=$(echo ${cluster0} | awk '{print $1}')
-			local cpus_cluster_selected=${cluster0}
-			;;
-		1)
-			local first_cpu_oncluster=$(echo ${cluster1} | awk '{print $1}')
-			local cpus_cluster_selected=${cluster1}
-			;;
-		2)
-			local first_cpu_oncluster=$(echo ${cluster2} | awk '{print $1}')
-			local cpus_cluster_selected=${cluster2}
-			;;
-		esac
-
+		cpu_cluster_handle
 		local path_gov_param="/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor)"
 		[ ! -d $path_gov_param ] && local path_gov_param="/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor)"
 	else
@@ -218,17 +168,16 @@ cpu_gov_param() {
 }
 
 mtk_ppm_policy() {
-fetch_state() {
-cat /proc/ppm/policy_status | grep 'PPM_' | while read line; do echo $line; done
-}
+	fetch_state() {
+		cat /proc/ppm/policy_status | grep 'PPM_' | while read line; do echo $line; done
+	}
 
 	tput cuu 1
-	tput el
 	echo -e "\e[38;2;254;228;208m[] Performance and Power Management Menu\033[0m"
 
 	while true; do
 		selected=$(fzy_select "PPM $(cat /proc/ppm/enabled | awk '{print $3}')\n \n$(fetch_state)\n \nBack to the main menu" "")
-
+		
 		if [[ $selected == "Back to the main menu" ]]; then
 			break
 		elif [[ "$(echo $selected | awk '{print $1}')" == "PPM" ]]; then
@@ -239,13 +188,13 @@ cat /proc/ppm/policy_status | grep 'PPM_' | while read line; do echo $line; done
 		elif [[ $selected != " " ]]; then
 			idx=$(echo "$selected" | awk '{print $1}' | awk -F'[][]' '{print $2}')
 			current_status=$(echo $selected | awk '{print $3}')
-
+			
 			if [[ $current_status == *enabled* ]]; then
 				new_status=0
 			else
 				new_status=1
 			fi
-
+			
 			echo "$idx $new_status" >/proc/ppm/policy_status
 		fi
 		unset options
@@ -264,7 +213,7 @@ cpu_menu() {
 	while true; do
 		if [[ $is_big_little == 1 ]]; then
 			cpu_menu_info="[] big.LITTLE Clusters: ${nr_clusters}//[] Little Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//[] Big Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//"
-
+			
 			for policy in ${policy_folders[@]}; do
 				gov_tmp="${gov_tmp}$(cat $policy/scaling_governor) "
 			done
