@@ -85,6 +85,55 @@ donate() {
 	esac
 }
 
+check4update() {
+	clear
+
+	if [[ $(apt list) == *origami-kernel* ]]; then
+		install_deb=1
+	fi >/dev/null 2>&1
+
+	latest_release=$(curl -s "https://api.github.com/repos/rem01gaming/origami_kernel_manager/releases/latest" | jq -r ".tag_name")
+
+	if [[ "$VERSION" == "$latest_release" ]]; then
+		echo "[+] Current version is Up-to-date :)"
+		echo "[*] Press enter to back into main menu"
+		read -r -s
+		return 0
+	else
+		read -p "New version is found, update now? [Y/n] " confirm_update
+
+		case $confirm_update in
+		y|Y) ;;
+		*) return 0 ;;
+		esac
+	fi
+
+	if [[ $install_deb == 1 ]]; then
+		echo "[*] downloading update files..."
+		rm -f ~/origami-kernel.deb
+		wget https://github.com/Rem01Gaming/origami_kernel_manager/releases/download/${latest_release}/origami-kernel.deb -O ~/origami-kernel.deb >/dev/null 2>&1
+		echo "[*] Installing update..."
+		apt remove origami-kernel -y >/dev/null 2>&1
+		apt install ~/origami-kernel.deb -y >/dev/null 2>&1
+		rm -f ~/origami-kernel.deb
+		echo "[+] Update successfully, please re-run origami-kernel."
+		exit 0
+	else
+		whereami=$PWD
+		echo "[*] Downloading update files..."
+		commit_hash=$(curl -s "https://api.github.com/repos/rem01gaming/origami_kernel_manager/releases/latest" | jq -r ".target_commitish")
+		git clone https://github.com/Rem01Gaming/origami_kernel_manager.git ~/.origami-kernel
+		cd ~/.origami-kernel
+		git checkout $commit_hash
+		echo "[*] Installing update..."
+		make uninstall >/dev/null 2>&1
+		make install >/dev/null 2>&1
+		cd $whereami
+		echo "[+] Update successfully, please re-run origami-kernel."
+		exit 0
+	fi
+}
+
 main_menu() {
 	while true; do
 		clear
@@ -106,7 +155,7 @@ main_menu() {
 		# Hide cursor
 		tput civis
 
-		case $(fzy_select "CPU control\nGPU control\nDRAM control\nMemory settings\nNetworking and Firewall settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nShow License\nDonate me\nJoin my telegram channel\nExit" "") in
+		case $(fzy_select "CPU control\nGPU control\nDRAM control\nMemory settings\nNetworking and Firewall settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nShow License\nCheck for update\nDonate me\nJoin my telegram channel\nExit" "") in
 		"CPU control") cpu_menu ;;
 		"GPU control") gpu_menu ;;
 		"DRAM control") dram_menu ;;
@@ -116,6 +165,7 @@ main_menu() {
 		"Charging controller") batt_menu ;;
 		"Display color calibration") disp_menu ;;
 		"Show License") show_license ;;
+		"Check for update") check4update ;;
 		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel >/dev/null 2>&1 ;;
 		"Donate me") donate ;;
 		"Exit") clear && exit 0 ;;
