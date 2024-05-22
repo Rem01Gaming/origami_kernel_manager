@@ -27,11 +27,11 @@ all:
 	@echo "make pack-deb : Build deb package"
 
 install:
-	cp ./src/origami-kernel $(PREFIX)/bin
+	cp ./src/okm $(PREFIX)/bin
 	cp ./src/origami-sudo $(PREFIX)/bin
 	mkdir $(PREFIX)/share/origami-kernel
 	cp -r ./share/* $(PREFIX)/share/origami-kernel
-	chmod +x $(PREFIX)/bin/origami-kernel
+	chmod +x $(PREFIX)/bin/okm
 	chmod +x $(PREFIX)/bin/origami-sudo
 	@printf "\033[1;38;2;254;228;208m    .^.   .^.\n"
 	@printf "    /⋀\\_ﾉ_/⋀\\ \n"
@@ -39,10 +39,10 @@ install:
 	@printf "  |ﾙﾘﾘ >   )ﾘ\n"
 	@printf "  ﾉノ㇏ Ｖ ﾉ|ﾉ\n"
 	@printf "        ⠁⠁\n"
-	@printf "\033[1;38;2;254;228;208m[+] origami-kernel installed, run with origami-kernel\033[0m\n"
+	@printf "\033[1;38;2;254;228;208m[+] origami-kernel installed, run with 'okm'\033[0m\n"
 
 uninstall:
-	rm -f $(PREFIX)/bin/origami-kernel $(PREFIX)/bin/origami-sudo
+	rm -f $(PREFIX)/bin/okm $(PREFIX)/bin/origami-sudo
 	rm -rf $(PREFIX)/share/origami-kernel
 	@printf "\033[1;38;2;254;228;208m[+] origami-kernel uninstalled\033[0m\n"
 
@@ -65,7 +65,7 @@ pack-deb:
 	@printf "\033[1;38;2;254;228;208m[+] Build packages.\033[0m\n"&&sleep 1s
 	@chmod -Rv 755 $(O)/deb/DEBIAN
 	@chmod -Rv 755 $(O)/deb/data/data/com.termux/files/usr/bin
-	@chmod -Rv 777 $(O)/deb/data/data/com.termux/files/usr/bin/origami-kernel
+	@chmod -Rv 777 $(O)/deb/data/data/com.termux/files/usr/bin/okm
 	@chmod -Rv 777 $(O)/deb/data/data/com.termux/files/usr/bin/origami-sudo
 	@cd $(O)/deb&&dpkg -b . ../../origami-kernel.deb
 	@printf "\033[1;38;2;254;228;208m    .^.   .^.\n"
