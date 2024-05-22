@@ -87,12 +87,15 @@ donate() {
 
 check4update() {
 	clear
+	echo "[*] Checking for new update..."
 
 	if [[ $(apt list) == *origami-kernel* ]]; then
 		install_deb=1
 	fi >/dev/null 2>&1
 
-	latest_release=$(curl -s "https://api.github.com/repos/rem01gaming/origami_kernel_manager/releases/latest" | jq -r ".tag_name")
+	repo_info=$(curl -s "https://api.github.com/repos/rem01gaming/origami_kernel_manager/releases/latest")
+	[[ $? != 1 ]] && echo "[-] Can't fetch repository info from GitHub, make sure you're online." && echo "[*] Press enter to back into main menu" && read -r -s && return 0
+	latest_release=$(echo $repo_info | jq -r ".tag_name")
 
 	if [[ "$VERSION" == "$latest_release" ]]; then
 		echo "[+] Current version is Up-to-date :)"
@@ -121,7 +124,7 @@ check4update() {
 	else
 		whereami=$PWD
 		echo "[*] Downloading update files..."
-		commit_hash=$(curl -s "https://api.github.com/repos/rem01gaming/origami_kernel_manager/git/refs/tags/${latest_release}" | jq -r '.object.sha')
+		commit_hash=$(curl -s "https://api.github.com/repos/Rem01Gaming/origami_kernel_manager/git/refs/tags/${latest_release}" | jq -r '.object.sha')
 		git clone https://github.com/Rem01Gaming/origami_kernel_manager.git ~/.origami-kernel >/dev/null 2>&1
 		cd ~/.origami-kernel
 		git reset --hard $commit_hash
