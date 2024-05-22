@@ -129,6 +129,7 @@ check4update() {
 		make uninstall >/dev/null 2>&1
 		make install >/dev/null 2>&1
 		cd $whereami
+		rm -rf ~/.origami-kernel
 		echo "[+] Update successfully, please re-run origami-kernel."
 		exit 0
 	fi
