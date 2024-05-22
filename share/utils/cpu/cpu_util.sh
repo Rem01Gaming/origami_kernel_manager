@@ -177,7 +177,7 @@ mtk_ppm_policy() {
 
 	while true; do
 		selected=$(fzy_select "PPM $(cat /proc/ppm/enabled | awk '{print $3}')\n \n$(fetch_state)\n \nBack to the main menu" "")
-		
+
 		if [[ $selected == "Back to the main menu" ]]; then
 			break
 		elif [[ "$(echo $selected | awk '{print $1}')" == "PPM" ]]; then
@@ -188,13 +188,13 @@ mtk_ppm_policy() {
 		elif [[ $selected != " " ]]; then
 			idx=$(echo "$selected" | awk '{print $1}' | awk -F'[][]' '{print $2}')
 			current_status=$(echo $selected | awk '{print $3}')
-			
+
 			if [[ $current_status == *enabled* ]]; then
 				new_status=0
 			else
 				new_status=1
 			fi
-			
+
 			echo "$idx $new_status" >/proc/ppm/policy_status
 		fi
 		unset options
@@ -213,7 +213,7 @@ cpu_menu() {
 	while true; do
 		if [[ $is_big_little == 1 ]]; then
 			cpu_menu_info="[] big.LITTLE Clusters: ${nr_clusters}//[] Little Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//[] Big Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//"
-			
+
 			for policy in ${policy_folders[@]}; do
 				gov_tmp="${gov_tmp}$(cat $policy/scaling_governor) "
 			done
