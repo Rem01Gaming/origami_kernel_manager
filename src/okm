@@ -121,10 +121,10 @@ check4update() {
 	else
 		whereami=$PWD
 		echo "[*] Downloading update files..."
-		commit_hash=$(curl -s "https://api.github.com/repos/rem01gaming/origami_kernel_manager/releases/latest" | jq -r ".target_commitish")
-		git clone https://github.com/Rem01Gaming/origami_kernel_manager.git ~/.origami-kernel
+		commit_hash=$(curl -s "https://api.github.com/repos/rem01gaming/origami_kernel_manager/git/refs/tags/${latest_release}" | jq -r '.object.sha')
+		git clone https://github.com/Rem01Gaming/origami_kernel_manager.git ~/.origami-kernel >/dev/null 2>&1
 		cd ~/.origami-kernel
-		git checkout $commit_hash
+		git reset --hard $commit_hash
 		echo "[*] Installing update..."
 		make uninstall >/dev/null 2>&1
 		make install >/dev/null 2>&1
