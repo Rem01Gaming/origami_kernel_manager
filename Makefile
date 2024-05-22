@@ -49,7 +49,7 @@ uninstall:
 install-dependence:
 	@echo "\033[1;38;2;254;228;208m[+] Installing dependencines...\033[0m"
 	@apt install root-repo -y
-	@apt install fzf fzy git -y
+	@apt install fzf fzy git jq  -y
 
 pack-deb:
 	@mkdir -v $(O)
