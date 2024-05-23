@@ -17,11 +17,11 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 gpu_omap_set_max_freq() {
-	echo $(fzf_select "$gpu_available_freqs" "Select ${1} freq: ") >$gpu_max_freq_path
+	apply $(fzf_select "$gpu_available_freqs" "Select ${1} freq: ") $gpu_max_freq_path
 }
 
 gpu_omap_set_gov() {
-	echo $(fzf_select "$gpu_available_governors" "Select Governor: ") >$gpu_governor_path
+	apply $(fzf_select "$gpu_available_governors" "Select Governor: ") $gpu_governor_path
 }
 
 gpu_omap_menu() {

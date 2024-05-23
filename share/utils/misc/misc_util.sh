@@ -21,21 +21,20 @@ thermal_gov_set() {
 	local thermal_policy=$(fzf_select "$(cat /sys/class/thermal/thermal_zone0/available_policies)" "Select Thermal governor (apply globally): ")
 	for thermal in $(ls /sys/class/thermal); do
 		if [ -f /sys/class/thermal/${thermal}/policy ]; then
-			chmod 0644 /sys/class/thermal/${thermal}/policy
-			echo $thermal_policy >/sys/class/thermal/${thermal}/policy
+			apply $thermal_policy /sys/class/thermal/${thermal}/policy
 		fi
 	done &
 }
 
 io_sched_set() {
 	local block_target=$(fzf_select "$(print_existing_folders /sys/block mmcblk0 mmcblk1 $(echo sd{a..z}) dm-0)" "Select block you wanted to change I/O sched: ")
-	echo $(fzf_select "$(cat /sys/block/${block_target}/queue/scheduler | sed 's/\[//g; s/\]//g')" "Select I/O Scheduler: ") >/sys/block/${block_target}/queue/scheduler
+	apply $(fzf_select "$(cat /sys/block/${block_target}/queue/scheduler | sed 's/\[//g; s/\]//g')" "Select I/O Scheduler: ") /sys/block/${block_target}/queue/scheduler
 }
 
 dt2w_switch() {
 	case $(fzf_select "Enable Disable" "Double tap to wake: ") in
-	Enable) echo 1 >$dt2w_path ;;
-	Disable) echo 0 >$dt2w_path ;;
+	Enable) apply 1 $dt2w_path ;;
+	Disable) apply 0 $dt2w_path ;;
 	esac
 }
 
@@ -48,22 +47,22 @@ selinux_switch() {
 
 touchpanel_game_mode() {
 	case $(fzf_select "Enable Disable" "Touchpanel Game mode: ") in
-	Enable) echo 1 >/proc/touchpanel/game_switch_enable ;;
-	Disable) echo 0 >/proc/touchpanel/game_switch_enable ;;
+	Enable) apply 1 /proc/touchpanel/game_switch_enable ;;
+	Disable) apply 0 /proc/touchpanel/game_switch_enable ;;
 	esac
 }
 
 touchpanel_limit() {
 	case $(fzf_select "Enable Disable" "Touchpanel limit: ") in
-	Enable) echo 1 >/proc/touchpanel/oplus_tp_limit_enable ;;
-	Disable) echo 0 >/proc/touchpanel/oplus_tp_limit_enable ;;
+	Enable) apply 1 /proc/touchpanel/oplus_tp_limit_enable ;;
+	Disable) apply 0 /proc/touchpanel/oplus_tp_limit_enable ;;
 	esac
 }
 
 touchpanel_direction_fix() {
 	case $(fzf_select "Enable Disable" "Touchpanel direction fix: ") in
-	Enable) echo 1 >/proc/touchpanel/oplus_tp_direction ;;
-	Disable) echo 0 >/proc/touchpanel/oplus_tp_direction ;;
+	Enable) apply 1 /proc/touchpanel/oplus_tp_direction ;;
+	Disable) apply 0 /proc/touchpanel/oplus_tp_direction ;;
 	esac
 }
 
@@ -73,34 +72,34 @@ mtk_vibrator_ctrl() {
 
 mtk_pbm_switch() {
 	case $(fzf_select "Enable Disable" "Mediatek Power Budget Management:  ") in
-	Enable) echo "stop 0" >/proc/pbm/pbm_stop ;;
-	Disable) echo "stop 1" >/proc/pbm/pbm_stop ;;
+	Enable) apply "stop 0" /proc/pbm/pbm_stop ;;
+	Disable) apply "stop 1" /proc/pbm/pbm_stop ;;
 	esac
 }
 
 mtk_apu_set_freq() {
 	opp_selected=$(fzf_select_n "$(seq -1 $(cat /sys/module/mmdvfs_pmqos/parameters/dump_setting | grep -o '\[[^]]*\]' | grep -oE '[+-]?[0-9]+' | sort -n | tail -n 1))" "Select frequency for APUs (NO DVFS) :  ")
-	echo $opp_selected >/sys/module/mmdvfs_pmqos/parameters/force_step
+	apply $opp_selected /sys/module/mmdvfs_pmqos/parameters/force_step
 }
 
 mtk_batoc_current_limit() {
 	case $(fzf_select "Enable Disable" "Mediatek's batoc Current limit:  ") in
-	Enable) echo "stop 0" >/proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
-	Disable) echo "stop 1" >/proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
+	Enable) apply "stop 0" /proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
+	Disable) apply "stop 1" /proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
 	esac
 }
 
 mtk_eara_thermal_switch() {
 	case $(fzf_select "Enable Disable" "Enable Eara thermal:  ") in
-	Enable) echo "1" >/sys/kernel/eara_thermal/enable ;;
-	Disable) echo "0" >/sys/kernel/eara_thermal/enable ;;
+	Enable) apply "1" /sys/kernel/eara_thermal/enable ;;
+	Disable) apply "0" /sys/kernel/eara_thermal/enable ;;
 	esac
 }
 
 mtk_eara_thermal_fake_throttle() {
 	case $(fzf_select "Enable Disable" "Fake throttle Eara thermal:  ") in
-	Enable) echo "1" >/sys/kernel/eara_thermal/fake_throttle ;;
-	Disable) echo "0" >/sys/kernel/eara_thermal/fake_throttle ;;
+	Enable) apply "1" /sys/kernel/eara_thermal/fake_throttle ;;
+	Disable) apply "0" /sys/kernel/eara_thermal/fake_throttle ;;
 	esac
 }
 

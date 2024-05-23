@@ -17,11 +17,11 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 dram_devfreq_set_freq() {
-	echo $(fzf_select "$(cat ${dram_devfreq_path}/available_frequencies)" "Select ${1} freq: ") >${dram_devfreq_path}/${1}_freq
+	apply $(fzf_select "$(cat ${dram_devfreq_path}/available_frequencies)" "Select ${1} freq: ") ${dram_devfreq_path}/${1}_freq
 }
 
 dram_devfreq_set_gov() {
-	echo $(fzf_select "$(cat ${dram_devfreq_path}/available_governors)" "Select Governor: ") >${dram_devfreq_path}/governor
+	apply $(fzf_select "$(cat ${dram_devfreq_path}/available_governors)" "Select Governor: ") ${dram_devfreq_path}/governor
 }
 
 dram_devfreq_menu() {

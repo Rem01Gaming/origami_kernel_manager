@@ -18,8 +18,8 @@
 
 adreno_idler_switch() {
 	case $(fzf_select "Disable Enable" "Simple GPU Algorithm: ") in
-	Disable) echo N >/sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate ;;
-	Enable) echo Y >/sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate ;;
+	Disable) apply N /sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate ;;
+	Enable) apply Y /sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate ;;
 	esac
 }
 

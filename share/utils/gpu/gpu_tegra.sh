@@ -21,7 +21,7 @@ gpu_tegra_set_freq() {
 	max) local node_path=$gpu_max_freq_path ;;
 	min) local node_path=$gpu_min_freq_path ;;
 	esac
-	echo $(fzf_select "$gpu_available_freqs" "Select ${1} freq: ") >$node_path
+	apply $(fzf_select "$gpu_available_freqs" "Select ${1} freq: ") $node_path
 }
 
 gpu_tegra_menu() {

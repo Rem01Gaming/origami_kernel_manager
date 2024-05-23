@@ -21,11 +21,11 @@ gpu_generic_set_freq() {
 	max) local node_path=$gpu_max_freq_path ;;
 	min) local node_path=$gpu_min_freq_path ;;
 	esac
-	echo $(fzf_select "$gpu_available_freqs" "Select ${1} freq: ") >$node_path
+	apply $(fzf_select "$gpu_available_freqs" "Select ${1} freq: ") $node_path
 }
 
 gpu_generic_set_gov() {
-	echo $(fzf_select "$gpu_available_governors" "Select Governor: ") >$gpu_governor_path
+	apply $(fzf_select "$gpu_available_governors" "Select Governor: ") $gpu_governor_path
 }
 
 gpu_generic_menu() {

@@ -18,8 +18,8 @@
 
 simple_gpu_switch() {
 	case $(fzf_select "Disable Enable" "Simple GPU Algorithm: ") in
-	Disable) echo 0 >/sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate ;;
-	Enable) echo 1 >/sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate ;;
+	Disable) apply 0 /sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate ;;
+	Enable) apply 1 /sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate ;;
 	esac
 }
 

@@ -20,7 +20,7 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/mtk_ged.sh
 
 mtk_gpufreq_lock_freq() {
 	local freq=$(fzf_select "0 $gpu_available_freqs" "Set frequency for GPU (NO DVFS): ")
-	echo $freq >$gpu_freq_path 2>/dev/null
+	apply $freq $gpu_freq_path
 }
 
 mtk_gpu_power_limit() {
@@ -39,11 +39,11 @@ mtk_gpu_power_limit() {
 		state=$(echo $selected | grep -oE '[0-9]+')
 
 		case "$selected" in
-		*"Ignore GPU Overcurrent protect"*) echo "ignore_batt_oc $((1 - state))" >/proc/gpufreq/gpufreq_power_limited ;;
-		*"Ignore GPU Low batt percentage limit"*) echo "ignore_batt_percent $((1 - state))" >/proc/gpufreq/gpufreq_power_limited ;;
-		*"Ignore GPU Low battery limit"*) echo "ignore_low_batt $((1 - state))" >/proc/gpufreq/gpufreq_power_limited ;;
-		*"Ignore GPU Thermal protect"*) echo "ignore_thermal_protect $((1 - state))" >/proc/gpufreq/gpufreq_power_limited ;;
-		*"Ignore GPU Power Budget limitter"*) echo "ignore_pbm_limited $((1 - state))" >/proc/gpufreq/gpufreq_power_limited ;;
+		*"Ignore GPU Overcurrent protect"*) apply "ignore_batt_oc $((1 - state))" /proc/gpufreq/gpufreq_power_limited ;;
+		*"Ignore GPU Low batt percentage limit"*) apply "ignore_batt_percent $((1 - state))" /proc/gpufreq/gpufreq_power_limited ;;
+		*"Ignore GPU Low battery limit"*) apply "ignore_low_batt $((1 - state))" /proc/gpufreq/gpufreq_power_limited ;;
+		*"Ignore GPU Thermal protect"*) apply "ignore_thermal_protect $((1 - state))" /proc/gpufreq/gpufreq_power_limited ;;
+		*"Ignore GPU Power Budget limitter"*) apply "ignore_pbm_limited $((1 - state))" /proc/gpufreq/gpufreq_power_limited ;;
 		"Back to main menu") break ;;
 		esac
 	done

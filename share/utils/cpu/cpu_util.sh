@@ -48,14 +48,13 @@ cpu_set_gov() {
 	if [[ $is_big_little == 1 ]]; then
 		cpu_cluster_handle
 		local gov_selected=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors)" "Select CPU Governor: ")
-		echo $gov_selected >/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor
+		apply $gov_selected /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor
 	else
 		local gov_selected=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors)" "Select CPU Governor: ")
 		for ((cpu = 0; cpu < cores; cpu++)); do
 			cpu_dir="/sys/devices/system/cpu/cpu${cpu}"
 			if [ -d "$cpu_dir" ]; then
-				chmod 0644 "${cpu_dir}/cpufreq/scaling_governor"
-				echo "$gov_selected" >"${cpu_dir}/cpufreq/scaling_governor"
+				apply "$gov_selected" "${cpu_dir}/cpufreq/scaling_governor"
 			fi
 		done
 	fi
@@ -79,17 +78,19 @@ cpu_set_freq() {
 	if [[ $is_big_little == 1 ]]; then
 		cpu_cluster_handle
 		if [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
-			echo ${cluster_need_set} $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
+			local freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
+			apply "${cluster_need_set} $freq" /proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
 			local freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select ${1} CPU freq for ${cluster_selected} cluster: ")
-			echo $freq >/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_${1}_freq
+			apply $freq /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_${1}_freq
 		fi
 	else
 		if [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
-			echo 0 $(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ") >/proc/ppm/policy/hard_userlimit_${1}_cpu_freq
+			local freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ")
+			apply "0 $freq" /proc/ppm/policy/hard_userlimit_${1}_cpu_freq
 		else
 			local freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_available_frequencies)" "Select ${1} CPU frequency: ")
-			echo $freq >/sys/devices/system/cpu/cpufreq/policy0/scaling_${1}_freq
+			apply $freq /sys/devices/system/cpu/cpufreq/policy0/scaling_${1}_freq
 		fi
 	fi
 }
@@ -123,7 +124,7 @@ cpu_core_ctrl() {
 			cpu_number=$(echo "${selected}" | cut -d' ' -f1 | sed 's/cpu//')
 			online_status=$(<"${cpu_dir}/cpu${cpu_number}/online")
 			new_status=$((1 - online_status))
-			echo "${new_status}" >"${cpu_dir}/cpu${cpu_number}/online"
+			apply "${new_status}" "${cpu_dir}/cpu${cpu_number}/online"
 			;;
 		esac
 	done
@@ -131,17 +132,17 @@ cpu_core_ctrl() {
 
 mtk_cpufreq_cci_mode() {
 	case $(fzf_select "Normal Performance" "Mediatek CPU CCI mode: ") in
-	Performance) echo 1 >/proc/cpufreq/cpufreq_cci_mode ;;
-	Normal) echo 0 >/proc/cpufreq/cpufreq_cci_mode ;;
+	Performance) apply 1 /proc/cpufreq/cpufreq_cci_mode ;;
+	Normal) apply 0 /proc/cpufreq/cpufreq_cci_mode ;;
 	esac
 }
 
 mtk_cpufreq_power_mode() {
 	case $(fzf_select "Normal Low-power Make Performance" "Mediatek CPU Power mode: ") in
-	Performance) echo 3 >/proc/cpufreq/cpufreq_power_mode ;;
-	Low-power) echo 1 >/proc/cpufreq/cpufreq_power_mode ;;
-	Make) echo 2 >/proc/cpufreq/cpufreq_power_mode ;;
-	Normal) echo 0 >/proc/cpufreq/cpufreq_power_mode ;;
+	Performance) apply 3 /proc/cpufreq/cpufreq_power_mode ;;
+	Low-power) apply 1 /proc/cpufreq/cpufreq_power_mode ;;
+	Make) apply 2 /proc/cpufreq/cpufreq_power_mode ;;
+	Normal) apply 0 /proc/cpufreq/cpufreq_power_mode ;;
 	esac
 }
 
@@ -160,7 +161,7 @@ cpu_gov_param() {
 	tput cuu 1
 	if [[ $gov_param == *freq* ]]; then
 		local freq=$(fzf_select "0 $(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Tune $gov_param parameter: ")
-		echo $freq >$path_gov_param/$gov_param
+		apply $freq $path_gov_param/$gov_param
 	else
 		tput cuu 1
 		menu_value_tune "Tune $gov_param parameter" "$path_gov_param/$gov_param" "100000000" "0" "1"
@@ -182,8 +183,8 @@ mtk_ppm_policy() {
 			break
 		elif [[ "$(echo $selected | awk '{print $1}')" == "PPM" ]]; then
 			case "$(cat /proc/ppm/enabled | awk '{print $3}')" in
-			enabled) echo 0 >/proc/ppm/enabled ;;
-			disabled) echo 1 >/proc/ppm/enabled ;;
+			enabled) apply 0 /proc/ppm/enabled ;;
+			disabled) apply 1 /proc/ppm/enabled ;;
 			esac
 		elif [[ $selected != " " ]]; then
 			idx=$(echo "$selected" | awk '{print $1}' | awk -F'[][]' '{print $2}')
@@ -195,7 +196,7 @@ mtk_ppm_policy() {
 				new_status=1
 			fi
 
-			echo "$idx $new_status" >/proc/ppm/policy_status
+			apply "$idx $new_status" /proc/ppm/policy_status
 		fi
 		unset options
 	done

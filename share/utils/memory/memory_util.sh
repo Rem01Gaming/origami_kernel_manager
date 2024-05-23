@@ -57,13 +57,13 @@ memory_dirty_expire_centisecs() {
 }
 
 laptop_mode() {
-	echo $(fzf_select "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" "Laptop mode: ") >/proc/sys/vm/laptop_mode
+	apply $(fzf_select "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" "Laptop mode: ") /proc/sys/vm/laptop_mode
 }
 
 oom_kill_alloc() {
 	case $(fzf_select "Yes No" "Kill allocating task: ") in
-	Yes) echo 1 >/proc/sys/vm/oom_kill_allocating_task ;;
-	No) echo 0 >/proc/sys/vm/oom_kill_allocating_task ;;
+	Yes) apply 1 /proc/sys/vm/oom_kill_allocating_task ;;
+	No) apply 0 /proc/sys/vm/oom_kill_allocating_task ;;
 	esac
 }
 

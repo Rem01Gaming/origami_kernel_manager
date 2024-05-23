@@ -17,20 +17,20 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 tcp_congestion_change() {
-	echo $(fzf_select "$(cat /proc/sys/net/ipv4/tcp_available_congestion_control)" "Select TCP Congestion: ") >/proc/sys/net/ipv4/tcp_congestion_control
+	apply $(fzf_select "$(cat /proc/sys/net/ipv4/tcp_available_congestion_control)" "Select TCP Congestion: ") /proc/sys/net/ipv4/tcp_congestion_control
 }
 
 tcp_low_latency() {
 	case $(fzf_select "Enable Disable" "TCP Low latency mode: ") in
-	Enable) echo 1 >/proc/sys/net/ipv4/tcp_low_latency ;;
-	Disable) echo 0 >/proc/sys/net/ipv4/tcp_low_latency ;;
+	Enable) apply 1 /proc/sys/net/ipv4/tcp_low_latency ;;
+	Disable) apply 0 /proc/sys/net/ipv4/tcp_low_latency ;;
 	esac
 }
 
 tcp_syncookies() {
 	case $(fzf_select "Enable Disable" "SYN Cookies: ") in
-	Enable) echo 1 >/proc/sys/net/ipv4/tcp_syncookies ;;
-	Disable) echo 0 >/proc/sys/net/ipv4/tcp_syncookies ;;
+	Enable) apply 1 /proc/sys/net/ipv4/tcp_syncookies ;;
+	Disable) apply 0 /proc/sys/net/ipv4/tcp_syncookies ;;
 	esac
 }
 
@@ -44,49 +44,49 @@ tcp_keepalive_time() {
 
 tcp_reuse_socket() {
 	case $(fzf_select "Enable Disable enable-for-loopback-traffic-only" "TCP Reuse socket: ") in
-	Enable) echo 1 >/proc/sys/net/ipv4/tcp_tw_reuse ;;
-	Disable) echo 0 >/proc/sys/net/ipv4/tcp_tw_reuse ;;
-	enable-for-loopback-traffic-only) echo 2 >/proc/sys/net/ipv4/tcp_tw_reuse ;;
+	Enable) apply 1 /proc/sys/net/ipv4/tcp_tw_reuse ;;
+	Disable) apply 0 /proc/sys/net/ipv4/tcp_tw_reuse ;;
+	enable-for-loopback-traffic-only) apply 2 /proc/sys/net/ipv4/tcp_tw_reuse ;;
 	esac
 }
 
 tcp_ecn() {
 	case $(fzf_select "0 1 2" "TCP Explicit Congestion Notification (ECN): ") in
-	0) echo 0 >/proc/sys/net/ipv4/tcp_ecn ;;
-	1) echo 1 >/proc/sys/net/ipv4/tcp_ecn ;;
-	2) echo 2 >/proc/sys/net/ipv4/tcp_ecn ;;
+	0) apply 0 /proc/sys/net/ipv4/tcp_ecn ;;
+	1) apply 1 /proc/sys/net/ipv4/tcp_ecn ;;
+	2) apply 2 /proc/sys/net/ipv4/tcp_ecn ;;
 	esac
 }
 
 tcp_fastopen() {
 	case $(fzf_select "0 1 2 3" "TCP Fastopen (TFO): ") in
-	0) echo 0 >/proc/sys/net/ipv4/tcp_fastopen ;;
-	1) echo 1 >/proc/sys/net/ipv4/tcp_fastopen ;;
-	2) echo 2 >/proc/sys/net/ipv4/tcp_fastopen ;;
-	3) echo 3 >/proc/sys/net/ipv4/tcp_fastopen ;;
+	0) apply 0 /proc/sys/net/ipv4/tcp_fastopen ;;
+	1) apply 1 /proc/sys/net/ipv4/tcp_fastopen ;;
+	2) apply 2 /proc/sys/net/ipv4/tcp_fastopen ;;
+	3) apply 3 /proc/sys/net/ipv4/tcp_fastopen ;;
 	esac
 }
 
 tcp_sack() {
 	case $(fzf_select "Disable Enable" "TCP Select Acknowledgments (SACKS): ") in
-	Disable) echo 0 >/proc/sys/net/ipv4/tcp_sack ;;
-	Enable) echo 1 >/proc/sys/net/ipv4/tcp_sack ;;
+	Disable) apply 0 /proc/sys/net/ipv4/tcp_sack ;;
+	Enable) apply 1 /proc/sys/net/ipv4/tcp_sack ;;
 	esac
 }
 
 tcp_timestamps() {
 	case $(fzf_select "0 1 2" "TCP Timestamps: ") in
-	0) echo 0 >/proc/sys/net/ipv4/tcp_timestamps ;;
-	1) echo 1 >/proc/sys/net/ipv4/tcp_timestamps ;;
-	2) echo 2 >/proc/sys/net/ipv4/tcp_timestamps ;;
+	0) apply 0 /proc/sys/net/ipv4/tcp_timestamps ;;
+	1) apply 1 /proc/sys/net/ipv4/tcp_timestamps ;;
+	2) apply 2 /proc/sys/net/ipv4/tcp_timestamps ;;
 	esac
 }
 
 bpf_jit_harden() {
 	case $(fzf_select "Disable enable-for-unprivileged-users enable-for-all-users" "BPF JIT harden: ") in
-	enable-for-all-users) echo 2 >/proc/sys/net/core/bpf_jit_harden ;;
-	enable-for-unprivileged-users) echo 1 >/proc/sys/net/core/bpf_jit_harden ;;
-	Disable) echo 0 >/proc/sys/net/core/bpf_jit_harden ;;
+	enable-for-all-users) apply 2 /proc/sys/net/core/bpf_jit_harden ;;
+	enable-for-unprivileged-users) apply 1 /proc/sys/net/core/bpf_jit_harden ;;
+	Disable) apply 0 /proc/sys/net/core/bpf_jit_harden ;;
 	esac
 }
 

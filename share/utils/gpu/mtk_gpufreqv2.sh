@@ -21,7 +21,7 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/mtk_ged.sh
 mtk_gpufreqv2_lock_freq() {
 	local freq=$(fzf_select "$gpu_available_freqs" "Set frequency for GPU (NO DVFS): ")
 	local voltage=$(cat /proc/gpufreqv2/gpu_working_opp_table | awk -v freq="$freq" '$0 ~ freq {gsub(/.*, volt: /, ""); gsub(/,.*/, ""); print}')
-	echo $freq $voltage >/proc/gpufreqv2/fix_custom_freq_volt
+	apply "$freq $voltage" /proc/gpufreqv2/fix_custom_freq_volt
 }
 
 mtk_gpufreqv2_lock_volt() {
@@ -30,11 +30,11 @@ mtk_gpufreqv2_lock_volt() {
 		read -r -s
 		return 1
 	fi
-	echo "$(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $4}')" "$(fzf_select "$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $5}' | sed 's/,//g' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" >/proc/gpufreq/gpufreq_fixed_freq_volt
+	apply "$(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $4}')" "$(fzf_select "$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $5}' | sed 's/,//g' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" /proc/gpufreq/gpufreq_fixed_freq_volt
 }
 
 mtk_gpufreqv2_reset_dvfs() {
-	echo 0 0 >/proc/gpufreqv2/fix_custom_freq_volt
+	apply "0 0" /proc/gpufreqv2/fix_custom_freq_volt
 }
 
 mtk_gpufreqv2_menu() {

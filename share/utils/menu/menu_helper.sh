@@ -78,7 +78,9 @@ menu_value_tune() {
 		*) break ;;
 		esac
 
+		chmod 644 $2
 		echo $number >${2} 2>/dev/null
+		chmod 444 $2
 	done
 }
 
@@ -97,4 +99,10 @@ print_existing_folders() {
 	if [ ! ${#existing_folders[@]} -eq 0 ]; then
 		echo "${existing_folders[*]}"
 	fi
+}
+
+apply() {
+	chmod 644 $2
+	echo $1 >$2 2>/dev/null
+	chmod 444 $2
 }

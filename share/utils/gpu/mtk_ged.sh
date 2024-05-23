@@ -23,7 +23,7 @@ ged_max_freq() {
 		index=$(grep "$(fzf_select "$gpu_available_freqs" "Maximum GPU Frequency: ")" /proc/gpufreqv2/gpu_working_opp_table | awk '{print $1}')
 	fi
 
-	echo ${index:1:-1} >/sys/kernel/ged/hal/custom_upbound_gpu_freq
+	apply ${index:1:-1} /sys/kernel/ged/hal/custom_upbound_gpu_freq
 }
 
 ged_min_freq() {
@@ -33,40 +33,40 @@ ged_min_freq() {
 		index=$(grep "$(fzf_select "$gpu_available_freqs" "Maximum GPU Frequency: ")" /proc/gpufreqv2/gpu_working_opp_table | awk '{print $1}')
 	fi
 
-	echo ${index:1:-1} >/sys/kernel/ged/hal/custom_boost_gpu_freq
+	apply ${index:1:-1} /sys/kernel/ged/hal/custom_boost_gpu_freq
 }
 
 mtk_ged_dvfs() {
 	case $(fzf_select "Enable Disable" "GPU DVFS:  ") in
-	Enable) echo 1 >/sys/module/ged/parameters/gpu_dvfs_enable ;;
-	Disable) echo 0 >/sys/module/ged/parameters/gpu_dvfs_enable ;;
+	Enable) apply 1 /sys/module/ged/parameters/gpu_dvfs_enable ;;
+	Disable) apply 0 /sys/module/ged/parameters/gpu_dvfs_enable ;;
 	esac
 }
 
 mtk_ged_boost() {
 	case $(fzf_select "Enable Disable" "GED Boosting: ") in
-	Enable) echo 1 >/sys/module/ged/parameters/ged_boost_enable ;;
-	Disable) echo 0 >/sys/module/ged/parameters/ged_boost_enable ;;
+	Enable) apply 1 /sys/module/ged/parameters/ged_boost_enable ;;
+	Disable) apply 0 /sys/module/ged/parameters/ged_boost_enable ;;
 	esac
 }
 
 mtk_ged_extra_boost() {
 	case $(fzf_select "Enable Disable" "GED Boost extra: ") in
-	Enable) echo 1 >/sys/module/ged/parameters/boost_extra ;;
-	Disable) echo 0 >/sys/module/ged/parameters/boost_extra ;;
+	Enable) apply 1 /sys/module/ged/parameters/boost_extra ;;
+	Disable) apply 0 /sys/module/ged/parameters/boost_extra ;;
 	esac
 }
 
 mtk_ged_gpu_boost() {
 	case $(fzf_select "Enable Disable" "GED GPU Boost: ") in
-	Enable) echo 1 >/sys/module/ged/parameters/boost_gpu_enable ;;
-	Disable) echo 0 >/sys/module/ged/parameters/boost_gpu_enable ;;
+	Enable) apply 1 /sys/module/ged/parameters/boost_gpu_enable ;;
+	Disable) apply 0 /sys/module/ged/parameters/boost_gpu_enable ;;
 	esac
 }
 
 mtk_ged_game_mode() {
 	case $(fzf_select "Enable Disable" "GED Game mode: ") in
-	Enable) echo 1 >/sys/module/ged/parameters/gx_game_mode ;;
-	Disable) echo 0 >/sys/module/ged/parameters/gx_game_mode ;;
+	Enable) apply 1 /sys/module/ged/parameters/gx_game_mode ;;
+	Disable) apply 0 /sys/module/ged/parameters/gx_game_mode ;;
 	esac
 }

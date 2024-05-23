@@ -90,8 +90,7 @@ test_chg_switches() {
 			local idle_val=$(echo "$switch" | awk '{print $3}' | sed 's/::/ /g')
 			if [ -f $node_path ]; then
 				echo "[*] Testing switch: ${switch}"
-				chmod +x $node_path
-				echo $idle_val >$node_path 2>/dev/null
+				apply $idle_val $node_path
 				sleep 2
 
 				current_samples=()
@@ -143,8 +142,8 @@ do_idle_chg() {
 		chmod +x $node_path
 
 		case $(fzf_select "enable disable" "Enable or Disable Idle charging: ") in
-		enable) echo $idle_val >$node_path 2>/dev/null ;;
-		disable) echo $normal_val >$node_path 2>/dev/null ;;
+		enable) apply $idle_val $node_path ;;
+		disable) apply $normal_val $node_path ;;
 		esac
 	fi
 }
@@ -159,8 +158,7 @@ change_use_chg_switch() {
 			local use_chg_switch=$(cat "$use_chg_switch_path")
 			local node_path=$(echo $use_chg_switch | awk '{print $1}')
 			local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
-			chmod +x $node_path
-			echo $normal_val >$node_path 2>/dev/null
+			apply $normal_val $node_path
 		fi
 		echo $(cat "$chg_switches_path" | fzf --reverse --cycle --prompt "Select a charging switch: ") >"$use_chg_switch_path"
 	fi

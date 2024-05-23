@@ -25,11 +25,11 @@ gpu_qcom_kgsl3-devfreq_set_freq() {
 	min) local node_path=$gpu_min_freq_path ;;
 	esac
 	local freq="$(fzf_select "$gpu_available_freqs" "Select ${1} freq: ")"
-	echo $freq >$node_path
+	apply $freq $node_path
 }
 
 gpu_qcom_kgsl3-devfreq_set_gov() {
-	echo $(fzf_select "$gpu_available_governors" "Select Governor: ") >$gpu_governor_path
+	apply $(fzf_select "$gpu_available_governors" "Select Governor: ") $gpu_governor_path
 }
 
 gpu_qcom_kgsl3-devfreq_menu() {
