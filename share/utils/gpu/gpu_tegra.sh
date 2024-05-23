@@ -17,7 +17,10 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 gpu_tegra_set_freq() {
-	local node_path="gpu_${1}_freq_path"
+	case $1 in
+	max) local node_path=$gpu_max_freq_path ;;
+	min) local node_path=$gpu_min_freq_path ;;
+	esac
 	echo $(fzf_select "$gpu_available_freqs" "Select ${1} freq: ") >$node_path
 }
 
