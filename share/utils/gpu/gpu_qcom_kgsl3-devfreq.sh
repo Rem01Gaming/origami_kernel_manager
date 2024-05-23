@@ -20,12 +20,12 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/simple_gpu
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/adreno_idler.sh
 
 gpu_qcom_kgsl3-devfreq_set_freq() {
-	local node_path="gpu_${1}_freq_path"
-	local freq_selected="$(fzf_select "$gpu_available_freqs" "Select ${1} freq: ")"
-
-	for path in $node_path; do
-		echo $freq_selected >$path
-	done
+	case $1 in
+	max) local node_path=$gpu_max_freq_path ;;
+	min) local node_path=$gpu_min_freq_path ;;
+	esac
+	local freq="$(fzf_select "$gpu_available_freqs" "Select ${1} freq: ")"
+	echo $freq >$node_path
 }
 
 gpu_qcom_kgsl3-devfreq_set_gov() {
