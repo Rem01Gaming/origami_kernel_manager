@@ -94,7 +94,7 @@ check4update() {
 	fi >/dev/null 2>&1
 
 	repo_info=$(curl -s "https://api.github.com/repos/rem01gaming/origami_kernel_manager/releases/latest")
-	[[ $? != 1 ]] && echo "[-] Can't fetch repository info from GitHub, make sure you're online." && echo "[*] Press enter to back into main menu" && read -r -s && return 0
+	[[ $? != 0 ]] && echo "[-] Can't fetch repository info from GitHub, make sure you're online." && echo "[*] Press enter to back into main menu" && read -r -s && return 0
 	latest_release=$(echo $repo_info | jq -r ".tag_name")
 
 	if [[ "$VERSION" == "$latest_release" ]]; then
