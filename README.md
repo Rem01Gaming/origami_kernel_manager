@@ -52,7 +52,7 @@ More info and documentation on [Origami Kernel Manager wiki](https://github.com/
 ### Requirements
 - Rooted Android device
 - Termux app installed
-- Installed following dependencies: `tsu fzf fzy`
+- Installed following dependencies: `fzf fzy jq curl`
 - Working brain 🧠 with minimal cli knowledge
 
 ### Installation with deb package
