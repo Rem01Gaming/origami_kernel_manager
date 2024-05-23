@@ -102,7 +102,7 @@ print_existing_folders() {
 }
 
 apply() {
-	chmod 644 $2
+	chmod 644 $2 2>/dev/null
 	echo $1 >$2 2>/dev/null
-	chmod 444 $2
+	chmod 444 $2 2>/dev/null
 }
