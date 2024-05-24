@@ -114,7 +114,7 @@ check4update() {
 	if [[ $install_deb == 1 ]]; then
 		echo "[*] downloading update files..."
 		rm -f ~/origami-kernel.deb
-		wget https://github.com/Rem01Gaming/origami_kernel_manager/releases/download/${latest_release}/origami-kernel.deb -O ~/origami-kernel.deb >/dev/null 2>&1
+		curl -o ~/origami-kernel.deb -L https://github.com/Rem01Gaming/origami_kernel_manager/releases/download/v1.0.8/origami-kernel.deb >/dev/null 2>&1
 		echo "[*] Installing update..."
 		apt remove origami-kernel -y >/dev/null 2>&1
 		apt install ~/origami-kernel.deb -y >/dev/null 2>&1
