@@ -27,7 +27,7 @@ mtk_videox_livedisplay() {
 	echo -e "Display color control for Mediatek devices\n"
 	echo -e "Use ( ↑ ↓ ) to increase or decrease value\nUse ( ← → ) to move\nUse HOME or END to exit\n"
 	echo -e "$(color_blocks)\n"
-	echo -e "${RED}Red\t${GREEN}Green\t${BLUE}Blue${NOCOLOR}"
+	echo -e "\033[0;31mRed\t\033[0;32mGreen\t\033[0;34mBlue\033[0m"
 
 	print_colors() {
 		printf "\r%s\t%s\t%s" "$R" "$G" "$B"
@@ -115,7 +115,7 @@ qcom_kcal() {
 	echo -e "Display color control for Snapdragon devices\n"
 	echo -e "Use ( ↑ ↓ ) to increase or decrease value\nUse ( ← → ) to move\nUse HOME or END to exit\n"
 	echo -e "$(color_blocks)\n"
-	echo -e "${RED}Red\t${GREEN}Green\t${BLUE}Blue${BLACKBGWHITE}\tInvert${NOCOLOR}\tSaturation${CYAN}\tHue\tVal\tContrast${NOCOLOR}"
+	echo -e "\033[0;31mRed\t\033[0;32mGreen\t\033[0;34mBlue\033[0m\tInvert\033[0m\tSaturation\033[0;36m\tHue\tVal\tContrast\033[0m"
 
 	print_colors() {
 		printf "\r%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" "$R" "$G" "$B" "$invert" "$sat" "$hue" "$val" "$cont"
