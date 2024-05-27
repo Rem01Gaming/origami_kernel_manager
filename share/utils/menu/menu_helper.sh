@@ -79,7 +79,7 @@ menu_value_tune() {
 		esac
 
 		chmod 644 $2 >/dev/null 2>&1
-		echo $number >${2} >/dev/null 2>&1
+		echo $number >$2 2>/dev/null
 		chmod 444 $2 >/dev/null 2>&1
 	done
 }
@@ -103,6 +103,6 @@ print_existing_folders() {
 
 apply() {
 	chmod 644 $2 >/dev/null 2>&1
-	echo $1 >$2 >/dev/null 2>&1
+	echo $1 >$2 2>/dev/null
 	chmod 444 $2 >/dev/null 2>&1
 }
