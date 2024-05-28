@@ -21,10 +21,10 @@ if ! hash fzf fzy 2>/dev/null; then
 	echo -e "\033[38;5;196m[!] hash fzf fzy\033[0m\n[-] Environment has missing dependencies" && exit 127
 fi
 
-# Check the root
-if [[ ! $(whoami) == "root" ]]; then
-	echo "[-] Please run Origami Kernel Manager as root" && exit 126
-fi
+# Dirty fix for check4update
+root_gid_hack() {
+	su -lp $SUDO_GID -c "$@"
+}
 
 source /data/data/com.termux/files/usr/share/origami-kernel/init/init_run.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/menu/menu_helper.sh
@@ -38,6 +38,7 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/misc/misc_util
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/battery/battery_util.sh
 
 LINE=$(stty size | awk '{print $2}')
+TERMUX_PATH="/data/data/com.termux/files/usr/bin"
 ANDROID=$(getprop ro.build.version.release)
 ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
 VENDOR=$(getprop "ro.product.manufacturer")
@@ -89,7 +90,7 @@ check4update() {
 	clear
 	echo "[*] Checking for new update..."
 
-	if [[ $(apt list) == *origami-kernel* ]]; then
+	if [[ $(root_gid_hack $TERMUX_PATH/apt list) == *origami-kernel* ]]; then
 		install_deb=1
 	fi >/dev/null 2>&1
 
@@ -106,7 +107,7 @@ check4update() {
 		read -p "New version is found, update now? [Y/n] " confirm_update
 
 		case $confirm_update in
-		y|Y) ;;
+		y | Y) ;;
 		*) return 0 ;;
 		esac
 	fi
@@ -114,10 +115,11 @@ check4update() {
 	if [[ $install_deb == 1 ]]; then
 		echo "[*] downloading update files..."
 		rm -f ~/origami-kernel.deb
-		curl -o ~/origami-kernel.deb -L https://github.com/Rem01Gaming/origami_kernel_manager/releases/download/v1.0.8/origami-kernel.deb >/dev/null 2>&1
+		curl -o ~/origami-kernel.deb -L https://github.com/Rem01Gaming/origami_kernel_manager/releases/download/$latest_release/origami-kernel.deb >/dev/null 2>&1
 		echo "[*] Installing update..."
-		apt remove origami-kernel -y >/dev/null 2>&1
-		apt install ~/origami-kernel.deb -y >/dev/null 2>&1
+		[ ! -f ~/origami-kernel.deb ] && echo "[-] Error while downloading update file" && exit 1
+		root_gid_hack $TERMUX_PATH/apt remove origami-kernel -y        >/dev/null 2>&1
+		root_gid_hack $TERMUX_PATH/apt install ~/origami-kernel.deb -y >/dev/null 2>&1
 		rm -f ~/origami-kernel.deb
 		echo "[+] Update successfully, please re-run origami-kernel."
 		exit 0
@@ -129,8 +131,8 @@ check4update() {
 		cd ~/.origami-kernel
 		git reset --hard $commit_hash
 		echo "[*] Installing update..."
-		make uninstall >/dev/null 2>&1
-		make install >/dev/null 2>&1
+		root_gid_hack $TERMUX_PATH/make uninstall >/dev/null 2>&1
+		root_gid_hack $TERMUX_PATH/make install >/dev/null 2>&1
 		cd $whereami
 		rm -rf ~/.origami-kernel
 		echo "[+] Update successfully, please re-run origami-kernel."
