@@ -92,7 +92,7 @@ if [[ $soc == "Qualcomm" ]] && [ -z $dram_devfreq_path ]; then
 
 	for path in ${dram_qcom_paths_array[@]}; do
 		if [ -d $path ]; then
-			dram_qcom_path="$path"
+			qcom_dram_path="$path"
 			break
 		fi
 	done
