@@ -18,12 +18,15 @@
 
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/mtk_dram.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/dram_devfreq.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/qcom_dram.sh
 
 dram_menu() {
 	if [ ! -z $dram_devfreq_path ]; then
 		dram_devfreq_menu
 	elif [ ! -z $mtk_dram_path ]; then
 		mtk_dram_menu
+	elif [ ! -z $qcom_dram_path ]; then
+		dram_qcom_menu
 	else
 		echo -e "\n[-] Interface (sysfs or procfs) of your DRAM is not supported"
 		echo "[*] Hit enter to back to main menu"

@@ -83,6 +83,21 @@ for path in ${dram_devfreq_paths_array[@]}; do
 	fi
 done
 
+# Check for Qualcomm DRAM path
+if [[ $soc == "Qualcomm" ]] && [ -z $dram_devfreq_path ]; then
+	dram_qcom_paths_array=(
+		"/sys/devices/system/cpu/bus_dcvs/DDR"
+		"/sys/devices/system/cpu/bus_dcvs/DDRQOS"
+	)
+
+	for path in ${dram_qcom_paths_array[@]}; do
+		if [ -d $path ]; then
+			dram_qcom_path="$path"
+			break
+		fi
+	done
+fi
+
 # Check for Mediatek's DRAM gebbrish implementation
 if [[ $soc == "Mediatek" ]] && [ -z $dram_devfreq_path ]; then
 	mtk_dram_paths_array=(
