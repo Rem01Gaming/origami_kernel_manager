@@ -17,14 +17,14 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 dram_qcom_set_freq() {
-	local freq=$(fzf_select "$(cat $dram_qcom_path/available_frequencies)" "Select ${1} freq: ")
-	for path in $dram_qcom_path/*/$1_freq; do
+	local freq=$(fzf_select "$(cat $qcom_dram_path/available_frequencies)" "Select ${1} freq: ")
+	for path in $qcom_dram_path/*/$1_freq; do
 		apply $freq $path
 	done
 }
 
 dram_qcom_set_boost_freq() {
-	apply $(fzf_select "$(cat $dram_qcom_path/available_frequencies)" "Select Governor: ") $dram_qcom_path/boost_freq
+	apply $(fzf_select "$(cat $qcom_dram_path/available_frequencies)" "Select Governor: ") $qcom_dram_path/boost_freq
 }
 
 dram_qcom_menu() {
@@ -32,8 +32,8 @@ dram_qcom_menu() {
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] DRAM Scalling freq: $(cat $dram_qcom_path/*/min_freq | head -1)KHz - $(cat $dram_qcom_path/*/max_freq | head -1)KHz"
-		echo -e "   /        /\\     [] DRAM Boost freq: $(cat $dram_qcom_path/boost_freq)KHz"
+		echo -e "    _________      [] DRAM Scalling freq: $(cat $qcom_dram_path/*/min_freq | head -1)KHz - $(cat $qcom_dram_path/*/max_freq | head -1)KHz"
+		echo -e "   /        /\\     [] DRAM Boost freq: $(cat $qcom_dram_path/boost_freq)KHz"
 		echo -e "  /        /  \\    "
 		echo -e ' /        /    \   '
 		echo -e '/________/      \  '
