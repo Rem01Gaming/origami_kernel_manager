@@ -105,49 +105,50 @@ mtk_eara_thermal_fake_throttle() {
 
 misc_menu() {
 	while true; do
+		header_info=()
 
 		if [ ! -z $dt2w_path ]; then
-			misc_menu_info="[] DT2W: $(cat $dt2w_path)//"
-			misc_menu_options="Double tap to wake\n"
+			header_info+=("[] DT2W: $(cat $dt2w_path)")
+			options="Double tap to wake\n"
 		fi
 
 		if [[ $soc == Mediatek ]] && [ -d /sys/kernel/thunderquake_engine ]; then
-			misc_menu_info="${misc_menu_info}[ϟ] Vibrator strength: $(cat /sys/kernel/thunderquake_engine/level)//"
-			misc_menu_options="${misc_menu_options}Vibration strength level\n"
+			header_info+=("[ϟ] Vibrator strength: $(cat /sys/kernel/thunderquake_engine/level)")
+			options="${options}Vibration strength level\n"
 		fi
 
 		if [ -f /proc/touchpanel/game_switch_enable ]; then
-			misc_menu_info="${misc_menu_info}[ϟ] Touchpanel game mode: $(cat /proc/touchpanel/game_switch_enable)//"
-			misc_menu_options="${misc_menu_options}Touchpanel game mode\n"
+			header_info+=("[ϟ] Touchpanel game mode: $(cat /proc/touchpanel/game_switch_enable)")
+			options="${options}Touchpanel game mode\n"
 		fi
 
 		if [ -f /proc/touchpanel/oplus_tp_limit_enable ]; then
-			misc_menu_info="${misc_menu_info}[] Touchpanel limit: $(cat /proc/touchpanel/oplus_tp_limit_enable)//"
-			misc_menu_options="${misc_menu_options}Touchpanel limit\n"
+			header_info+=("[] Touchpanel limit: $(cat /proc/touchpanel/oplus_tp_limit_enable)")
+			options="${options}Touchpanel limit\n"
 		fi
 
 		if [ -f /proc/touchpanel/oplus_tp_direction ]; then
-			misc_menu_info="${misc_menu_info}[] Touchpanel direction fix: $(cat /proc/touchpanel/oplus_tp_direction)//"
-			misc_menu_options="${misc_menu_options}Touchpanel direction fix\n"
+			header_info+=("[] Touchpanel direction fix: $(cat /proc/touchpanel/oplus_tp_direction)")
+			options="${options}Touchpanel direction fix\n"
 		fi
 
 		if [ -d /ppm/pbm ]; then
-			misc_menu_info="${misc_menu_info}[] MTK Power Budged: $(cat /proc/pbm/pbm_stop | awk '{print $3}')//"
-			misc_menu_options="${misc_menu_options}MTK Power Budged\n"
+			header_info+=("[] MTK Power Budged: $(cat /proc/pbm/pbm_stop | awk '{print $3}')")
+			options="${options}MTK Power Budged\n"
 		fi
 
 		if [ -d /proc/mtk_batoc_throttling ]; then
-			misc_menu_info="${misc_menu_info}[] MTK batoc Current limit: $(cat /proc/mtk_batoc_throttling/battery_oc_protect_stop)//"
-			misc_menu_options="${misc_menu_options}MTK batoc Current limit\n"
+			header_info+=("[] MTK batoc Current limit: $(cat /proc/mtk_batoc_throttling/battery_oc_protect_stop)")
+			options="${options}MTK batoc Current limit\n"
 		fi
 
 		if [ -d /sys/kernel/eara_thermal ]; then
-			misc_menu_info="${misc_menu_info}[] MTK Eara thermal: $(cat /sys/kernel/eara_thermal/enable)//"
-			misc_menu_options="${misc_menu_options}Enable Eara thermal\nFake throttle Eara thermal\n"
+			header_info+=("[] MTK Eara thermal: $(cat /sys/kernel/eara_thermal/enable)")
+			options="${options}Enable Eara thermal\nFake throttle Eara thermal\n"
 		fi
 
 		if [ -d /sys/module/mmdvfs_pmqos ]; then
-			misc_menu_options="${misc_menu_options}Set APUs freq (NO DVFS)\n"
+			options="${options}Set APUs freq (NO DVFS)\n"
 		fi
 
 		clear
@@ -155,22 +156,23 @@ misc_menu() {
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] Thermal Governor: $(chmod 0644 /sys/class/thermal/thermal_zone0/policy && cat /sys/class/thermal/thermal_zone0/policy)"
 		echo -e "   /        /\\     [] SELINUX: $(getenforce)"
-		echo -e "  /        /  \\    $(echo "$misc_menu_info" | awk -F '//' '{print $1}')"
-		echo -e " /        /    \\   $(echo "$misc_menu_info" | awk -F '//' '{print $2}')"
-		echo -e "/________/      \\  $(echo "$misc_menu_info" | awk -F '//' '{print $3}')"
-		echo -e "\\        \\      /  $(echo "$misc_menu_info" | awk -F '//' '{print $4}')"
-		echo -e " \\        \\    /   $(echo "$misc_menu_info" | awk -F '//' '{print $5}')"
-		echo -e "  \\        \\  /    $(echo "$misc_menu_info" | awk -F '//' '{print $6}')"
-		echo -e "   \\________\\/     $(echo "$misc_menu_info" | awk -F '//' '{print $7}')"
+		echo -e "  /        /  \\    ${header_info[0]}"
+		echo -e " /        /    \\   ${header_info[1]}"
+		echo -e "/________/      \\  ${header_info[2]}"
+		echo -e "\\        \\      /  ${header_info[3]}"
+		echo -e " \\        \\    /   ${header_info[4]}"
+		echo -e "  \\        \\  /    ${header_info[5]}"
+		echo -e "   \\________\\/     ${header_info[6]}"
 		echo -e "\n//////////////"
 		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
 		echo -e "[] Miscellaneous Settings\033[0m"
 
-		misc_menu_options="Set I/O Scheduler\nSet Thermal Governor\nSelinux mode\n$(echo $misc_menu_options)"
+		options="Set I/O Scheduler\nSet Thermal Governor\nSelinux mode\n$(echo $options)"
 
 		tput civis
+		unset header_info
 
-		case $(fzy_select "$(echo -e "$misc_menu_options")\nBack to main menu" "") in
+		case $(fzy_select "$options\nBack to main menu" "") in
 		"Set I/O Scheduler") io_sched_set ;;
 		"Set Thermal Governor") thermal_gov_set ;;
 		"Selinux mode") selinux_switch ;;
@@ -187,6 +189,6 @@ misc_menu() {
 		"Back to main menu") clear && return 0 ;;
 		esac
 
-		unset misc_menu_info misc_menu_options
+		unset options
 	done
 }

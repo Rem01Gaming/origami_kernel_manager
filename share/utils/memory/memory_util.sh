@@ -77,15 +77,15 @@ slmk_timeout() {
 
 memory_menu() {
 	while true; do
-		memory_menu_options="Memory drop cache\nSwappiness\nMinimum amount of free memory\nExtra free kbytes\nVFS Cache pressure\nOvercommit ratio\nDirty ratio\nDirty background ratio\nDirty writeback centisecs\nDirty expire centisecs\nKill allocating task\nLaptop mode\n"
+		options="Memory drop cache\nSwappiness\nMinimum amount of free memory\nExtra free kbytes\nVFS Cache pressure\nOvercommit ratio\nDirty ratio\nDirty background ratio\nDirty writeback centisecs\nDirty expire centisecs\nKill allocating task\nLaptop mode\n"
 
 		if [ -d /sys/kernel/mm/lru_gen ]; then
-			memory_menu_info="[] MGLRU mode: $(cat /sys/kernel/mm/lru_gen)\n"
-			memory_menu_options="${memory_menu_options}MGLRU mode\nMGLRU time-to-live\n"
+			header_info=("[] MGLRU mode: $(cat /sys/kernel/mm/lru_gen)")
+			options="${options}MGLRU mode\nMGLRU time-to-live\n"
 		fi
 
 		if [ -d /sys/module/simple_lmk ]; then
-			memory_menu_options="${memory_menu_options}Simple LMK minfree\nSimple LMK timeout\n"
+			options="${options}Simple LMK minfree\nSimple LMK timeout\n"
 		fi
 
 		clear
@@ -95,18 +95,19 @@ memory_menu() {
 		echo -e "   /        /\\     [] Laptop mode: $(cat /proc/sys/vm/laptop_mode)"
 		echo -e "  /        /  \\    [] Swappiness: $(cat /proc/sys/vm/swappiness)%"
 		echo -e " /        /    \\   [] Dirty Ratio: $(cat /proc/sys/vm/dirty_ratio)%"
-		echo -e "/________/      \\  $(echo "$memory_menu_info" | awk -F '//' '{print $1}')"
-		echo -e "\\        \\      /  $(echo "$memory_menu_info" | awk -F '//' '{print $2}')"
-		echo -e " \\        \\    /   $(echo "$memory_menu_info" | awk -F '//' '{print $3}')"
-		echo -e "  \\        \\  /    $(echo "$memory_menu_info" | awk -F '//' '{print $4}')"
-		echo -e "   \\________\\/     $(echo "$memory_menu_info" | awk -F '//' '{print $5}')"
+		echo -e "/________/      \\  ${header_info[0]}"
+		echo -e "\\        \\      /  ${header_info[2]}"
+		echo -e " \\        \\    /   ${header_info[3]}"
+		echo -e "  \\        \\  /    ${header_info[4]}"
+		echo -e "   \\________\\/     ${header_info[5]}"
 		echo -e "\n//////////////"
 		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
 		echo -e "[] Memory Settings\033[0m"
 
 		tput civis
+		unset header_info
 
-		case $(fzy_select "$(echo -e "$memory_menu_options")\nBack to main menu" "") in
+		case $(fzy_select "$options\nBack to main menu" "") in
 		"Memory drop cache") memory_drop_cache ;;
 		"Swappiness") memory_swappiness ;;
 		"Minimum amount of free memory") memory_min_free_kbytes ;;
@@ -124,6 +125,6 @@ memory_menu() {
 		"Back to main menu") clear && return 0 ;;
 		esac
 
-		unset memory_menu_info memory_menu_options
+		unset options
 	done
 }

@@ -212,53 +212,67 @@ mtk_cpu_volt_offset() {
 
 cpu_menu() {
 	while true; do
+		header_info=(
+			"[] CPU: ${chipset}"
+			"[] big.LITTLE: ${is_big_little}"
+		)
+
 		if [[ $is_big_little == 1 ]]; then
-			cpu_menu_info="[] big.LITTLE Clusters: ${nr_clusters}//[] Little Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//[] Big Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//"
+			header_info+=(
+				"[] big.LITTLE Clusters: ${nr_clusters}"
+				"[] Little Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz"
+				"[] Big Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz"
+			)
 
 			for policy in ${policy_folders[@]}; do
 				gov_tmp="${gov_tmp}$(cat $policy/scaling_governor) "
 			done
-			cpu_gov_info="[] Governor: ${gov_tmp}"
+			header_info+=("[] Governor: ${gov_tmp}")
 			unset gov_tmp
 
 			if [[ $nr_clusters == 3 ]]; then
-				cpu_menu_info="${cpu_menu_info}[] Prime Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz//"
+				header_info+=("[] Prime Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz")
 			fi
 		else
-			cpu_menu_info="[] Scaling freq: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)KHz//"
+			header_info=("[] Scaling freq: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)KHz")
 			cpu_gov_info="[] Governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
 		fi
 
-		cpu_menu_options="Set Governor\nGovernor parameter\nSet max freq\nSet min freq\nCPU Core control\n"
+		options="Set Governor\nGovernor parameter\nSet max freq\nSet min freq\nCPU Core control"
 
 		if [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
-			cpu_menu_info="${cpu_menu_info}[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')//[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)//[] CPU CCI mode: $(cat /proc/cpufreq/cpufreq_cci_mode)//"
-			cpu_menu_options="$(echo "$cpu_menu_options")Mediatek Performance and Power Management\nMediatek CCI mode\nMediatek Power mode\n"
+			header_info+=(
+				"[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')"
+				"[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)"
+				"[] CPU CCI mode: $(cat /proc/cpufreq/cpufreq_cci_mode)"
+			)
+			options="$options\nMediatek Performance and Power Management\nMediatek CCI mode\nMediatek Power mode"
 		fi
 
 		if [[ $soc == Mediatek ]] && [ -d /proc/eem ]; then
-			cpu_menu_options="$(echo "$cpu_menu_options")CPU Voltage offset\n"
+			options="$options\nCPU Voltage offset"
 		fi
 
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] CPU: ${chipset}"
-		echo -e "   /        /\\     $cpu_gov_info"
-		echo -e "  /        /  \\    [] big.LITTLE: ${is_big_little}"
-		echo -e " /        /    \\   $(echo "$cpu_menu_info" | awk -F '//' '{print $1}')"
-		echo -e "/________/      \\  $(echo "$cpu_menu_info" | awk -F '//' '{print $2}')"
-		echo -e "\\        \\      /  $(echo "$cpu_menu_info" | awk -F '//' '{print $3}')"
-		echo -e " \\        \\    /   $(echo "$cpu_menu_info" | awk -F '//' '{print $4}')"
-		echo -e "  \\        \\  /    $(echo "$cpu_menu_info" | awk -F '//' '{print $5}')"
-		echo -e "   \\________\\/     $(echo "$cpu_menu_info" | awk -F '//' '{print $6}')"
+		echo -e "    _________      ${header_info[0]}"
+		echo -e "   /        /\\     ${header_info[1]}"
+		echo -e "  /        /  \\    ${header_info[2]}"
+		echo -e " /        /    \\   ${header_info[3]}" | cut -c 1-${LINE}
+		echo -e "/________/      \\  ${header_info[4]}" | cut -c 1-${LINE}
+		echo -e "\\        \\      /  ${header_info[5]}" | cut -c 1-${LINE}
+		echo -e " \\        \\    /   ${header_info[6]}"
+		echo -e "  \\        \\  /    ${header_info[7]}"
+		echo -e "   \\________\\/     ${header_info[8]}"
 		echo -e "\n//////////////"
 		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
 		echo -e "[] CPU Control\033[0m"
 
 		tput civis
+		unset header_info
 
-		case $(fzy_select "$(echo -e "$cpu_menu_options")\nBack to main menu" "") in
+		case $(fzy_select "$options\nBack to main menu" "") in
 		"Set Governor") cpu_set_gov ;;
 		"Governor parameter") cpu_gov_param ;;
 		"Set max freq") cpu_set_freq max ;;
@@ -268,9 +282,9 @@ cpu_menu() {
 		"Mediatek CCI mode") mtk_cpufreq_cci_mode ;;
 		"Mediatek Power mode") mtk_cpufreq_power_mode ;;
 		"CPU Voltage offset") mtk_cpu_volt_offset ;;
-		"Back to main menu") clear && return 0 ;;
+		"Back to main menu") break ;;
 		esac
 
-		unset cpu_menu_info cpu_menu_options cpu_gov_info
+		unset options
 	done
 }

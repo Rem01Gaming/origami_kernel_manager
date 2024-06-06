@@ -35,7 +35,7 @@ esac
 cores=$(($(nproc --all) - 1))
 
 policy_folders=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
-nr_clusters=$(echo ${#policy_folders[@]})
+nr_clusters=${#policy_folders[@]}
 
 if [ $nr_clusters -gt 1 ]; then
 	is_big_little=1
