@@ -24,7 +24,7 @@ dram_qcom_set_freq() {
 }
 
 dram_qcom_set_boost_freq() {
-	apply $(fzf_select "$(cat $qcom_dram_path/available_frequencies)" "Select Governor: ") $qcom_dram_path/boost_freq
+	apply $(fzf_select "$(cat $qcom_dram_path/available_frequencies)" "Select boost frequency: ") $qcom_dram_path/boost_freq
 }
 
 dram_qcom_menu() {
