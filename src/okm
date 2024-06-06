@@ -161,12 +161,12 @@ main_menu() {
 		# Hide cursor
 		tput civis
 
-		case $(fzy_select "CPU control\nGPU control\nDRAM control\nMemory settings\nNetworking and Firewall settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nShow License\nCheck for update\nDonate me\nJoin my telegram channel\nExit" "") in
+		case $(fzy_select "CPU control\nGPU control\nDRAM control\nMemory settings\nNetworking settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nShow License\nCheck for update\nDonate me\nJoin my telegram channel\nExit" "") in
 		"CPU control") cpu_menu ;;
 		"GPU control") gpu_menu ;;
 		"DRAM control") dram_menu ;;
 		"Memory settings") memory_menu ;;
-		"Networking and Firewall settings") net_menu ;;
+		"Networking settings") net_menu ;;
 		"Miscellaneous settings") misc_menu ;;
 		"Charging controller") batt_menu ;;
 		"Display color calibration") disp_menu ;;

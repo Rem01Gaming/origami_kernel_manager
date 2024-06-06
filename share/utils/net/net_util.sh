@@ -106,7 +106,7 @@ net_menu() {
 		echo -e "   \\________\\/     [] TCP Timestamps: $(cat /proc/sys/net/ipv4/tcp_timestamps)"
 		echo -e "\n//////////////"
 		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
-		echo -e "[] Networking and Firewall Settings\033[0m"
+		echo -e "[] Networking Settings\033[0m"
 
 		tput civis
 
