@@ -107,7 +107,7 @@ test_chg_switches() {
 				average_current=$(echo "${current_samples[@]}" | awk '{ sum += $1; n++ } END { if (n > 0) print sum / n; else print "0" }')
 				unset current_samples
 
-				if ((average_current <= 52)); then
+				if ((average_current <= 80)); then
 					echo -e "[+] Switch $node_path is working !"
 					echo -e "$(cat "$chg_switches_path" 2>/dev/null)\n${switch}" >"$chg_switches_path"
 				else
