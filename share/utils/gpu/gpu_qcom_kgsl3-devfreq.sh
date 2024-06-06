@@ -88,7 +88,7 @@ gpu_qcom_kgsl3-devfreq_menu() {
 		"Adreno Idle Workload") adreno_idler_workload ;;
 		"Adreno Wait Idle") adreno_idler_wait ;;
 		"Adreno Idle Differential") adreno_idler_down_diferential ;;
-		"Back to main menu") clear && return 0 ;;
+		"Back to main menu") break ;;
 		esac
 
 		unset options

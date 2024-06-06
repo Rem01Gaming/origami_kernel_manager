@@ -36,7 +36,7 @@ gpu_qcom_kgsl3_menu() {
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] GPU: ${gpu}" | cut -c 1-${LINE}
-		echo -e "   /        /\\     [] GPU Scalling freq: $(cat $gpu_min_freq) - $(cat $gpu_max_freq_path)"
+		echo -e "   /        /\\     [] GPU Scalling freq: $(cat $gpu_min_freq)KHz - $(cat $gpu_max_freq_path)KHz" | cut -c 1-${LINE}
 		echo -e "  /        /  \\    [] GPU Governor: $(cat $gpu_governor_path)"
 		echo -e ' /        /    \   '
 		echo -e '/________/      \  '
@@ -53,7 +53,7 @@ gpu_qcom_kgsl3_menu() {
 		case $(fzy_select "Set max freq\nSet min freq\nSet Governor\nBack to main menu" "") in
 		"Set max freq") gpu_qcom_kgsl3_set_max_freq ;;
 		"Set Governor") gpu_qcom_kgsl3_set_gov ;;
-		"Back to main menu") clear && return 0 ;;
+		"Back to main menu") break ;;
 		esac
 	done
 }

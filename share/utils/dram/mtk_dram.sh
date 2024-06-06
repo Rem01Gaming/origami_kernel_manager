@@ -45,7 +45,7 @@ mtk_dram_menu() {
 
 		case $(fzy_select "Set freq (NO DVFS)\nBack to main menu" "") in
 		"Set freq (NO DVFS)") mtk_dram_set_freq ;;
-		"Back to main menu") clear && break ;;
+		"Back to main menu") break ;;
 		esac
 
 		unset mtk_dram_menu_info mtk_dram_menu_options

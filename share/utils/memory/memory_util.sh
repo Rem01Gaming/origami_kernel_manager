@@ -122,7 +122,7 @@ memory_menu() {
 		"Laptop mode") laptop_mode ;;
 		"Simple LMK minfree") slmk_minfree ;;
 		"Simple LMK timeout") slmk_timeout ;;
-		"Back to main menu") clear && return 0 ;;
+		"Back to main menu") break ;;
 		esac
 
 		unset options

@@ -32,7 +32,7 @@ dram_qcom_menu() {
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] DRAM Scalling freq: $(cat $qcom_dram_path/*/min_freq | head -1)KHz - $(cat $qcom_dram_path/*/max_freq | head -1)KHz"
+		echo -e "    _________      [] DRAM Scalling freq: $(cat $qcom_dram_path/*/min_freq | head -1)KHz - $(cat $qcom_dram_path/*/max_freq | head -1)KHz" | cut -c 1-${LINE}
 		echo -e "   /        /\\     [] DRAM Boost freq: $(cat $qcom_dram_path/boost_freq)KHz"
 		echo -e "  /        /  \\    "
 		echo -e ' /        /    \   '
@@ -51,7 +51,7 @@ dram_qcom_menu() {
 		"Set max freq") dram_qcom_set_freq max ;;
 		"Set min freq") dram_qcom_set_freq min ;;
 		"Set boost freq") dram_qcom_set_boost_freq ;;
-		"Back to main menu") clear && break ;;
+		"Back to main menu") break ;;
 		esac
 
 		unset dram_menu_info dram_menu_options

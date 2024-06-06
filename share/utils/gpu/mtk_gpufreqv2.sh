@@ -71,7 +71,7 @@ mtk_gpufreqv2_menu() {
 		"GED GPU DVFS") mtk_ged_dvfs ;;
 		"GED Boost") mtk_ged_boost ;;
 		"GED GPU boost") mtk_ged_gpu_boost ;;
-		"Back to main menu") clear && return 0 ;;
+		"Back to main menu") break ;;
 		esac
 	done
 }

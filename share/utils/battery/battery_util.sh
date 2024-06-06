@@ -207,7 +207,7 @@ batt_menu() {
 		"Test charging switches") test_chg_switches ;;
 		"Enable idle charging") do_idle_chg ;;
 		"Change charging switch") change_use_chg_switch ;;
-		"Back to main menu") clear && return 0 ;;
+		"Back to main menu") break ;;
 		esac
 	done
 }

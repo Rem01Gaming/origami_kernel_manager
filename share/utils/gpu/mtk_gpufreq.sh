@@ -89,7 +89,7 @@ mtk_gpufreq_menu() {
 		"GED GPU boost") mtk_ged_gpu_boost ;;
 		"GED Game Mode") mtk_ged_game_mode ;;
 		"GPU Power limit settings") mtk_gpu_power_limit ;;
-		"Back to main menu") clear && return 0 ;;
+		"Back to main menu") break ;;
 		esac
 	done
 }
