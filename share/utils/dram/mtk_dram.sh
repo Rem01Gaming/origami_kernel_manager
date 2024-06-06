@@ -47,7 +47,5 @@ mtk_dram_menu() {
 		"Set freq (NO DVFS)") mtk_dram_set_freq ;;
 		"Back to main menu") break ;;
 		esac
-
-		unset mtk_dram_menu_info mtk_dram_menu_options
 	done
 }

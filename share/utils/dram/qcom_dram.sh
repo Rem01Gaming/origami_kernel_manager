@@ -53,7 +53,5 @@ dram_qcom_menu() {
 		"Set boost freq") dram_qcom_set_boost_freq ;;
 		"Back to main menu") break ;;
 		esac
-
-		unset dram_menu_info dram_menu_options
 	done
 }
