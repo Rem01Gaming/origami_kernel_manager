@@ -50,7 +50,5 @@ dram_devfreq_menu() {
 		"Set Governor") dram_devfreq_set_gov ;;
 		"Back to main menu") break ;;
 		esac
-
-		unset dram_menu_info dram_menu_options
 	done
 }
