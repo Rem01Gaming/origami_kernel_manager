@@ -73,7 +73,7 @@ fi
 # Check for Devfreq DRAM path
 dram_devfreq_paths_array=(
 	"/sys/class/devfreq/mtk-dvfsrc-devfreq"
-	"/sys/devices/platform/soc/1c00f000.dvfsrc/mtk-dvfsrc-devfreq/devfreq/mtk-dvfsrc-devfreq"
+	"$(find /sys/devices/platform/soc -name "*.dvfsrc")/mtk-dvfsrc-devfreq/devfreq/mtk-dvfsrc-devfreq"
 	"/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw"
 )
 
@@ -102,7 +102,7 @@ fi
 # Check for Mediatek's DRAM gebbrish implementation
 if [[ $soc == "Mediatek" ]] && [ -z $dram_devfreq_path ]; then
 	mtk_dram_paths_array=(
-		"/sys/devices/platform/10012000.dvfsrc/helio-dvfsrc"
+		"$(find /sys/devices/platform -name "*.dvfsrc")/helio-dvfsrc"
 		"/sys/kernel/helio-dvfsrc"
 	)
 
