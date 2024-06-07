@@ -47,10 +47,23 @@ fi
 # GPU info
 gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
 
+gpu_devfreq_paths_array=(
+	"$(find /sys/class/devfreq "*.mali")"
+)
+
+for path in ${gpu_devfreq_paths_array[@]}; do
+	if [ -d $path ]; then
+		gpu_devfreq_path="$path"
+		break
+	fi
+done
+
 if [ -d /proc/gpufreq ]; then
 	gpu_node_id=1
 elif [ -d /proc/gpufreqv2 ]; then
 	gpu_node_id=2
+elif [ ! -z $gpu_devfreq_path ]; then
+	gpu_node_id=0
 elif [ -d /sys/devices/platform/kgsl-2d0.0/kgsl ]; then
 	gpu_node_id=3
 elif [ -d /sys/devices/platform/kgsl-3d0.0/kgsl ]; then

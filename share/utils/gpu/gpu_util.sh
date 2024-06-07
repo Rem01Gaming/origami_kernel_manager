@@ -16,6 +16,7 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_devfreq.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/mtk_gpufreq.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/mtk_gpufreqv2.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_tegra.sh
@@ -34,6 +35,7 @@ gpu_menu() {
 		clear && main_menu
 	else
 		case $gpu_node_id in
+		0) gpu_devfreq_menu ;;
 		1) mtk_gpufreq_menu ;;
 		2) mtk_gpufreqv2_menu ;;
 		3) gpu_qcom_kgsl2_menu ;;
