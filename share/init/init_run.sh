@@ -52,7 +52,7 @@ gpu_devfreq_paths_array=(
 )
 
 for path in ${gpu_devfreq_paths_array[@]}; do
-	if [ -d $path ]; then
+	if [ -d $path ] && [ -f $path/governor ]; then
 		gpu_devfreq_path="$path"
 		break
 	fi
@@ -89,7 +89,7 @@ dram_devfreq_paths_array=(
 )
 
 for path in ${dram_devfreq_paths_array[@]}; do
-	if [ -d $path ]; then
+	if [ -d $path ] && [ -f $path/governor ]; then
 		dram_devfreq_path="$path"
 		break
 	fi
