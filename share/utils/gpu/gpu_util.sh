@@ -28,7 +28,7 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_powerv
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_generic.sh
 
 gpu_menu() {
-	if [[ $is_gpu_unsupported == 1 ]]; then
+	if [ -z $gpu_node_id ]; then
 		echo -e "\n[-] Interface (sysfs or procfs) of your GPU is not supported"
 		echo "[*] Hit enter to back to main menu"
 		read -r -s

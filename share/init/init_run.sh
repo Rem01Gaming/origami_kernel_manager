@@ -78,8 +78,6 @@ elif [ -d /sys/devices/platform/dfrgx/devfreq ]; then
 	gpu_node_id=8
 elif [ -d /sys/kernel/gpu ]; then
 	gpu_node_id=9
-else
-	is_gpu_unsupported=1
 fi
 
 # DRAM info
