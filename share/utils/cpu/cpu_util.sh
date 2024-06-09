@@ -223,16 +223,16 @@ cpu_menu() {
 				"[] Little Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz"
 				"[] Big Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz"
 			)
+			
+			if [[ $nr_clusters == 3 ]]; then
+				header_info+=("[] Prime Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz")
+			fi
 
 			for policy in ${policy_folders[@]}; do
 				gov_tmp="${gov_tmp}$(cat $policy/scaling_governor) "
 			done
 			header_info+=("[] Governor: ${gov_tmp}")
 			unset gov_tmp
-
-			if [[ $nr_clusters == 3 ]]; then
-				header_info+=("[] Prime Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster2} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz")
-			fi
 		else
 			header_info=("[] Scaling freq: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)KHz")
 			cpu_gov_info="[] Governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)"
