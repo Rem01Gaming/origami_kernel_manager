@@ -181,6 +181,7 @@ mtk_eara_thermal_fake_throttle() {
 
 misc_menu() {
 	while true; do
+		unset_headvar
 		header_info=()
 
 		if [ ! -z $dt2w_path ]; then
@@ -246,7 +247,6 @@ misc_menu() {
 		options="Set I/O Scheduler\nSet Thermal Governor\nSelinux mode\n$(echo $options)"
 
 		tput civis
-		unset header_info
 
 		case $(fzy_select "$options\nBack to main menu" "") in
 		"Set I/O Scheduler") io_sched_set ;;
@@ -264,7 +264,5 @@ misc_menu() {
 		"Fake throttle Eara thermal") mtk_eara_thermal_fake_throttle ;;
 		"Back to main menu") break ;;
 		esac
-
-		unset options
 	done
 }

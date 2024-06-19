@@ -150,6 +150,7 @@ slmk_timeout() {
 
 memory_menu() {
 	while true; do
+		unset_headvar
 		options="Memory drop cache\nSwappiness\nMinimum amount of free memory\nExtra free kbytes\nVFS Cache pressure\nOvercommit ratio\nDirty ratio\nDirty background ratio\nDirty writeback centisecs\nDirty expire centisecs\nKill allocating task\nLaptop mode\n"
 
 		if [ -d /sys/kernel/mm/lru_gen ]; then

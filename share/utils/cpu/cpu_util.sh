@@ -294,6 +294,7 @@ mtk_cpu_volt_offset() {
 
 cpu_menu() {
 	while true; do
+		unset_headvar
 		header_info=(
 			"[] CPU: ${chipset}"
 			"[] big.LITTLE: ${is_big_little}"
@@ -352,7 +353,6 @@ cpu_menu() {
 		echo -e "[] CPU Control\033[0m"
 
 		tput civis
-		unset header_info
 
 		case $(fzy_select "$options\nBack to main menu" "") in
 		"Set Governor") cpu_set_gov ;;
@@ -366,7 +366,5 @@ cpu_menu() {
 		"CPU Voltage offset") mtk_cpu_volt_offset ;;
 		"Back to main menu") break ;;
 		esac
-
-		unset options
 	done
 }

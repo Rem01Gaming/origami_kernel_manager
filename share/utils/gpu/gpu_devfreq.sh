@@ -43,6 +43,7 @@ gpu_devfreq_set_gov() {
 
 gpu_devfreq_menu() {
 	while true; do
+		unset_headvar
 		header_info=(
 			"[] GPU: ${gpu}"
 			"[] GPU Scalling freq: $(cat ${gpu_devfreq_path}/max_freq)KHz - $(cat ${gpu_devfreq_path}/min_freq)KHz"
@@ -79,7 +80,6 @@ gpu_devfreq_menu() {
 		echo -e "[] GPU Control\033[0m"
 
 		tput civis
-		unset header_info
 
 		case $(fzy_select "$options\nBack to main menu" "") in
 		"Set max freq") gpu_devfreq_set_freq max ;;
@@ -94,7 +94,5 @@ gpu_devfreq_menu() {
 		"Adreno Idle Differential") adreno_idler_down_diferential ;;
 		"Back to main menu") break ;;
 		esac
-
-		unset options
 	done
 }

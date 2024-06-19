@@ -104,3 +104,8 @@ print_existing_folders() {
 		echo "${existing_folders[*]}"
 	fi
 }
+
+unset_headvar() {
+	unset options
+	unset header_info
+}
