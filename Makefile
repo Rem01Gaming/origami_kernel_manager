@@ -40,7 +40,7 @@ install:
 	@printf "  ﾉノ㇏ Ｖ ﾉ|ﾉ\n"
 	@printf "        ⠁⠁\n"
 	@printf "\033[1;38;2;254;228;208m[+] origami-kernel installed, run with 'okm'\033[0m\n"
-
+	
 uninstall:
 	rm -f $(PREFIX)/bin/okm $(PREFIX)/bin/origami-sudo
 	rm -rf $(PREFIX)/share/origami-kernel
@@ -49,7 +49,7 @@ uninstall:
 install-dependence:
 	@echo "\033[1;38;2;254;228;208m[+] Installing dependencines...\033[0m"
 	@apt install root-repo -y
-	@apt install fzf fzy git jq  -y
+	@apt install fzf fzy git jq sqlite  -y
 
 pack-deb:
 	@mkdir -v $(O)

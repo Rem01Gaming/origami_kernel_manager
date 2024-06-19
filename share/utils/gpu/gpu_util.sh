@@ -23,8 +23,6 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_tegra.
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_omap.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_qcom_kgsl2.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_qcom_kgsl3.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_qcom_kgsl3-devfreq.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_powervr.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_generic.sh
 
 gpu_menu() {
@@ -40,11 +38,9 @@ gpu_menu() {
 		2) mtk_gpufreqv2_menu ;;
 		3) gpu_qcom_kgsl2_menu ;;
 		4) gpu_qcom_kgsl3_menu ;;
-		5) gpu_qcom_kgsl3-devfreq_menu ;;
-		6) gpu_omap_menu ;;
-		7) gpu_tegra_menu ;;
-		8) gpu_powervr_menu ;;
-		9) gpu_generic_menu ;;
+		5) gpu_omap_menu ;;
+		6) gpu_tegra_menu ;;
+		7) gpu_generic_menu ;;
 		esac
 	fi
 }

@@ -17,17 +17,22 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 # Check dependencies
-if ! hash fzf fzy 2>/dev/null; then
-	echo -e "\033[38;5;196m[!] hash fzf fzy\033[0m\n[-] Environment has missing dependencies" && exit 127
+if ! hash fzf fzy jq curl sqlite3; then
+	echo -e "[-] Environment has missing dependencies" && exit 127
 fi
+
+[ ! -d /data/origami-kernel ] && mkdir /data/origami-kernel
 
 # Dirty fix for check4update
 root_gid_hack() {
 	su -lp $SUDO_GID -c "$@"
 }
 
-source /data/data/com.termux/files/usr/share/origami-kernel/init/init_run.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/menu/menu_helper.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/menu_helper.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/database_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/settings.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/exec_storedcmd.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/cpu/cpu_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/dram_util.sh
@@ -46,8 +51,13 @@ VERSION="v1.1.0"
 
 trap "tput cnorm" EXIT
 
+if [ $(sql_query "SELECT execstoredcmd FROM tb_info;") -eq 1 ] && [ ! -f /dev/okm-execstoredcmd ] && [ $(risk_acceptence) -eq 1 ]; then
+	init_execstoredcmd
+	touch /dev/okm-execstoredcmd
+fi
+
 # User agreement
-if [ ! -f /data/origami-kernel/agreed ]; then
+if [ $(risk_acceptence) -eq 0 ]; then
 	clear
 	echo -e "Origami Kernel Manager ${VERSION}"
 	echo -e "Copyright (c) 2023-2024 Rem01Gaming\n"
@@ -55,7 +65,7 @@ if [ ! -f /data/origami-kernel/agreed ]; then
 	echo -e "Origami Kernel Manager offers advanced root functions that could potentially harm your device if used incorrectly or in combination with other software, tweaks, or modules. Please be cautious as Origami Kernel Manager does not take responsibility for any damages resulting from the misuse of this software.\n\nIf you are not well-versed in how root access functions, it's advisable to refrain from utilizing the root options until you have a complete understanding of the associated risks.\n\nThis software is licensed under the GNU General Public License v3.0. It comes with NO WARRANTY AND LIABILITY. By using this software, you acknowledge and accept full responsibility for its use. You agree that any actions taken with this software that negatively impact your device are not the responsibility of the developer.\n\n" | fold -s -w ${LINE}
 	read -p "Type 'I AGREE' to continue: " a1
 	case $a1 in
-	"I AGREE") mkdir /data/origami-kernel && touch /data/origami-kernel/agreed ;;
+	"I AGREE") accept_risk ;;
 	*) clear && echo -e "\033[38;5;196m[-] Not agreed, Aborted.\033[0m" && exit 0 ;;
 	esac
 fi
@@ -118,7 +128,7 @@ check4update() {
 		curl -o ~/origami-kernel.deb -L https://github.com/Rem01Gaming/origami_kernel_manager/releases/download/$latest_release/origami-kernel.deb >/dev/null 2>&1
 		echo "[*] Installing update..."
 		[ ! -f ~/origami-kernel.deb ] && echo "[-] Error while downloading update file" && exit 1
-		root_gid_hack $TERMUX_PATH/apt remove origami-kernel -y        >/dev/null 2>&1
+		root_gid_hack $TERMUX_PATH/apt remove origami-kernel -y >/dev/null 2>&1
 		root_gid_hack $TERMUX_PATH/apt install ~/origami-kernel.deb -y >/dev/null 2>&1
 		rm -f ~/origami-kernel.deb
 		echo "[+] Update successfully, please re-run origami-kernel."
@@ -161,7 +171,7 @@ main_menu() {
 		# Hide cursor
 		tput civis
 
-		case $(fzy_select "CPU control\nGPU control\nDRAM control\nMemory settings\nNetworking settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nShow License\nCheck for update\nDonate me\nJoin my telegram channel\nExit" "") in
+		case $(fzy_select "CPU control\nGPU control\nDRAM control\nMemory settings\nNetworking settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nOKM Settings\nShow License\nCheck for update\nDonate me\nJoin my telegram channel\nExit" "") in
 		"CPU control") cpu_menu ;;
 		"GPU control") gpu_menu ;;
 		"DRAM control") dram_menu ;;
@@ -170,6 +180,7 @@ main_menu() {
 		"Miscellaneous settings") misc_menu ;;
 		"Charging controller") batt_menu ;;
 		"Display color calibration") disp_menu ;;
+		"OKM Settings") settings_menu ;;
 		"Show License") show_license ;;
 		"Check for update") check4update ;;
 		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel >/dev/null 2>&1 ;;

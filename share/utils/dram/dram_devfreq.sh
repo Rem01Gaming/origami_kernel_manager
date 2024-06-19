@@ -17,11 +17,25 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 dram_devfreq_set_freq() {
-	apply $(fzf_select "$(cat ${dram_devfreq_path}/available_frequencies)" "Select ${1} freq: ") ${dram_devfreq_path}/${1}_freq
+	if [[ $1 == "-exec" ]]; then
+		local freq=$2
+		local max_min=$3
+	else
+		local max_min=$1
+		local freq=$(fzf_select "$(cat ${dram_devfreq_path}/available_frequencies)" "Select $max_min freq: ")
+		command2db dram.devfreq.${max_min}_freq "dram_devfreq_set_freq -exec $freq $max_min" FALSE
+	fi
+	apply $freq ${dram_devfreq_path}/${max_min}_freq
 }
 
 dram_devfreq_set_gov() {
-	apply $(fzf_select "$(cat ${dram_devfreq_path}/available_governors)" "Select Governor: ") ${dram_devfreq_path}/governor
+	if [[ $1 == "-exec" ]]; then
+		local selected_gov=$2
+	else
+		local selected_gov=$(fzf_select "$(cat ${dram_devfreq_path}/available_governors)" "Select Governor: ")
+		command2db dram.devfreq.governor "dram_devfreq_set_gov -exec $selected_gov" FALSE
+	fi
+	apply $selected_gov ${dram_devfreq_path}/governor
 }
 
 dram_devfreq_menu() {

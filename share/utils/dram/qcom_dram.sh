@@ -17,14 +17,27 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 dram_qcom_set_freq() {
-	local freq=$(fzf_select "$(cat $qcom_dram_path/available_frequencies)" "Select ${1} freq: ")
-	for path in $qcom_dram_path/*/$1_freq; do
+	if [[ $1 == "-exec" ]]; then
+		local freq=$2
+		local max_min=$3
+	else
+		local max_min=$1
+		local freq=$(fzf_select "$(cat $qcom_dram_path/available_frequencies)" "Select $max_min freq: ")
+		command2db dram.qcom.${max_min}_freq "dram_qcom_set_freq -exec $freq $max_min" FALSE
+	fi
+	for path in $qcom_dram_path/*/${max_min}_freq; do
 		apply $freq $path
 	done
 }
 
 dram_qcom_set_boost_freq() {
-	apply $(fzf_select "$(cat $qcom_dram_path/available_frequencies)" "Select boost frequency: ") $qcom_dram_path/boost_freq
+	if [[ $1 == "-exec" ]]; then
+		local freq=$2
+	else
+		local freq=$(fzf_select "$(cat $qcom_dram_path/available_frequencies)" "Select boost frequency: ")
+		command2db dram.qcom.boost_freq "dram_qcom_set_boost_freq -exec $freq" FALSE
+	fi
+	apply $freq $qcom_dram_path/boost_freq
 }
 
 dram_qcom_menu() {

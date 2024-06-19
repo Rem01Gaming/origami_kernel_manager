@@ -17,8 +17,13 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 thermal_gov_set() {
-	chmod 0644 /sys/class/thermal/thermal_zone0/available_policies
-	local thermal_policy=$(fzf_select "$(cat /sys/class/thermal/thermal_zone0/available_policies)" "Select Thermal governor (apply globally): ")
+	if [[ $1 == "-exec" ]]; then
+		local thermal_policy=$2
+	else
+		chmod 0644 /sys/class/thermal/thermal_zone0/available_policies
+		local thermal_policy=$(fzf_select "$(cat /sys/class/thermal/thermal_zone0/available_policies)" "Select Thermal governor (apply globally): ")
+		command2db thermal.governor "thermal_gov_set -exec $thermal_policy" FALSE
+	fi
 	for thermal in $(ls /sys/class/thermal); do
 		if [ -f /sys/class/thermal/${thermal}/policy ]; then
 			apply $thermal_policy /sys/class/thermal/${thermal}/policy
@@ -27,77 +32,148 @@ thermal_gov_set() {
 }
 
 io_sched_set() {
-	local block_target=$(fzf_select "$(print_existing_folders /sys/block mmcblk0 mmcblk1 $(echo sd{a..z}) dm-0)" "Select block you wanted to change I/O sched: ")
-	apply $(fzf_select "$(cat /sys/block/${block_target}/queue/scheduler | sed 's/\[//g; s/\]//g')" "Select I/O Scheduler: ") /sys/block/${block_target}/queue/scheduler
+	if [[ $1 == "-exec" ]]; then
+		local block_target=$2
+		local io_sched=$3
+	else
+		local block_target=$(fzf_select "$(print_existing_folders /sys/block mmcblk0 mmcblk1 $(echo sd{a..z}) dm-0)" "Select block you wanted to change I/O sched: ")
+		local io_sched=$(fzf_select "$(cat /sys/block/${block_target}/queue/scheduler | sed 's/\[//g; s/\]//g')" "Select I/O Scheduler: ")
+		command2db io.scheduler "io_sched_set -exec $block_target $io_sched" FALSE
+	fi
+	apply $io_sched /sys/block/${block_target}/queue/scheduler
 }
 
 dt2w_switch() {
-	case $(fzf_select "Enable Disable" "Double tap to wake: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable" "Double tap to wake: ")
+		command2db dt2w.switch "dt2w_switch -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply 1 $dt2w_path ;;
 	Disable) apply 0 $dt2w_path ;;
 	esac
 }
 
 selinux_switch() {
-	case $(fzf_select "enforcing permissive" "Selinux mode: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "enforcing permissive" "Selinux mode: ")
+		command2db selinux.mode "selinux_switch -exec $selected" FALSE
+	fi
+	case $selected in
 	enforcing) setenforce 1 ;;
 	permissive) setenforce 0 ;;
 	esac
 }
 
 touchpanel_game_mode() {
-	case $(fzf_select "Enable Disable" "Touchpanel Game mode: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable" "Touchpanel Game mode: ")
+		command2db oplus.tp.game_switch_enable "touchpanel_game_mode -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply 1 /proc/touchpanel/game_switch_enable ;;
 	Disable) apply 0 /proc/touchpanel/game_switch_enable ;;
 	esac
 }
 
 touchpanel_limit() {
-	case $(fzf_select "Enable Disable" "Touchpanel limit: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable" "Touchpanel limit: ")
+		command2db oplus.tp.limit_enable "touchpanel_limit -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply 1 /proc/touchpanel/oplus_tp_limit_enable ;;
 	Disable) apply 0 /proc/touchpanel/oplus_tp_limit_enable ;;
 	esac
 }
 
 touchpanel_direction_fix() {
-	case $(fzf_select "Enable Disable" "Touchpanel direction fix: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable" "Touchpanel direction fix: ")
+		command2db oplus.tp.direction "touchpanel_direction_fix -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply 1 /proc/touchpanel/oplus_tp_direction ;;
 	Disable) apply 0 /proc/touchpanel/oplus_tp_direction ;;
 	esac
 }
 
 mtk_vibrator_ctrl() {
-	menu_value_tune "Mediatek Vibrator control\nSet strength of vibration globally on Mediatek devices" /sys/kernel/thunderquake_engine/level $(cat /sys/kernel/thunderquake_engine/max) $(cat /sys/kernel/thunderquake_engine/min) 1
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /sys/kernel/thunderquake_engine/level
+	else
+		menu_value_tune "Mediatek Vibrator control\nSet strength of vibration globally on Mediatek devices" /sys/kernel/thunderquake_engine/level $(cat /sys/kernel/thunderquake_engine/max) $(cat /sys/kernel/thunderquake_engine/min) 1
+		command2db mtk.thunderquake_engine "mtk_vibrator_ctrl -exec $number" FALSE
+	fi
 }
 
 mtk_pbm_switch() {
-	case $(fzf_select "Enable Disable" "Mediatek Power Budget Management:  ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable" "Mediatek Power Budget Management:  ")
+		command2db mtk.pbm.switch "mtk_pbm_switch -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply "stop 0" /proc/pbm/pbm_stop ;;
 	Disable) apply "stop 1" /proc/pbm/pbm_stop ;;
 	esac
 }
 
 mtk_apu_set_freq() {
-	opp_selected=$(fzf_select_n "$(seq -1 $(cat /sys/module/mmdvfs_pmqos/parameters/dump_setting | grep -o '\[[^]]*\]' | grep -oE '[+-]?[0-9]+' | sort -n | tail -n 1))" "Select frequency for APUs (NO DVFS) :  ")
+	if [[ $1 == "-exec" ]]; then
+		local opp_selected=$2
+	else
+		local opp_selected=$(fzf_select_n "$(seq -1 $(cat /sys/module/mmdvfs_pmqos/parameters/dump_setting | grep -o '\[[^]]*\]' | grep -oE '[+-]?[0-9]+' | sort -n | tail -n 1))" "Select frequency for APUs (NO DVFS) :  ")
+		command2db mtk.apu.freq "mtk_apu_set_freq -exec $selected" TRUE
+	fi
 	apply $opp_selected /sys/module/mmdvfs_pmqos/parameters/force_step
 }
 
 mtk_batoc_current_limit() {
-	case $(fzf_select "Enable Disable" "Mediatek's batoc Current limit:  ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable" "Mediatek's batoc Current limit:  ")
+		command2db mtk.batoc_current_limit.switch "mtk_batoc_current_limit -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply "stop 0" /proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
 	Disable) apply "stop 1" /proc/mtk_batoc_throttling/battery_oc_protect_stop ;;
 	esac
 }
 
 mtk_eara_thermal_switch() {
-	case $(fzf_select "Enable Disable" "Enable Eara thermal:  ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable" "Enable Eara thermal:  ")
+		command2db mtk.eara_thermal.switch "mtk_eara_thermal_switch -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply "1" /sys/kernel/eara_thermal/enable ;;
 	Disable) apply "0" /sys/kernel/eara_thermal/enable ;;
 	esac
 }
 
 mtk_eara_thermal_fake_throttle() {
-	case $(fzf_select "Enable Disable" "Fake throttle Eara thermal:  ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable" "Fake throttle Eara thermal:  ")
+		command2db mtk.eara_thermal.fake_throttle "mtk_eara_thermal_fake_throttle -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply "1" /sys/kernel/eara_thermal/fake_throttle ;;
 	Disable) apply "0" /sys/kernel/eara_thermal/fake_throttle ;;
 	esac

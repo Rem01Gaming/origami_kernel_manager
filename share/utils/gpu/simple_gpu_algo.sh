@@ -17,16 +17,32 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 simple_gpu_switch() {
-	case $(fzf_select "Disable Enable" "Simple GPU Algorithm: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Disable Enable" "Simple GPU Algorithm: ")
+		command2db gpu.simple_gpu_algo.switch "simple_gpu_switch -exec $selected" FALSE
+	fi
+	case $selected in
 	Disable) apply 0 /sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate ;;
 	Enable) apply 1 /sys/module/simple_gpu_algorithm/parameters/simple_gpu_activate ;;
 	esac
 }
 
 simple_gpu_laziness() {
-	menu_value_tune "Simple GPU Laziness\nThis increases the threshold to ramp up or down GPU frequencies. The lower it is, the more performance you get." /sys/module/simple_gpu_algorithm/parameters/simple_laziness 10 0 1
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /sys/module/simple_gpu_algorithm/parameters/simple_laziness
+	else
+		menu_value_tune "Simple GPU Laziness\nThis increases the threshold to ramp up or down GPU frequencies. The lower it is, the more performance you get." /sys/module/simple_gpu_algorithm/parameters/simple_laziness 10 0 1
+		command2db gpu.simple_gpu_algo.laziness "simple_gpu_laziness -exec $number" FALSE
+	fi
 }
 
 simple_gpu_ramp_threshold() {
-	menu_value_tune "Simple GPU Ramp threshold\nThis increases the number of times the GPU governor ramp down requests. The higher it is, the more performance you get." /sys/module/simple_gpu_algorithm/parameters/simple_ramp_threshold 10 0 1
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /sys/module/simple_gpu_algorithm/parameters/simple_ramp_threshold
+	else
+		menu_value_tune "Simple GPU Ramp threshold\nThis increases the number of times the GPU governor ramp down requests. The higher it is, the more performance you get." /sys/module/simple_gpu_algorithm/parameters/simple_ramp_threshold 10 0 1
+		command2db gpu.simple_gpu_algo.ramp_theshold "simple_gpu_ramp_threshold -exec $number" FALSE
+	fi
 }

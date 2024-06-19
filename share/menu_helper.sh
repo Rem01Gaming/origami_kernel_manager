@@ -32,6 +32,12 @@ fzy_select() {
 	echo $selected_option
 }
 
+apply() {
+	chmod 644 $2 >/dev/null 2>&1
+	echo $1 >$2 2>/dev/null
+	chmod 444 $2 >/dev/null 2>&1
+}
+
 color_blocks() {
 	colors=(
 		"\e[48;5;0m   \e[0m" "\e[48;5;1m   \e[0m" "\e[48;5;2m   \e[0m" "\e[48;5;3m   \e[0m"
@@ -52,10 +58,10 @@ color_blocks() {
 menu_value_tune() {
 	echo
 	echo -e "${1}" | fold -s -w ${LINE}
-	echo -e "\nUse ( ↑ ↓ ) to increase or decrease value\nUse HOME or END to exit\n"
+	echo -e "\nUse ( ↑ ↓ ) to increase or decrease value\nUse HOME or END to exit.\n"
 
 	number=$(cat ${2})
-	x=${5}
+	local x=${5}
 
 	print_number() {
 		printf "\r%s%s" "value: " "$number   "
@@ -75,12 +81,10 @@ menu_value_tune() {
 				((number -= x))
 			fi
 			;;
-		*) break ;;
+		H | F) break ;;
 		esac
 
-		chmod 644 $2 >/dev/null 2>&1
-		echo $number >$2 2>/dev/null
-		chmod 444 $2 >/dev/null 2>&1
+		apply $number $2
 	done
 }
 
@@ -99,10 +103,4 @@ print_existing_folders() {
 	if [ ! ${#existing_folders[@]} -eq 0 ]; then
 		echo "${existing_folders[*]}"
 	fi
-}
-
-apply() {
-	chmod 644 $2 >/dev/null 2>&1
-	echo $1 >$2 2>/dev/null
-	chmod 444 $2 >/dev/null 2>&1
 }

@@ -49,6 +49,9 @@ gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n'
 
 gpu_devfreq_paths_array=(
 	"$(find /sys/class/devfreq "*.mali" -print -quit 2>/dev/null)"
+	"/sys/devices/platform/dfrgx/devfreq/dfrgx"
+	"/sys/class/kgsl/kgsl-3d0/devfreq"
+	"$(find /sys/class/devfreq "*kgsl-3d0" -print -quit 2>/dev/null)"
 )
 
 for path in ${gpu_devfreq_paths_array[@]}; do
@@ -62,22 +65,18 @@ if [ -d /proc/gpufreq ]; then
 	gpu_node_id=1
 elif [ -d /proc/gpufreqv2 ]; then
 	gpu_node_id=2
-elif [ ! -z $gpu_devfreq_path ]; then
+elif [ -d $gpu_devfreq_path ]; then # Compensate for Mediatek devices. Mali devfreq interface still exists on Mediatek devices, it just don't fucking work because they injected gpufreq and ged trash into mali driver.
 	gpu_node_id=0
 elif [ -d /sys/devices/platform/kgsl-2d0.0/kgsl ]; then
 	gpu_node_id=3
 elif [ -d /sys/devices/platform/kgsl-3d0.0/kgsl ]; then
 	gpu_node_id=4
-elif [ -d /sys/class/kgsl/kgsl-3d0 ]; then
-	gpu_node_id=5
 elif [ -d /sys/devices/platform/omap/pvrsrvkm.0 ]; then
-	gpu_node_id=6
+	gpu_node_id=5
 elif [ -d /sys/kernel/tegra_gpu ]; then
-	gpu_node_id=7
-elif [ -d /sys/devices/platform/dfrgx/devfreq ]; then
-	gpu_node_id=8
+	gpu_node_id=6
 elif [ -d /sys/kernel/gpu ]; then
-	gpu_node_id=9
+	gpu_node_id=7
 fi
 
 # DRAM info
@@ -110,7 +109,7 @@ if [[ $soc == "Qualcomm" ]] && [ -z $dram_devfreq_path ]; then
 	done
 fi
 
-# Check for Mediatek's DRAM gebbrish implementation
+# Check for Mediatek's DRAM implementation
 if [[ $soc == "Mediatek" ]] && [ -z $dram_devfreq_path ]; then
 	mtk_dram_paths_array=(
 		"$(find /sys/devices/platform -name "*.dvfsrc" -print -quit 2>/dev/null)/helio-dvfsrc"

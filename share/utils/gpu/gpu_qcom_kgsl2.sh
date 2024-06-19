@@ -17,11 +17,23 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 gpu_qcom_kgsl2_set_max_freq() {
-	apply $(fzf_select "$gpu_available_freqs" "Select ${1} freq: ") $gpu_max_freq_path
+	if [[ $1 == "-exec" ]]; then
+		local freq=$2
+	else
+		local freq=$(fzf_select "$gpu_available_freqs" "Select max freq: ")
+		command2db gpu.qcom.kgsl2.max_freq "gpu_qcom_kgsl2_set_max_freq -exec $freq" FALSE
+	fi
+	apply $freq $gpu_max_freq_path
 }
 
 gpu_qcom_kgsl2_set_gov() {
-	apply $(fzf_select "$gpu_available_governors" "Select Governor: ") $gpu_governor_path
+	if [[ $1 == "-exec" ]]; then
+		local selected_gov=$2
+	else
+		local selected_gov=$(fzf_select "$gpu_available_governors" "Select Governor: ")
+		command2db gpu.qcom.kgsl2.governor "gpu_qcom_kgsl2_set_gov -exec $selected_gov" FALSE
+	fi
+	apply $selected_gov $gpu_governor_path
 }
 
 gpu_qcom_kgsl2_menu() {

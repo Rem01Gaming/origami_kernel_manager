@@ -17,11 +17,19 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 gpu_tegra_set_freq() {
-	case $1 in
+	if [[ $1 == "-exec" ]]; then
+		local freq=$2
+		local max_min=$3
+	else
+		local max_min=$1
+		local freq=$(fzf_select "$gpu_available_freqs" "Select $max_min freq: ")
+		command2db gpu.tegra.${max_min}_freq "gpu_tegra_set_freq -exec $freq $max_min" FALSE
+	fi
+	case $max_min in
 	max) local node_path=$gpu_max_freq_path ;;
 	min) local node_path=$gpu_min_freq_path ;;
 	esac
-	apply $(fzf_select "$gpu_available_freqs" "Select ${1} freq: ") $node_path
+	apply $freq $node_path
 }
 
 gpu_tegra_menu() {

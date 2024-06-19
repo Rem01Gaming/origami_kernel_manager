@@ -17,62 +17,135 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 memory_drop_cache() {
-	echo $(fzf_select "0 1 2 3" "Memory drop cache mode: ") >/proc/sys/vm/drop_caches
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "0 1 2 3" "Memory drop cache mode: ")
+		command2db vm.drop_cache "memory_drop_cache -exec $selected" FALSE
+	fi
+	echo $selected >/proc/sys/vm/drop_caches
 }
 
 memory_swappiness() {
-	menu_value_tune "Swappiness\ndetermines how often the operating system swaps data from RAM to the swap space on the disk." /proc/sys/vm/swappiness 200 0 1
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/vm/swappiness
+	else
+		menu_value_tune "Swappiness\ndetermines how often the operating system swaps data from RAM to the swap space on the disk." /proc/sys/vm/swappiness 200 0 1
+		command2db vm.swappiness "memory_swappiness -exec $number" FALSE
+	fi
 }
 
 memory_min_free_kbytes() {
-	menu_value_tune "Minimum amount of free memory\nminimum amount of free memory (in kilobytes) that should always be available to the system." /proc/sys/vm/min_free_kbytes 22520 128 8
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/vm/min_free_kbytes
+	else
+		menu_value_tune "Minimum amount of free memory\nminimum amount of free memory (in kilobytes) that should always be available to the system." /proc/sys/vm/min_free_kbytes 22520 128 8
+		command2db vm.min_free_kbytes "memory_min_free_kbytes -exec $number" FALSE
+	fi
 }
 
 memory_extra_free_kbytes() {
-	menu_value_tune "Extra free kbytes\nadditional buffer of free memory (in kilobytes) reserved for critical system tasks." /proc/sys/vm/extra_free_kbytes 100520 128 24
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/vm/extra_free_kbytes
+	else
+		menu_value_tune "Extra free kbytes\nadditional buffer of free memory (in kilobytes) reserved for critical system tasks." /proc/sys/vm/extra_free_kbytes 100520 128 24
+		command2db vm.extra_free_kbytes "memory_extra_free_kbytes -exec $number" FALSE
+	fi
 }
 
 memory_vfs_cache_pressure() {
-	menu_value_tune "VFS Cache pressure\naggressively the system reclaims memory used for file system metadata." /proc/sys/vm/vfs_cache_pressure 1024 8 2
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/vm/vfs_cache_pressure
+	else
+		menu_value_tune "VFS Cache pressure\naggressively the system reclaims memory used for file system metadata." /proc/sys/vm/vfs_cache_pressure 1024 8 2
+		command2db vm.vfs_cache_pressure "memory_vfs_cache_pressure -exec $number" FALSE
+	fi
 }
 
 memory_overcommit_ratio() {
-	menu_value_tune "Overcommit ratio\ninfluences the system's willingness to allocate more memory than physically available." /proc/sys/vm/overcommit_ratio 100 0 1
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/vm/overcommit_ratio
+	else
+		menu_value_tune "Overcommit ratio\ninfluences the system's willingness to allocate more memory than physically available." /proc/sys/vm/overcommit_ratio 100 0 1
+		command2db vm.overcommit_ratio "memory_overcommit_ratio -exec $number" FALSE
+	fi
 }
 
 memory_dirty_ratio() {
-	menu_value_tune "Dirty ratio\nmaximum percentage of system memory that can be filled with "dirty" pages." /proc/sys/vm/dirty_ratio 100 0 1
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/vm/dirty_ratio
+	else
+		menu_value_tune "Dirty ratio\nmaximum percentage of system memory that can be filled with "dirty" pages." /proc/sys/vm/dirty_ratio 100 0 1
+		command2db vm.dirty_ratio "memory_dirty_ratio -exec $number" FALSE
+	fi
 }
 
 memory_dirty_background_ratio() {
-	menu_value_tune "Dirty background ratio\nmaximum percentage of system memory that can be filled with "dirty" pages before the background process starts writing them to the disk." /proc/sys/vm/dirty_background_ratio 100 0 1
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/vm/dirty_background_ratio
+	else
+		menu_value_tune "Dirty background ratio\nmaximum percentage of system memory that can be filled with "dirty" pages before the background process starts writing them to the disk." /proc/sys/vm/dirty_background_ratio 100 0 1
+		command2db vm.dirty_background_ratio "memory_dirty_background_ratio -exec $number" FALSE
+	fi
 }
 
 memory_dirty_writeback_centisecs() {
-	menu_value_tune "Dirty writeback centisecs\ndetermines the interval in centiseconds between background processes checking and writing "dirty" data (modified but unsaved) to the disk." /proc/sys/vm/dirty_writeback_centisecs 10000 10 10
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/vm/dirty_writeback_centisecs
+	else
+		menu_value_tune "Dirty writeback centisecs\ndetermines the interval in centiseconds between background processes checking and writing "dirty" data (modified but unsaved) to the disk." /proc/sys/vm/dirty_writeback_centisecs 10000 10 10
+		command2db vm.dirty_writeback_centisecs "memory_dirty_writeback_centisecs -exec $number" FALSE
+	fi
 }
 
 memory_dirty_expire_centisecs() {
-	menu_value_tune "Dirty expire centisecs\nmaximum age in centiseconds for "dirty" pages (modified but unsaved data) in the system." /proc/sys/vm/dirty_expire_centisecs 10000 10 10
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/vm/dirty_expire_centisecs
+	else
+		menu_value_tune "Dirty expire centisecs\nmaximum age in centiseconds for "dirty" pages (modified but unsaved data) in the system." /proc/sys/vm/dirty_expire_centisecs 10000 10 10
+		command2db vm.dirty_expire_centisecs "memory_dirty_expire_centisecs -exec $number" FALSE
+	fi
 }
 
 laptop_mode() {
-	apply $(fzf_select "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" "Laptop mode: ") /proc/sys/vm/laptop_mode
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15" "Laptop mode: ")
+		command2db vm.laptop_mode "laptop_mode -exec $selected" FALSE
+	fi
+	apply $selected /proc/sys/vm/laptop_mode
 }
 
 oom_kill_alloc() {
-	case $(fzf_select "Yes No" "Kill allocating task: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Yes No" "Kill allocating task: ")
+		command2db vm.oom_kill_allocating_task "oom_kill_alloc -exec $selected" FALSE
+	fi
+	case $selected in
 	Yes) apply 1 /proc/sys/vm/oom_kill_allocating_task ;;
 	No) apply 0 /proc/sys/vm/oom_kill_allocating_task ;;
 	esac
 }
 
 slmk_minfree() {
-	menu_value_tune "Simple LMK minfree\nfree at least this much memory per reclaim." /sys/module/simple_lmk/parameters/slmk_minfree 512 8 2
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /sys/module/simple_lmk/parameters/slmk_minfree
+	else
+		menu_value_tune "Simple LMK minfree\nfree at least this much memory per reclaim." /sys/module/simple_lmk/parameters/slmk_minfree 512 8 2
+		command2db simple_lmk.minfree "slmk_minfree -exec $number" FALSE
+	fi
 }
 
 slmk_timeout() {
-	menu_value_tune "Simple LMK timeout\nwait until all of the victims it kills have their memory freed." /sys/module/simple_lmk/parameters/slmk_timeout 1000 50 2
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /sys/module/simple_lmk/parameters/slmk_timeout
+	else
+		menu_value_tune "Simple LMK timeout\nwait until all of the victims it kills have their memory freed." /sys/module/simple_lmk/parameters/slmk_timeout 1000 50 2
+		command2db simple_lmk.timeout "slmk_timeout -exec $number" FALSE
+	fi
 }
 
 memory_menu() {

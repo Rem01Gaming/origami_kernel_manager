@@ -17,33 +17,67 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 tcp_congestion_change() {
-	apply $(fzf_select "$(cat /proc/sys/net/ipv4/tcp_available_congestion_control)" "Select TCP Congestion: ") /proc/sys/net/ipv4/tcp_congestion_control
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "$(cat /proc/sys/net/ipv4/tcp_available_congestion_control)" "Select TCP Congestion: ")
+		command2db net.ipv4.tcp_congestion_control "tcp_congestion_change -exec $selected" FALSE
+	fi
+	apply $selected /proc/sys/net/ipv4/tcp_congestion_control
 }
 
 tcp_low_latency() {
-	case $(fzf_select "Enable Disable" "TCP Low latency mode: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable" "TCP Low latency mode: ")
+		command2db net.ipv4.tcp_low_latency "tcp_low_latency -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply 1 /proc/sys/net/ipv4/tcp_low_latency ;;
 	Disable) apply 0 /proc/sys/net/ipv4/tcp_low_latency ;;
 	esac
 }
 
 tcp_syncookies() {
-	case $(fzf_select "Enable Disable" "SYN Cookies: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable" "SYN Cookies: ")
+		command2db net.ipv4.tcp_syncookies "tcp_syncookies -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply 1 /proc/sys/net/ipv4/tcp_syncookies ;;
 	Disable) apply 0 /proc/sys/net/ipv4/tcp_syncookies ;;
 	esac
 }
 
 tcp_max_syn_backlog() {
-	menu_value_tune "TCP Max SYN Backlog\ndetermines the maximum number of pending connection requests (SYN requests) that can be held in the queue before the system starts rejecting new connection attempts." /proc/sys/net/ipv4/tcp_max_syn_backlog 32400 128 2
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/net/ipv4/tcp_max_syn_backlog
+	else
+		menu_value_tune "TCP Max SYN Backlog\ndetermines the maximum number of pending connection requests (SYN requests) that can be held in the queue before the system starts rejecting new connection attempts." /proc/sys/net/ipv4/tcp_max_syn_backlog 32400 128 2
+		command2db net.ipv4.tcp_max_syn_backlog "tcp_max_syn_backlog -exec $number" FALSE
+	fi
 }
 
 tcp_keepalive_time() {
-	menu_value_tune "TCP Keepalive time\nDetermine how long a TCP connection should remain idle before the operating system sends a keepalive probe to check if the connection is still active." /proc/sys/net/ipv4/tcp_keepalive_time 32400 128 2
+	if [[ $1 == "-exec" ]]; then
+		apply $2 /proc/sys/net/ipv4/tcp_keepalive_time
+	else
+		menu_value_tune "TCP Keepalive time\nDetermine how long a TCP connection should remain idle before the operating system sends a keepalive probe to check if the connection is still active." /proc/sys/net/ipv4/tcp_keepalive_time 32400 128 2
+		command2db net.ipv4.tcp_keepalive_time "tcp_keepalive_time -exec $number" FALSE
+	fi
 }
 
 tcp_reuse_socket() {
-	case $(fzf_select "Enable Disable enable-for-loopback-traffic-only" "TCP Reuse socket: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Enable Disable enable-for-loopback-traffic-only" "TCP Reuse socket: ")
+		command2db net.ipv4.tcp_tw_reuse "tcp_reuse_socket -exec $selected" FALSE
+	fi
+	case $selected in
 	Enable) apply 1 /proc/sys/net/ipv4/tcp_tw_reuse ;;
 	Disable) apply 0 /proc/sys/net/ipv4/tcp_tw_reuse ;;
 	enable-for-loopback-traffic-only) apply 2 /proc/sys/net/ipv4/tcp_tw_reuse ;;
@@ -51,39 +85,56 @@ tcp_reuse_socket() {
 }
 
 tcp_ecn() {
-	case $(fzf_select "0 1 2" "TCP Explicit Congestion Notification (ECN): ") in
-	0) apply 0 /proc/sys/net/ipv4/tcp_ecn ;;
-	1) apply 1 /proc/sys/net/ipv4/tcp_ecn ;;
-	2) apply 2 /proc/sys/net/ipv4/tcp_ecn ;;
-	esac
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "0 1 2" "TCP Explicit Congestion Notification (ECN): ")
+		command2db net.ipv4.tcp_ecn "tcp_ecn -exec $selected" FALSE
+	fi
+	apply $selected /proc/sys/net/ipv4/tcp_ecn
 }
 
 tcp_fastopen() {
-	case $(fzf_select "0 1 2 3" "TCP Fastopen (TFO): ") in
-	0) apply 0 /proc/sys/net/ipv4/tcp_fastopen ;;
-	1) apply 1 /proc/sys/net/ipv4/tcp_fastopen ;;
-	2) apply 2 /proc/sys/net/ipv4/tcp_fastopen ;;
-	3) apply 3 /proc/sys/net/ipv4/tcp_fastopen ;;
-	esac
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "0 1 2 3" "TCP Fastopen (TFO): ")
+		command2db net.ipv4.tcp_fastopen "tcp_fastopen -exec $selected" FALSE
+	fi
+	apply $selected /proc/sys/net/ipv4/tcp_fastopen
 }
 
 tcp_sack() {
-	case $(fzf_select "Disable Enable" "TCP Select Acknowledgments (SACKS): ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Disable Enable" "TCP Select Acknowledgments (SACKS): ")
+		command2db net.ipv4.tcp_sack "tcp_sack -exec $selected" FALSE
+	fi
+	case $selected in
 	Disable) apply 0 /proc/sys/net/ipv4/tcp_sack ;;
 	Enable) apply 1 /proc/sys/net/ipv4/tcp_sack ;;
 	esac
 }
 
 tcp_timestamps() {
-	case $(fzf_select "0 1 2" "TCP Timestamps: ") in
-	0) apply 0 /proc/sys/net/ipv4/tcp_timestamps ;;
-	1) apply 1 /proc/sys/net/ipv4/tcp_timestamps ;;
-	2) apply 2 /proc/sys/net/ipv4/tcp_timestamps ;;
-	esac
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "0 1 2" "TCP Timestamps: ")
+		command2db net.ipv4.tcp_timestamps "tcp_timestamps -exec $selected" FALSE
+	fi
+	apply $selected /proc/sys/net/ipv4/tcp_timestamps
 }
 
 bpf_jit_harden() {
-	case $(fzf_select "Disable enable-for-unprivileged-users enable-for-all-users" "BPF JIT harden: ") in
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Disable enable-for-unprivileged-users enable-for-all-users" "BPF JIT harden: ")
+		command2db net.core.bpf_jit_harden "bpf_jit_harden -exec $selected" FALSE
+	fi
+	case $selected in
 	enable-for-all-users) apply 2 /proc/sys/net/core/bpf_jit_harden ;;
 	enable-for-unprivileged-users) apply 1 /proc/sys/net/core/bpf_jit_harden ;;
 	Disable) apply 0 /proc/sys/net/core/bpf_jit_harden ;;
