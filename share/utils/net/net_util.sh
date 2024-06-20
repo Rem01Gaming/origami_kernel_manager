@@ -26,19 +26,6 @@ tcp_congestion_change() {
 	apply $selected /proc/sys/net/ipv4/tcp_congestion_control
 }
 
-tcp_low_latency() {
-	if [[ $1 == "-exec" ]]; then
-		local selected=$2
-	else
-		local selected=$(fzf_select "Enable Disable" "TCP Low latency mode: ")
-		command2db net.ipv4.tcp_low_latency "tcp_low_latency -exec $selected" FALSE
-	fi
-	case $selected in
-	Enable) apply 1 /proc/sys/net/ipv4/tcp_low_latency ;;
-	Disable) apply 0 /proc/sys/net/ipv4/tcp_low_latency ;;
-	esac
-}
-
 tcp_syncookies() {
 	if [[ $1 == "-exec" ]]; then
 		local selected=$2
@@ -147,23 +134,22 @@ net_menu() {
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] TCP Congestion: $(cat /proc/sys/net/ipv4/tcp_congestion_control)" | cut -c 1-${LINE}
-		echo -e "   /        /\\     [ϟ] TCP Low Latency: $(cat /proc/sys/net/ipv4/tcp_low_latency)"
-		echo -e "  /        /  \\    [] TCP SYN Cookies: $(cat /proc/sys/net/ipv4/tcp_syncookies)"
-		echo -e " /        /    \\   [] BPF JIT harden: $(cat /proc/sys/net/core/bpf_jit_harden)"
-		echo -e "/________/      \\  [] TCP Reuse socket: $(cat /proc/sys/net/ipv4/tcp_tw_reuse)"
-		echo -e "\\        \\      /  [] TCP ECN: $(cat /proc/sys/net/ipv4/tcp_ecn)"
-		echo -e " \\        \\    /   [ϟ] TCP Fastopen: $(cat /proc/sys/net/ipv4/tcp_fastopen)"
-		echo -e "  \\        \\  /    [] TCP SACK: $(cat /proc/sys/net/ipv4/tcp_sack)"
-		echo -e "   \\________\\/     [] TCP Timestamps: $(cat /proc/sys/net/ipv4/tcp_timestamps)"
+		echo -e "   /        /\\     [] TCP SYN Cookies: $(cat /proc/sys/net/ipv4/tcp_syncookies)"
+		echo -e "  /        /  \\    [] BPF JIT harden: $(cat /proc/sys/net/core/bpf_jit_harden)"
+		echo -e " /        /    \\   [] TCP Reuse socket: $(cat /proc/sys/net/ipv4/tcp_tw_reuse)"
+		echo -e "/________/      \\  [] TCP ECN: $(cat /proc/sys/net/ipv4/tcp_ecn)"
+		echo -e "\\        \\      /  [ϟ] TCP Fastopen: $(cat /proc/sys/net/ipv4/tcp_fastopen)"
+		echo -e " \\        \\    /   [] TCP SACK: $(cat /proc/sys/net/ipv4/tcp_sack)"
+		echo -e "  \\        \\  /    [] TCP Timestamps: $(cat /proc/sys/net/ipv4/tcp_timestamps)"
+		echo -e "   \\________\\/     "
 		echo -e "\n//////////////"
 		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
 		echo -e "[] Networking Settings\033[0m"
 
 		tput civis
 
-		case $(fzy_select "Change TCP Congestion algorithm\nTCP Low latency mode\nTCP SYN Cookies\nTCP Max SYN backlog\nTCP Keep alive time\nTCP Reuse socket\nTCP Explicit Congestion Notification\nTCP Fastopen\nTCP Select Acknowledgments\nTCP Timestamps\nBPF JIT harden\nBack to main menu" "") in
+		case $(fzy_select "Change TCP Congestion algorithm\nTCP SYN Cookies\nTCP Max SYN backlog\nTCP Keep alive time\nTCP Reuse socket\nTCP Explicit Congestion Notification\nTCP Fastopen\nTCP Select Acknowledgments\nTCP Timestamps\nBPF JIT harden\nBack to main menu" "") in
 		"Change TCP Congestion algorithm") tcp_congestion_change ;;
-		"TCP Low latency mode") tcp_low_latency ;;
 		"TCP SYN Cookies") tcp_syncookies ;;
 		"TCP Max SYN backlog") tcp_max_syn_backlog ;;
 		"TCP Keep alive time") tcp_keepalive_time ;;
