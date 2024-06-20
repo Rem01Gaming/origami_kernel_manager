@@ -79,6 +79,17 @@ execstoredcmd_risky_switch() {
 	esac
 }
 
+clear_storedcmd() {
+	clear
+	tput civis
+	echo -e "\nClear stored settings on database?\n\nThis will clear all stored commands for Apply previous settings feature. only clear it if you find some weird behavior that you don't wanted." | fold -s -w ${LINE}
+	local selected=$(fzy_select "Proceed\nAbort" "")
+	case $selected in
+	Proceed) sql_query "DELETE FROM tb_storecmd;" ;;
+	Abort) ;;
+	esac
+}
+
 settings_menu() {
 	while true; do
 		clear
@@ -100,9 +111,10 @@ settings_menu() {
 		# Hide cursor
 		tput civis
 
-		case $(fzy_select "Apply previous settings\nAllow risky execution\nBack to main menu" "") in
+		case $(fzy_select "Apply previous settings\nAllow risky execution\nClear stored settings on database\nBack to main menu" "") in
 		"Apply previous settings") execstoredcmd_switch ;;
 		"Allow risky execution") execstoredcmd_risky_switch ;;
+		"Clear stored settings on database") clear_storedcmd ;;
 		"Back to main menu") break ;;
 		esac
 	done
