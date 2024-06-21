@@ -18,7 +18,8 @@
 
 # Check dependencies
 if ! hash fzf fzy jq curl sqlite3; then
-	echo -e "[-] Environment has missing dependencies" && exit 127
+	echo -e "[-] Environment has missing dependencies"
+	exit 127
 fi
 
 [ ! -d /data/origami-kernel ] && mkdir /data/origami-kernel
@@ -66,7 +67,11 @@ if [ $(risk_acceptence) -eq 0 ]; then
 	read -p "Type 'I AGREE' to continue: " a1
 	case $a1 in
 	"I AGREE") accept_risk ;;
-	*) clear && echo -e "\033[38;5;196m[-] Not agreed, Aborted.\033[0m" && exit 0 ;;
+	*)
+		clear
+		echo -e "\033[38;5;196m[-] Not agreed, Aborted.\033[0m"
+		exit 0
+		;;
 	esac
 fi
 
@@ -90,10 +95,24 @@ Rem01Gaming <Rem01_Gaming@proton.me>
 }
 
 donate() {
-	case $(fzf_select "Saweria Buymeacoffee" "Select donate platform: ") in
-	"Saweria") nohup /system/bin/am start -a android.intent.action.VIEW -d https://saweria.co/Rem01Gaming >/dev/null 2>&1 ;;
-	"Buymeacoffee") nohup /system/bin/am start -a android.intent.action.VIEW -d https://www.buymeacoffee.com/Rem01Gaming >/dev/null 2>&1 ;;
-	esac
+	# Use the ip-api.com JSON API to get geolocation data
+	GEO_DATA=$(curl -s "http://ip-api.com/json")
+
+	if [ $? -gt 0 ]; then
+		echo -e "\n[-] No internet nor http://ip-api.com access"
+		echo "[*] Hit enter to back to main menu"
+		read -r -s
+	fi
+
+	# Extract the country value from the JSON response
+	COUNTRY=$(echo "${GEO_DATA}" | jq -r '.countryCode')
+
+	# Check if the country is Indonesia or Philippines
+	if [ "$COUNTRY" == "ID" ] || [ "$COUNTRY" == "PH" ]; then
+		nohup /system/bin/am start -a android.intent.action.VIEW -d https://saweria.co/Rem01Gaming >/dev/null 2>&1
+	else
+		nohup /system/bin/am start -a android.intent.action.VIEW -d https://www.buymeacoffee.com/Rem01Gaming >/dev/null 2>&1
+	fi
 }
 
 check4update() {
