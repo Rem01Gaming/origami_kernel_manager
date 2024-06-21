@@ -102,6 +102,7 @@ donate() {
 		echo -e "\n[-] No internet nor http://ip-api.com access"
 		echo "[*] Hit enter to back to main menu"
 		read -r -s
+		return $?
 	fi
 
 	# Extract the country value from the JSON response
