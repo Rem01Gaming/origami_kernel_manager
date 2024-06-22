@@ -82,10 +82,13 @@ execstoredcmd_risky_switch() {
 clear_storedcmd() {
 	clear
 	tput civis
-	echo -e "\nClear stored settings on database?\n\nThis will clear all stored commands for Apply previous settings feature. only clear it if you find some weird behavior that you don't wanted." | fold -s -w ${LINE}
+	echo -e "\nClear stored settings on database?\n\nThis will clear all stored commands for Apply previous settings feature and Battery utils. only clear it if you find some weird behavior that you don't wanted." | fold -s -w ${LINE}
 	local selected=$(fzy_select "Proceed\nAbort" "")
 	case $selected in
-	Proceed) sql_query "DELETE FROM tb_storecmd;" ;;
+	Proceed)
+		sql_query "DELETE FROM tb_storecmd;"
+		sql_query "DELETE FROM tb_idlechg;"
+		;;
 	Abort) ;;
 	esac
 }
