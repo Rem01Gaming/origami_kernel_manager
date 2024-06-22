@@ -25,6 +25,7 @@ sql_query() {
 if [ ! -f $database_path ]; then
 	sql_query "CREATE TABLE tb_storecmd (id TEXT PRIMARY KEY, command TEXT NOT NULL, risky BOOLEAN NOT NULL);"
 	sql_query "CREATE TABLE tb_info (risk_acceptence BOOLEAN NOT NULL, execstoredcmd BOOLEAN NOT NULL, execstoredcmd_risky BOOLEAN NOT NULL);"
+	sql_query "CREATE TABLE tb_idlechg (idle_switch TEXT NOT NULL, enable_val TEXT NOT NULL, disable_val TEXT NOT NULL, used BOOLEAN NOT NULL);"
 	sql_query "INSERT INTO tb_info (risk_acceptence, execstoredcmd, execstoredcmd_risky) VALUES (FALSE, FALSE, FALSE);"
 	sql_query "PRAGMA auto_vacuum = FULL;"
 fi

@@ -25,10 +25,6 @@ battery_level_node="${battery_node_path}/capacity"
 battery_health_node="${battery_node_path}/health"
 battery_type_node="${battery_node_path}/technology"
 
-# Origami battery data path
-chg_switches_path="/data/origami-kernel/chg_switches"
-use_chg_switch_path="/data/origami-kernel/use_chg_switch"
-
 # get charging current_now
 # if current unit is microamps (μA), divine with 1000
 get_charging_current_now() {
@@ -76,8 +72,7 @@ test_chg_switches() {
 		read -r -s
 	else
 		# Nuke tested switches before test
-		rm -f "$chg_switches_path"
-		rm -f "$use_chg_switch_path"
+		sql_query "DELETE FROM tb_idlechg;"
 
 		if [ $(cat $current_now_node | tr -d '-') -gt 10000 ]; then
 			# current unit is microamps
@@ -90,7 +85,7 @@ test_chg_switches() {
 			local idle_val=$(echo "$switch" | awk '{print $3}' | sed 's/::/ /g')
 			if [ -f $node_path ]; then
 				echo "[*] Testing switch: ${switch}"
-				chmod +x $node_path
+				chmod 0644 $node_path
 				echo $idle_val >$node_path 2>/dev/null
 				sleep 2
 
@@ -109,17 +104,15 @@ test_chg_switches() {
 
 				if ((average_current <= 80)); then
 					echo -e "[+] Switch $node_path is working !"
-					echo -e "$(cat "$chg_switches_path" 2>/dev/null)\n${switch}" >"$chg_switches_path"
+					sql_query "INSERT INTO tb_idlechg VALUES ('$node_path', '$idle_val', '$normal_val', FALSE);"
 				else
 					echo -e "[-] Switch $node_path is not working !"
 				fi
 				echo $normal_val >$node_path 2>/dev/null
 			fi
 		done
-		if [ ! -f "$chg_switches_path" ]; then
+		if [ $(sql_query "SELECT COUNT(*) FROM tb_idlechg;") -eq 0 ]; then
 			echo -e "[-] No working charging switch was found :("
-		else
-			sed -i '/^$/d' "$chg_switches_path" # Remove empty lines
 		fi
 		echo -e "[*] Charging switches tester finished\n[*] Hit enter to back to main menu"
 		read -r -s
@@ -127,20 +120,21 @@ test_chg_switches() {
 }
 
 do_idle_chg() {
-	if [ ! -f "$chg_switches_path" ]; then
+	if [ $(sql_query "SELECT COUNT(*) FROM tb_idlechg;") -eq 0 ]; then
 		echo -e "\n[-] Charging switch not defined, please run 'Test charging switches'"
 		echo "[*] Hit enter to back to main menu"
 		read -r -s
 	else
-		if [ ! -f "$use_chg_switch_path" ]; then
-			echo $(cat "$chg_switches_path" | fzf --reverse --cycle --prompt "Select a charging switch for first time: ") >"$use_chg_switch_path"
+		if [ $(sql_query "SELECT CASE WHEN EXISTS (SELECT used FROM tb_idlechg WHERE used = 1) THEN 1 ELSE 0 END;") -eq 0 ]; then
+			local selected=$(sql_query "SELECT idle_switch from tb_idlechg;" | fzf --reverse --cycle --prompt "Select a charging switch for first time: ")
+			sql_query "UPDATE tb_idlechg SET used = TRUE WHERE idle_switch = '$selected';"
 		fi
 
-		local use_chg_switch=$(cat "$use_chg_switch_path")
-		local node_path=$(echo $use_chg_switch | awk '{print $1}')
-		local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
-		local idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
-		chmod +x $node_path
+		local use_chg_switch=$(sql_query "SELECT * FROM tb_idlechg WHERE used = TRUE;")
+		local node_path=$(echo $use_chg_switch | awk -F'|' '{print $1}')
+		local idle_val=$(echo $use_chg_switch | awk -F'|' '{print $2}')
+		local normal_val=$(echo $use_chg_switch | awk -F'|' '{print $3}')
+		chmod 0644 $node_path
 
 		case $(fzf_select "enable disable" "Enable or Disable Idle charging: ") in
 		enable) echo $idle_val >$node_path 2>/dev/null ;;
@@ -150,30 +144,32 @@ do_idle_chg() {
 }
 
 change_use_chg_switch() {
-	if [ ! -f "$chg_switches_path" ]; then
+	if [ $(sql_query "SELECT COUNT(*) FROM tb_idlechg;") -eq 0 ]; then
 		echo -e "\n[-] Charging switch not defined, please run 'Test charging switches'"
 		echo "[*] Hit enter to back to main menu"
 		read -r -s
 	else
-		if [ -f "$use_chg_switch_path" ]; then
-			local use_chg_switch=$(cat "$use_chg_switch_path")
-			local node_path=$(echo $use_chg_switch | awk '{print $1}')
-			local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
-			chmod +x $node_path
+		if [ $(sql_query "SELECT CASE WHEN EXISTS (SELECT used FROM tb_idlechg WHERE used = 1) THEN 1 ELSE 0 END;") -eq 1 ]; then
+			local use_chg_switch=$(sql_query "SELECT * FROM tb_idlechg WHERE used = TRUE;")
+			local node_path=$(echo $use_chg_switch | awk -F'|' '{print $1}')
+			local normal_val=$(echo $use_chg_switch | awk -F'|' '{print $3}')
+			chmod 0644 $node_path
 			echo $normal_val >$node_path 2>/dev/null
 		fi
-		echo $(cat "$chg_switches_path" | fzf --reverse --cycle --prompt "Select a charging switch: ") >"$use_chg_switch_path"
+		local selected=$(sql_query "SELECT idle_switch from tb_idlechg;" | fzf --reverse --cycle --prompt "Select a charging switch: ")
+		sql_query "UPDATE tb_idlechg SET used = FALSE;"
+		sql_query "UPDATE tb_idlechg SET used = TRUE WHERE idle_switch = '$selected';"
 	fi
 }
 
 is_idle_chg_enabled() {
-	if [ ! -f "$chg_switches_path" ] || [ ! -f "$use_chg_switch_path" ]; then
+	if [ $(sql_query "SELECT CASE WHEN EXISTS (SELECT used FROM tb_idlechg WHERE used = 1) THEN 1 ELSE 0 END;") -eq 0 ]; then
 		echo "[ϟ] Idle charging: Undefined"
 	else
-		local use_chg_switch=$(cat "$use_chg_switch_path")
-		local node_path=$(echo $use_chg_switch | awk '{print $1}')
-		local normal_val=$(echo $use_chg_switch | awk '{print $2}' | sed 's/::/ /g')
-		local idle_val=$(echo $use_chg_switch | awk '{print $3}' | sed 's/::/ /g')
+		local use_chg_switch=$(sql_query "SELECT * FROM tb_idlechg WHERE used = TRUE;")
+		local node_path=$(echo $use_chg_switch | awk -F'|' '{print $1}')
+		local idle_val=$(echo $use_chg_switch | awk -F'|' '{print $2}')
+		local normal_val=$(echo $use_chg_switch | awk -F'|' '{print $3}')
 
 		case "$(cat $node_path)" in
 		"$idle_val") echo "[ϟ] Idle charging: Enabled" ;;
