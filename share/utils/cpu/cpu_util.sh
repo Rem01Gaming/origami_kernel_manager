@@ -209,7 +209,7 @@ cpu_gov_param() {
 		2) cluster_selected=$(fzf_select "little big" "Select cpu cluster: ") ;;
 		3) cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ") ;;
 		esac
-		
+
 		cpu_cluster_handle $cluster_selected
 		local path_gov_param="/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor)"
 		[ ! -d $path_gov_param ] && local path_gov_param="/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor)"
@@ -235,7 +235,7 @@ mtk_ppm_policy() {
 		if [[ $2 == "policy" ]]; then
 			apply "$3 $4" /proc/ppm/policy_status
 		else
-			apply $3 /proc/ppm/enabled
+			apply $2 /proc/ppm/enabled
 		fi
 	else
 		fetch_state() {
