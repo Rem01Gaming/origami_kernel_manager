@@ -49,10 +49,11 @@ cpu_set_gov() {
 			2) cluster_selected=$(fzf_select "little big" "Select cpu cluster: ") ;;
 			3) cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ") ;;
 			esac
-			cpu_cluster_handle $cluster_selected
 			local gov_selected=$(fzf_select "$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors)" "Select CPU Governor: ")
 			command2db cpu.$cluster_selected.governor "cpu_set_gov -exec $gov_selected $cluster_selected" FALSE
 		fi
+
+		cpu_cluster_handle $cluster_selected
 
 		apply $gov_selected /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor
 	else
@@ -97,11 +98,12 @@ cpu_set_freq() {
 			2) cluster_selected=$(fzf_select "little big" "Select cpu cluster: ") ;;
 			3) cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ") ;;
 			esac
-			cpu_cluster_handle $cluster_selected
 			max_min=$1
 			local freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select $max_min CPU freq for $cluster_selected cluster: ")
 			command2db cpu.$cluster_selected.${max_min}_freq "cpu_set_freq -exec $freq $cluster_selected $max_min" FALSE
 		fi
+
+		cpu_cluster_handle $cluster_selected
 
 		if [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
 			apply "$cluster_need_set $freq" /proc/ppm/policy/hard_userlimit_${max_min}_cpu_freq
@@ -203,7 +205,12 @@ mtk_cpufreq_power_mode() {
 
 cpu_gov_param() {
 	if [[ $is_big_little == 1 ]]; then
-		cpu_cluster_handle
+		case $nr_clusters in
+		2) cluster_selected=$(fzf_select "little big" "Select cpu cluster: ") ;;
+		3) cluster_selected=$(fzf_select "little big prime" "Select cpu cluster: ") ;;
+		esac
+		
+		cpu_cluster_handle $cluster_selected
 		local path_gov_param="/sys/devices/system/cpu/cpufreq/$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor)"
 		[ ! -d $path_gov_param ] && local path_gov_param="/sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_governor)"
 	else
