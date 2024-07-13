@@ -22,7 +22,7 @@ echo -e "\33[2K\r\033[1;34m[*] Gathering information about your hardware...\033[
 chipset=$(grep "Hardware" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')
 
 if [ -z "$chipset" ]; then
-	chipset=$(getprop "ro.hardware")
+	chipset=$(getprop "ro.board.platform")
 fi
 
 case $chipset in
