@@ -29,6 +29,7 @@ case $chipset in
 *mt* | *MT*) soc=Mediatek ;;
 *sm* | *qcom* | *SM* | *QCOM* | *Qualcomm*) soc=Qualcomm ;;
 *exynos*) soc=Exynos ;;
+*gs*) soc=Google ;;
 *) soc=unknown ;;
 esac
 
