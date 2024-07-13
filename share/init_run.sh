@@ -50,13 +50,14 @@ gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n'
 
 gpu_devfreq_paths_array=(
 	"$(find /sys/class/devfreq "*.mali" -print -quit 2>/dev/null)"
+	"$(find /sys/devices/platform "*.mali" -print -quit 2>/dev/null)"
 	"/sys/devices/platform/dfrgx/devfreq/dfrgx"
 	"/sys/class/kgsl/kgsl-3d0/devfreq"
 	"$(find /sys/class/devfreq "*kgsl-3d0" -print -quit 2>/dev/null)"
 )
 
 for path in ${gpu_devfreq_paths_array[@]}; do
-	if [ -d $path ] && [ -f $path/governor ]; then
+	if [ -d $path ] && [ -f $path/available_governor ]; then
 		gpu_devfreq_path="$path"
 		break
 	fi
