@@ -57,7 +57,7 @@ gpu_devfreq_paths_array=(
 )
 
 for path in ${gpu_devfreq_paths_array[@]}; do
-	if [ -d $path ] && [ -f $path/available_governor ]; then
+	if [ -d $path ] && [ -f $path/available_governors ]; then
 		gpu_devfreq_path="$path"
 		break
 	fi
