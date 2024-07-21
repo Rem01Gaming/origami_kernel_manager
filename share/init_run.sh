@@ -57,15 +57,16 @@ fi
 gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
 
 gpu_devfreq_paths_array=(
-	"$(find /sys/class/devfreq "*.mali" -print -quit 2>/dev/null)"
-	"$(find /sys/devices/platform "*.mali" -print -quit 2>/dev/null)"
+	"$(find /sys/class/devfreq/ -type d -iname "*.mali" -print -quit 2>/dev/null)"
+	"$(find /sys/devices/platform/ -type d -iname "*.mali" -print -quit 2>/dev/null)"
+	"/sys/class/devfreq/dfrgx"
 	"/sys/devices/platform/dfrgx/devfreq/dfrgx"
 	"/sys/class/kgsl/kgsl-3d0/devfreq"
-	"$(find /sys/class/devfreq "*kgsl-3d0" -print -quit 2>/dev/null)"
+	"$(find /sys/class/devfreq/ -type d -iname "*kgsl-3d0" -print -quit 2>/dev/null)"
 )
 
 for path in ${gpu_devfreq_paths_array[@]}; do
-	if [ -d $path ] && [ -f $path/available_governors ]; then
+	if [ ! -z $path] && [ -d $path ] && [ -f $path/available_governors ]; then
 		gpu_devfreq_path="$path"
 		break
 	fi
@@ -93,12 +94,12 @@ fi
 # Check for Devfreq DRAM path
 dram_devfreq_paths_array=(
 	"/sys/class/devfreq/mtk-dvfsrc-devfreq"
-	"$(find /sys/devices/platform/soc -name "*.dvfsrc" -print -quit 2>/dev/null)/mtk-dvfsrc-devfreq/devfreq/mtk-dvfsrc-devfreq"
+	"$(find /sys/devices/platform/soc/ -type d -iname "*.dvfsrc" -print -quit 2>/dev/null)/mtk-dvfsrc-devfreq/devfreq/mtk-dvfsrc-devfreq"
 	"/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw"
 )
 
 for path in ${dram_devfreq_paths_array[@]}; do
-	if [ -d $path ] && [ -f $path/governor ]; then
+	if [ ! -z $path] && [ -d $path ] && [ -f $path/governor ]; then
 		dram_devfreq_path="$path"
 		break
 	fi
@@ -122,7 +123,7 @@ fi
 # Check for Mediatek's DRAM implementation
 if [[ $soc == "Mediatek" ]] && [ -z $dram_devfreq_path ]; then
 	mtk_dram_paths_array=(
-		"$(find /sys/devices/platform -name "*.dvfsrc" -print -quit 2>/dev/null)/helio-dvfsrc"
+		"$(find /sys/devices/platform/ -type d -iname "*.dvfsrc" -print -quit 2>/dev/null)/helio-dvfsrc"
 		"/sys/kernel/helio-dvfsrc"
 	)
 
