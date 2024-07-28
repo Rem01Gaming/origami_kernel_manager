@@ -58,6 +58,7 @@ gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n'
 
 gpu_devfreq_paths_array=(
 	"$(find /sys/class/devfreq/ -type d -iname "*.mali" -print -quit 2>/dev/null)"
+	"$(find /sys/class/devfreq/ -type d -iname "*.gpu" -print -quit 2>/dev/null)"
 	"/sys/class/devfreq/dfrgx"
 	"/sys/devices/platform/dfrgx/devfreq/dfrgx"
 	"/sys/class/kgsl/kgsl-3d0/devfreq"
