@@ -81,7 +81,13 @@ This project is licensed under the GNU General Public License v3.0 or later. Ref
 
 The author assumes no responsibility under anything that might break due to the use/misuse of this software. By choosing to use/misuse it, you agree to do so at your own risk!
 
-One of feature of Origami Kernel Managers, Charging controller manipulates Android low level (kernel) parameters which control the charging circuitry. Some devices, notably from Xiaomi (e.g., Poco X3 Pro), have a faulty PMIC (Power Management Integrated Circuit) that can be triggered by Charging controller feature. The issue blocks charging. Ensure the battery does not discharge too low.
+### CPU Voltage Offset warning for Mediatek devices
+
+This feature can causes system instability, crashes and even FRY your CPU. We given limit up to 50+- ticks (312.5 mV) for this reason, don't mess with this setting too much.
+
+### Charging controller warning
+
+One of feature of Origami Kernel Manager, Charging controller manipulates Android low level (kernel) parameters which control the charging circuitry. Some devices, notably from Xiaomi (e.g., Poco X3 Pro), have a faulty PMIC (Power Management Integrated Circuit) that can be triggered by Charging controller feature. The issue blocks charging. Ensure the battery does not discharge too low.
 
 Refer to [this XDA post](https://xdaforums.com/t/rom-official-arrowos-11-0-android-11-0-vayu-bhima.4267263/page-14#post-85119331) for additional details.
 
