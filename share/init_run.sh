@@ -57,12 +57,12 @@ fi
 gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
 
 gpu_devfreq_paths_array=(
-	"$(find /sys/class/devfreq/ -type d -iname "*.mali" -print -quit 2>/dev/null)"
-	"$(find /sys/class/devfreq/ -type d -iname "*.gpu" -print -quit 2>/dev/null)"
+	"$(find /sys/class/devfreq/ -iname "*.mali" -print -quit 2>/dev/null)"
+	"$(find /sys/class/devfreq/ -iname "*.gpu" -print -quit 2>/dev/null)"
 	"/sys/class/devfreq/dfrgx"
 	"/sys/devices/platform/dfrgx/devfreq/dfrgx"
 	"/sys/class/kgsl/kgsl-3d0/devfreq"
-	"$(find /sys/class/devfreq/ -type d -iname "*kgsl-3d0" -print -quit 2>/dev/null)"
+	"$(find /sys/class/devfreq/ -iname "*kgsl-3d0" -print -quit 2>/dev/null)"
 )
 
 for path in ${gpu_devfreq_paths_array[@]}; do
@@ -73,7 +73,7 @@ for path in ${gpu_devfreq_paths_array[@]}; do
 done
 
 if [ -z $gpu_devfreq_path ]; then
-	gpu_tensor_path="$(find /sys/devices/platform/ -type d -iname "*.mali" -print -quit 2>/dev/null)"
+	gpu_tensor_path="$(find /sys/devices/platform/ -iname "*.mali" -print -quit 2>/dev/null)"
 
 	if [ -f $gpu_tensor_path/scaling_max_freq ]; then
 		gpu_node_id=8
@@ -100,7 +100,7 @@ fi
 # Check for Devfreq DRAM path
 dram_devfreq_paths_array=(
 	"/sys/class/devfreq/mtk-dvfsrc-devfreq"
-	"$(find /sys/devices/platform/soc/ -type d -iname "*.dvfsrc" -print -quit 2>/dev/null)/mtk-dvfsrc-devfreq/devfreq/mtk-dvfsrc-devfreq"
+	"$(find /sys/devices/platform/soc/ -iname "*.dvfsrc" -print -quit 2>/dev/null)/mtk-dvfsrc-devfreq/devfreq/mtk-dvfsrc-devfreq"
 	"/sys/class/devfreq/soc:qcom,cpu-llcc-ddr-bw"
 )
 
@@ -129,7 +129,7 @@ fi
 # Check for Mediatek's DRAM implementation
 if [[ $soc == "Mediatek" ]] && [ -z $dram_devfreq_path ]; then
 	mtk_dram_paths_array=(
-		"$(find /sys/devices/platform/ -type d -iname "*.dvfsrc" -print -quit 2>/dev/null)/helio-dvfsrc"
+		"$(find /sys/devices/platform/ -iname "*.dvfsrc" -print -quit 2>/dev/null)/helio-dvfsrc"
 		"/sys/kernel/helio-dvfsrc"
 	)
 
