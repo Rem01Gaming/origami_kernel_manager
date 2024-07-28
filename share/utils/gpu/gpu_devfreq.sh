@@ -38,7 +38,7 @@ gpu_devfreq_set_gov() {
 		local selected_gov=$(fzf_select "$(cat ${gpu_devfreq_path}/available_governors)" "Select Governor: ")
 		command2db gpu.devfreq.governor "gpu_devfreq_set_gov -exec $selected_gov" FALSE
 	fi
-	apply ${gpu_devfreq_path}/governor
+	apply $selected_gov ${gpu_devfreq_path}/governor
 }
 
 gpu_devfreq_menu() {
