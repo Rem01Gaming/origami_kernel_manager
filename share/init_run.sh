@@ -72,28 +72,26 @@ for path in ${gpu_devfreq_paths_array[@]}; do
 	fi
 done
 
-if [ -z $gpu_devfreq_path ]; then
-	gpu_tensor_path="$(find /sys/devices/platform/ -iname "*.mali" -print -quit 2>/dev/null)"
+gpu_tensor_path="$(find /sys/devices/platform/ -iname "*.mali" -print -quit 2>/dev/null)"
 
-	if [ -f $gpu_tensor_path/scaling_max_freq ]; then
-		gpu_node_id=8
-	elif [ -d /proc/gpufreq ]; then
-		gpu_node_id=1
-	elif [ -d /proc/gpufreqv2 ]; then
-		gpu_node_id=2
-	elif [ -d $gpu_devfreq_path ]; then # Compensate for Mediatek devices. Mali devfreq interface still exists on Mediatek devices, it just don't fucking work because they injected gpufreq and ged trash into mali driver.
-		gpu_node_id=0
-	elif [ -d /sys/devices/platform/kgsl-2d0.0/kgsl ]; then
-		gpu_node_id=3
-	elif [ -d /sys/devices/platform/kgsl-3d0.0/kgsl ]; then
-		gpu_node_id=4
-	elif [ -d /sys/devices/platform/omap/pvrsrvkm.0 ]; then
-		gpu_node_id=5
-	elif [ -d /sys/kernel/tegra_gpu ]; then
-		gpu_node_id=6
-	elif [ -d /sys/kernel/gpu ]; then
-		gpu_node_id=7
-	fi
+if [ -f $gpu_tensor_path/scaling_max_freq ]; then
+	gpu_node_id=8
+elif [ -d /proc/gpufreq ]; then
+	gpu_node_id=1
+elif [ -d /proc/gpufreqv2 ]; then
+	gpu_node_id=2
+elif [ -d $gpu_devfreq_path ]; then # Compensate for Mediatek devices. Mali devfreq interface still exists on Mediatek devices, it just don't fucking work because they injected gpufreq and ged trash into mali driver.
+	gpu_node_id=0
+elif [ -d /sys/devices/platform/kgsl-2d0.0/kgsl ]; then
+	gpu_node_id=3
+elif [ -d /sys/devices/platform/kgsl-3d0.0/kgsl ]; then
+	gpu_node_id=4
+elif [ -d /sys/devices/platform/omap/pvrsrvkm.0 ]; then
+	gpu_node_id=5
+elif [ -d /sys/kernel/tegra_gpu ]; then
+	gpu_node_id=6
+elif [ -d /sys/kernel/gpu ]; then
+	gpu_node_id=7
 fi
 
 # DRAM info
