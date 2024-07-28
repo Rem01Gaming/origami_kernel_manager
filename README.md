@@ -1,6 +1,6 @@
 # Origami Kernel Manager
 
-![Hero image for Origami Kernel Manager](.assets/new_hero_img.png)
+![Hero image for Origami Kernel Manager](.assets/hero_img.jpg)
 
 ---
 
