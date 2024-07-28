@@ -35,7 +35,7 @@ gpu_tensor_set_gov() {
 		local selected_gov=$(fzf_select "$(cat $gpu_tensor_path/available_governors)" "Select Governor: ")
 		command2db gpu.tensor.governor "gpu_tensor_set_gov -exec $selected_gov" FALSE
 	fi
-	apply $gpu_tensor_path/governor
+	apply $selected_gov $gpu_tensor_path/governor
 }
 
 gpu_tensor_menu() {
