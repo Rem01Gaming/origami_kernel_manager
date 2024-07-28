@@ -30,7 +30,7 @@ mtk_gpufreqv2_lock_volt() {
 		read -r -s
 		return 1
 	fi
-	apply "$(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $4}')" "$(fzf_select "$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $5}' | sed 's/,//g' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" /proc/gpufreq/gpufreq_fixed_freq_volt
+	apply "$(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $4}') $(fzf_select "$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $5}' | sed 's/,//g' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" /proc/gpufreq/gpufreq_fixed_freq_volt
 }
 
 mtk_gpufreqv2_reset_dvfs() {
