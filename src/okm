@@ -97,12 +97,13 @@ Rem01Gaming <Rem01_Gaming@proton.me>
 donate() {
 	# Use the ip-api.com JSON API to get geolocation data
 	GEO_DATA=$(curl -s "http://ip-api.com/json")
+	code=$?
 
-	if [ $? -gt 0 ]; then
+	if [ $code -gt 0 ]; then
 		echo -e "\n[-] No internet nor http://ip-api.com access"
 		echo "[*] Hit enter to back to main menu"
 		read -r -s
-		return $?
+		return $code
 	fi
 
 	# Extract the country value from the JSON response
@@ -110,22 +111,27 @@ donate() {
 
 	# Check if the country is Indonesia or Philippines
 	if [ "$COUNTRY" == "ID" ] || [ "$COUNTRY" == "PH" ]; then
-		nohup /system/bin/am start -a android.intent.action.VIEW -d https://saweria.co/Rem01Gaming >/dev/null 2>&1
+		nohup /system/bin/am start -a android.intent.action.VIEW -d https://saweria.co/Rem01Gaming </dev/null >/dev/null 2>&1 &
 	else
-		nohup /system/bin/am start -a android.intent.action.VIEW -d https://www.buymeacoffee.com/Rem01Gaming >/dev/null 2>&1
+		nohup /system/bin/am start -a android.intent.action.VIEW -d https://www.buymeacoffee.com/Rem01Gaming </dev/null >/dev/null 2>&1 &
 	fi
 }
 
 check4update() {
-	clear
-	echo "[*] Checking for new update..."
+	echo -e "\n[*] Checking for new update..."
 
 	if [[ $(root_gid_hack $TERMUX_PATH/apt list) == *origami-kernel* ]]; then
 		install_deb=1
 	fi >/dev/null 2>&1
 
 	repo_info=$(curl -s "https://api.github.com/repos/rem01gaming/origami_kernel_manager/releases/latest")
-	[[ $? != 0 ]] && echo "[-] Can't fetch repository info from GitHub, make sure you're online." && echo "[*] Press enter to back into main menu" && read -r -s && return 0
+	if [[ $? != 0 ]]; then
+		echo "[-] Can't fetch repository info from GitHub API, make sure you're online."
+		echo "[*] Press enter to back into main menu"
+		read -r -s
+		return 0
+	fi
+
 	latest_release=$(echo $repo_info | jq -r ".tag_name")
 
 	if [[ "$VERSION" == "$latest_release" ]]; then
@@ -142,7 +148,7 @@ check4update() {
 		esac
 	fi
 
-	if [[ $install_deb == 1 ]]; then
+	if [ ! -z $install_deb ]; then
 		echo "[*] downloading update files..."
 		rm -f ~/origami-kernel.deb
 		curl -o ~/origami-kernel.deb -L https://github.com/Rem01Gaming/origami_kernel_manager/releases/download/$latest_release/origami-kernel.deb >/dev/null 2>&1
@@ -157,7 +163,7 @@ check4update() {
 		whereami=$PWD
 		echo "[*] Downloading update files..."
 		commit_hash=$(curl -s "https://api.github.com/repos/Rem01Gaming/origami_kernel_manager/git/refs/tags/${latest_release}" | jq -r '.object.sha')
-		git clone https://github.com/Rem01Gaming/origami_kernel_manager.git ~/.origami-kernel >/dev/null 2>&1
+		git clone https://github.com/Rem01Gaming/origami_kernel_manager.git ~/.origami-kernel
 		cd ~/.origami-kernel
 		git reset --hard $commit_hash
 		echo "[*] Installing update..."
@@ -203,7 +209,7 @@ main_menu() {
 		"OKM Settings") settings_menu ;;
 		"Show License") show_license ;;
 		"Check for update") check4update ;;
-		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel >/dev/null 2>&1 ;;
+		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel </dev/null >/dev/null 2>&1 & ;;
 		"Donate me") donate ;;
 		"Exit") clear && exit 0 ;;
 		esac
