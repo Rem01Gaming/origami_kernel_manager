@@ -74,7 +74,7 @@ cpu_set_gov() {
 }
 
 cpu_set_freq() {
-	if [[ $soc == Mediatek ]] && [ -d /proc/ppm ] && [[ $1 != "-exec" ]]; then
+	if [[ $soc == Mediatek ]] && [ ! -d /sys/devices/system/cpu/cpufreq/mtk ] && [ -d /proc/ppm ] && [[ $1 != "-exec" ]]; then
 		if [[ "$(cat /proc/ppm/enabled)" != "ppm is enabled" ]]; then
 			echo -e "\n[-] Enable Performance and Power Management First"
 			echo "[*] Hit enter to back to main menu"
@@ -105,7 +105,13 @@ cpu_set_freq() {
 
 		cpu_cluster_handle $cluster_selected
 
-		if [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
+		if [[ $soc == Mediatek ]] && [ -d /sys/devices/system/cpu/cpufreq/mtk ]; then
+			case $cluster_selected in
+			little) apply $freq /sys/devices/system/cpu/cpufreq/mtk/lcluster_${max_min}_freq ;;
+			big) apply $freq /sys/devices/system/cpu/cpufreq/mtk/bcluster_${max_min}_freq ;;
+			prime) apply $freq /sys/devices/system/cpu/cpufreq/mtk/pcluster_${max_min}_freq ;;
+			esac
+		elif [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
 			apply "$cluster_need_set $freq" /proc/ppm/policy/hard_userlimit_${max_min}_cpu_freq
 		else
 			apply $freq /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_${max_min}_freq
