@@ -171,6 +171,12 @@ is_idle_chg_enabled() {
 		local idle_val=$(echo $use_chg_switch | awk -F'|' '{print $2}')
 		local normal_val=$(echo $use_chg_switch | awk -F'|' '{print $3}')
 
+		if [ -z $node_path ]; then
+			echo -e "\n\n\n[-] Abnormal data found in database !"
+			echo -e "[*] Please clear database on OKM Settings menu"
+			exit 1
+		fi
+
 		case "$(cat $node_path)" in
 		"$idle_val") echo "[ϟ] Idle charging: Enabled" ;;
 		"$normal_val") echo "[ϟ] Idle charging: Disabled" ;;
