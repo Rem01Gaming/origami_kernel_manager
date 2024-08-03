@@ -18,7 +18,7 @@
 
 # Check dependencies
 if ! hash fzf fzy jq curl sqlite3; then
-	echo -e "[-] Environment has missing dependencies"
+	echo "[-] Environment has missing dependencies"
 	exit 127
 fi
 
@@ -29,10 +29,16 @@ root_gid_hack() {
 	su -lp $SUDO_GID -c "$@"
 }
 
+if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh ]; then
+	echo "[-] Faulty installation detected !"
+	echo "[*] Please reinstall OKM"
+	exit 1
+fi
+
+source /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/menu_helper.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/database_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/settings.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/exec_storedcmd.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/cpu/cpu_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_util.sh
