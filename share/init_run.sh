@@ -81,7 +81,7 @@ elif [ -d /proc/gpufreq ]; then
 	gpu_node_id=1
 elif [ -d /proc/gpufreqv2 ]; then
 	gpu_node_id=2
-elif [ -d $gpu_devfreq_path ]; then # Compensate for Mediatek devices. Mali devfreq interface still exists on Mediatek devices, it just don't fucking work because they injected gpufreq and ged trash into mali driver.
+elif [ ! -z $gpu_devfreq_path ] && [ -d $gpu_devfreq_path ]; then # Compensate for Mediatek devices. Mali devfreq interface still exists on Mediatek devices, it just don't fucking work because they injected gpufreq and ged trash into mali driver.
 	gpu_node_id=0
 elif [ -d /sys/devices/platform/kgsl-2d0.0/kgsl ]; then
 	gpu_node_id=3
