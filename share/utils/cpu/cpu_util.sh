@@ -250,7 +250,10 @@ mtk_ppm_policy() {
 		echo -e "\e[38;2;254;228;208m[] Performance and Power Management Menu\033[0m"
 
 		while true; do
-			selected=$(fzy_select "PPM $(cat /proc/ppm/enabled | awk '{print $3}')\n \n$(fetch_state)\n \nBack to the main menu" "")
+			case $(cat /proc/ppm/enabled | awk '{print $3}') in
+			"enabled") selected=$(fzy_select "PPM $(cat /proc/ppm/enabled | awk '{print $3}')\n \n$(fetch_state)\n \nBack to the main menu" "") ;;
+			"disabled") selected=$(fzy_select "PPM $(cat /proc/ppm/enabled | awk '{print $3}')\n \nBack to the main menu" "") ;;
+			esac
 
 			if [[ $selected == "Back to the main menu" ]]; then
 				break
