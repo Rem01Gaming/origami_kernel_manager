@@ -55,7 +55,6 @@ if [ $nr_clusters -gt 1 ]; then
 fi
 
 # GPU info
-gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
 
 gpu_devfreq_paths_array=(
 	"$(find /sys/class/devfreq/ -iname "*.mali" -print -quit 2>/dev/null)"
@@ -93,6 +92,13 @@ elif [ -d /sys/kernel/tegra_gpu ]; then
 	gpu_node_id=6
 elif [ -d /sys/kernel/gpu ]; then
 	gpu_node_id=7
+fi
+
+gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
+
+if [ -z "$gpu" ]; then
+	gpu="Unknown"
+	[ ! -z $gpu_node_id ] && gpu="Unknown ($gpu_node_id)"
 fi
 
 # DRAM info
