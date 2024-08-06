@@ -41,16 +41,16 @@ nr_clusters=${#policy_folders[@]}
 
 if [ $nr_clusters -gt 1 ]; then
 	is_big_little=1
-	cluster0=$(cat $(echo ${policy_folders[0]})/related_cpus 2>/dev/null)
-	cluster1=$(cat $(echo ${policy_folders[1]})/related_cpus 2>/dev/null)
-	cluster2=$(cat $(echo ${policy_folders[2]})/related_cpus 2>/dev/null)
+	cluster0=$(cat ${policy_folders[0]}/related_cpus 2>/dev/null)
+	cluster1=$(cat ${policy_folders[1]}/related_cpus 2>/dev/null)
+	cluster2=$(cat ${policy_folders[2]}/related_cpus 2>/dev/null)
 
 	if [ $(cat /sys/devices/system/cpu/cpufreq/policy$(echo ${cluster0} | awk '{print $1}')/scaling_available_frequencies | awk '{print $1}') -gt $(cat /sys/devices/system/cpu/cpufreq/policy$(echo ${cluster1} | awk '{print $1}')/scaling_available_frequencies | awk '{print $1}') ]; then
 		# If the frequency of cluster0 (little cpu) is bigger than cluster1 (big cpu)
 		# then there's a chance if it's swapped due to kernel issues
 		# correct it.
-		cluster0=$(cat $(echo ${policy_folders[1]})/related_cpus 2>/dev/null)
-		cluster1=$(cat $(echo ${policy_folders[0]})/related_cpus 2>/dev/null)
+		cluster0=$(cat ${policy_folders[1]}/related_cpus 2>/dev/null)
+		cluster1=$(cat ${policy_folders[0]}/related_cpus 2>/dev/null)
 	fi
 fi
 
