@@ -49,25 +49,7 @@ More info and documentation on [Origami Kernel Manager wiki](https://github.com/
 
 ## Installation and running Origami Kernel Manager
 
-### Requirements
-- Rooted Android device
-- Termux app installed
-- Installed following dependencies: `fzf fzy jq curl`
-- Working brain 🧠 with minimal cli knowledge
-
-### Installation with deb package
-- Download deb package from GitHub release
-- Navigate to the Download directory
-- Execute the following command for installation: `apt install ./origami-kernel.deb`. To uninstall, use `apt remove origami-kernel`.
-- Once installed, run with `origami-kernel`
-
-### Installation with make
-- Clone this repository
-- Navigate to the repository directory
-- Execute the following command for installation: `make install`. To uninstall, use `make uninstall`.
-- Once installed, run with `origami-kernel`
-
-PS: You need `make` and `git` installed on your termux for this method.
+Read our wiki page [here](https://github.com/Rem01Gaming/origami_kernel_manager/wiki) for installation guide.
 
 ## Contribution
 
