@@ -39,12 +39,12 @@ qcom_cpubus() {
 
 	while true; do
 		for i in $cpubus_path/$cpubus_selected/*/min_freq; do
-			local min_freq=$(cat $1)
+			local min_freq=$(cat $i)
 			break
 		done
 
 		for i in $cpubus_path/$cpubus_selected/*/max_freq; do
-			local max_freq=$(cat $1)
+			local max_freq=$(cat $i)
 			break
 		done
 
