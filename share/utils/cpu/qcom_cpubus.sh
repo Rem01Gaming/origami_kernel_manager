@@ -37,27 +37,39 @@ qcom_cpubus() {
 	local cpubus_path=/sys/devices/system/cpu/bus_dcvs
 	local cpubus_selected=$(ls /sys/devices/system/cpu/bus_dcvs | fzf --reverse --cycle --prompt "Select CPU Bus Component: ")
 
-	clear
-	echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
-	echo -e "\e[38;2;254;228;208m"
-	echo -e "    _________      [] $cpubus_selected Scalling freq: $(cat $cpubus_path/$cpubus_selected/*/min_freq | head -1)KHz - $(cat $cpubus_path/$cpubus_selected/*/max_freq | head -1)KHz" | cut -c 1-${LINE}
-	echo -e "   /        /\\     "
-	echo -e "  /        /  \\    "
-	echo -e " /        /    \\   "
-	echo -e "/________/      \\  "
-	echo -e "\\        \\      /  "
-	echo -e " \\        \\    /   "
-	echo -e "  \\        \\  /    "
-	echo -e "   \\________\\/     "
-	echo -e "\n//////////////"
-	echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
-	echo -e "\e[38;2;254;228;208m[] $cpubus_selected Bus control\033[0m"
+	while true; do
+		for i in $cpubus_path/$cpubus_selected/*/min_freq; do
+			local min_freq=$(cat $1)
+			break
+		done
 
-	tput civis
+		for i in $cpubus_path/$cpubus_selected/*/max_freq; do
+			local max_freq=$(cat $1)
+			break
+		done
 
-	case $(fzy_select "Set max freq\nSet min freq\nBack to main menu" "") in
-	"Set max freq") qcom_cpubus_set_freq max $cpubus_selected ;;
-	"Set min freq") qcom_cpubus_set_freq min $cpubus_selected ;;
-	"Back to main menu") break ;;
-	esac
+		clear
+		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
+		echo -e "\e[38;2;254;228;208m"
+		echo -e "    _________      [] $cpubus_selected Scalling freq: ${min_freq}KHz - ${max_freq}KHz" | cut -c 1-${LINE}
+		echo -e "   /        /\\     "
+		echo -e "  /        /  \\    "
+		echo -e " /        /    \\   "
+		echo -e "/________/      \\  "
+		echo -e "\\        \\      /  "
+		echo -e " \\        \\    /   "
+		echo -e "  \\        \\  /    "
+		echo -e "   \\________\\/     "
+		echo -e "\n//////////////"
+		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
+		echo -e "\e[38;2;254;228;208m[] $cpubus_selected Bus control\033[0m"
+
+		tput civis
+
+		case $(fzy_select "Set max freq\nSet min freq\nBack to main menu" "") in
+		"Set max freq") qcom_cpubus_set_freq max $cpubus_selected ;;
+		"Set min freq") qcom_cpubus_set_freq min $cpubus_selected ;;
+		"Back to main menu") break ;;
+		esac
+	done
 }
