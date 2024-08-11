@@ -26,7 +26,7 @@ qcom_cpubus_set_freq() {
 		local max_min=$1
 		local cpubus_selected=$2
 		local freq=$(fzf_select "$(cat $cpubus_path/$cpubus_selected/available_frequencies)" "Select $max_min freq: ")
-		command2db qcom.cpubus.${max_min}_freq "qcom_cpubus_set_freq -exec $freq $max_min" FALSE
+		command2db qcom.cpubus.${max_min}_freq "qcom_cpubus_set_freq -exec $freq $max_min $cpubus_selected" FALSE
 	fi
 	for path in $cpubus_path/$cpubus_selected/*/${max_min}_freq; do
 		apply $freq $path
@@ -35,7 +35,7 @@ qcom_cpubus_set_freq() {
 
 qcom_cpubus() {
 	local cpubus_path=/sys/devices/system/cpu/bus_dcvs
-	local cpubus_selected=$(ls /sys/devices/system/cpu/bus_dcvs | fzf --reverse --cycle --prompt "Select CPU Bus Component: ")
+	local cpubus_selected=$(ls $cpubus_path | fzf --reverse --cycle --prompt "Select CPU Bus Component: ")
 
 	while true; do
 		for i in $cpubus_path/$cpubus_selected/*/min_freq; do
