@@ -34,6 +34,10 @@ case $chipset in
 *) soc=unknown ;;
 esac
 
+if [[ $soc == unknown ]] && [ -f /sys/devices/soc0/machine ]; then
+	soc=Qualcomm
+fi
+
 cores=$(($(nproc --all) - 1))
 
 policy_folders=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
