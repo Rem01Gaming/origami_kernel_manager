@@ -43,7 +43,7 @@ dram_devfreq_menu() {
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] DRAM Scalling freq: $(cat ${dram_devfreq_path}/max_freq)KHz - $(cat ${dram_devfreq_path}/min_freq)KHz" | cut -c 1-${LINE}
+		echo -e "    _________      [] DRAM Scalling freq: $(cat ${dram_devfreq_path}/min_freq)KHz - $(cat ${dram_devfreq_path}/max_freq)KHz" | cut -c 1-${LINE}
 		echo -e "   /        /\\     [] DRAM Governor: $(cat ${dram_devfreq_path}/governor)"
 		echo -e "  /        /  \\    "
 		echo -e ' /        /    \   '

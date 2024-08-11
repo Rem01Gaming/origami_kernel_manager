@@ -46,7 +46,7 @@ gpu_devfreq_menu() {
 		unset_headvar
 		header_info=(
 			"[] GPU: ${gpu}"
-			"[] GPU Scalling freq: $(cat ${gpu_devfreq_path}/max_freq)KHz - $(cat ${gpu_devfreq_path}/min_freq)KHz"
+			"[] GPU Scalling freq: $(cat ${gpu_devfreq_path}/min_freq)KHz - $(cat ${gpu_devfreq_path}/max_freq)KHz"
 			"[] GPU Governor: $(cat ${gpu_devfreq_path}/governor)"
 		)
 		options="Set max freq\nSet min freq\nSet Governor\n"

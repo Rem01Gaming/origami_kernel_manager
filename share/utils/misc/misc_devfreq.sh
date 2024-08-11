@@ -52,7 +52,7 @@ devfreq_menu() {
 		clear
 		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] $devfreq_selected Scalling freq: $(cat $devfreq_path/$devfreq_selected/max_freq)KHz - $(cat $devfreq_path/$devfreq_selected/min_freq)KHz" | cut -c 1-${LINE}
+		echo -e "    _________      [] $devfreq_selected Scalling freq: $(cat $devfreq_path/$devfreq_selected/min_freq)KHz - $(cat $devfreq_path/$devfreq_selected/max_freq)KHz" | cut -c 1-${LINE}
 		echo -e "   /        /\\     [] $devfreq_selected Governor: $(cat $devfreq_path/$devfreq_selected/governor)"
 		echo -e "  /        /  \\    "
 		echo -e ' /        /    \   '
