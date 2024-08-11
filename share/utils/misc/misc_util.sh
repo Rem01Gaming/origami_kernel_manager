@@ -16,6 +16,8 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/misc/misc_devfreq.sh
+
 thermal_gov_set() {
 	if [[ $1 == "-exec" ]]; then
 		local thermal_policy=$2
@@ -244,7 +246,7 @@ misc_menu() {
 		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
 		echo -e "[] Miscellaneous Settings\033[0m"
 
-		options="Set I/O Scheduler\nSet Thermal Governor\nSelinux mode\n$(echo $options)"
+		options="Set I/O Scheduler\nSet Thermal Governor\nSelinux mode\nTune custom devfreq component\n$(echo $options)"
 
 		tput civis
 
@@ -262,6 +264,7 @@ misc_menu() {
 		"MTK batoc Current limit") mtk_batoc_current_limit ;;
 		"Enable Eara thermal") mtk_eara_thermal_switch ;;
 		"Fake throttle Eara thermal") mtk_eara_thermal_fake_throttle ;;
+		"Tune custom devfreq component") devfreq_menu ;;
 		"Back to main menu") break ;;
 		esac
 	done
