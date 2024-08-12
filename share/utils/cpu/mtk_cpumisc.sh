@@ -54,23 +54,19 @@ mtk_ppm_policy() {
 			apply $2 /proc/ppm/enabled
 		fi
 	else
-		fetch_state() {
-			cat /proc/ppm/policy_status | grep 'PPM_' | while read line; do echo $line; done
-		}
-
 		tput cuu 1
 		echo -e "\e[38;2;254;228;208m[] Performance and Power Management Menu\033[0m"
 
 		while true; do
 			case $(cat /proc/ppm/enabled | awk '{print $3}') in
-			"enabled") selected=$(fzy_select "PPM $(cat /proc/ppm/enabled | awk '{print $3}')\n \n$(fetch_state)\n \nBack to the main menu" "") ;;
-			"disabled") selected=$(fzy_select "PPM $(cat /proc/ppm/enabled | awk '{print $3}')\n \nBack to the main menu" "") ;;
+			"enabled") local selected=$(fzy_select "PPM $(awk '{print $3}' /proc/ppm/enabled)\n \n$(grep 'PPM_' /proc/ppm/policy_status)\n \nBack to the main menu" "") ;;
+			"disabled") local selected=$(fzy_select "PPM $(awk '{print $3}' /proc/ppm/enabled)\n \nBack to the main menu" "") ;;
 			esac
 
-			if [[ $selected == "Back to the main menu" ]]; then
-				break
-			elif [[ "$(echo $selected | awk '{print $1}')" == "PPM" ]]; then
-				case "$(cat /proc/ppm/enabled | awk '{print $3}')" in
+			case $selected in
+			"Back to the main menu") break ;;
+			"PPM enabled" | "PPM disabled")
+				case "$(awk '{print $3}' /proc/ppm/enabled)" in
 				enabled)
 					apply 0 /proc/ppm/enabled
 					command2db cpu.mtk.enable_ppm "mtk_ppm_policy -exec 0" FALSE
@@ -80,7 +76,9 @@ mtk_ppm_policy() {
 					command2db cpu.mtk.enable_ppm "mtk_ppm_policy -exec 1" FALSE
 					;;
 				esac
-			elif [[ $selected != " " ]]; then
+				;;
+			" ") ;;
+			*)
 				idx=$(echo "$selected" | awk '{print $1}' | awk -F'[][]' '{print $2}')
 				current_status=$(echo $selected | awk '{print $3}')
 
@@ -92,7 +90,8 @@ mtk_ppm_policy() {
 
 				apply "$idx $new_status" /proc/ppm/policy_status
 				command2db cpu.mtk.ppm_policy$idx "mtk_ppm_policy -exec policy $idx $new_status" FALSE
-			fi
+				;;
+			esac
 			unset options
 		done
 	fi

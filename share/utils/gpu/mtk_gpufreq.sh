@@ -50,7 +50,7 @@ mtk_gpu_power_limit() {
 }
 
 mtk_gpufreq_menu() {
-	gpu_available_freqs="$(cat /proc/gpufreq/gpufreq_opp_dump | grep -o 'freq = [0-9]*' | sed 's/freq = //' | sort -n)"
+	gpu_available_freqs="$(grep -o 'freq = [0-9]*' /proc/gpufreq/gpufreq_opp_dump | sed 's/freq = //' | sort -nu)"
 	gpu_freq_path="/proc/gpufreq/gpufreq_opp_freq"
 
 	while true; do

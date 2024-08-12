@@ -212,7 +212,7 @@ misc_menu() {
 		fi
 
 		if [ -d /ppm/pbm ]; then
-			header_info+=("[] MTK Power Budged: $(cat /proc/pbm/pbm_stop | awk '{print $3}')")
+			header_info+=("[] MTK Power Budged: $(awk '{print $3}' /proc/pbm/pbm_stop)")
 			options="${options}MTK Power Budged\n"
 		fi
 

@@ -85,7 +85,7 @@ cpu_set_freq() {
 			echo "[*] Hit enter to back to main menu"
 			read -r -s
 			return 1
-		elif [[ "$(cat /proc/ppm/policy_status | grep "PPM_POLICY_HARD_USER_LIMIT")" != *enabled* ]]; then
+		elif [[ "$(grep "PPM_POLICY_HARD_USER_LIMIT" /proc/ppm/policy_status)" != *enabled* ]]; then
 			echo -e "\n[-] Enable 'PPM_POLICY_HARD_USER_LIMIT' on Performance and Power Management First"
 			echo "[*] Hit enter to back to main menu"
 			read -r -s
@@ -166,15 +166,14 @@ cpu_core_ctrl() {
 			# Add a separator and "Back to the main menu" option
 			options+=(" " "Back to the main menu")
 
-			selected=$(printf '%s\n' "${options[@]}" | fzf --reverse --cycle --prompt "CPU core control")
+			selected=$(printf '%s\n' "${options[@]}" | fzf --reverse --cycle --prompt "CPU Core Control: ")
 
 			case $selected in
 			"Back to the main menu") break ;;
 			" ") ;;
 			*)
-				cpu_number=$(echo "${selected}" | cut -d' ' -f1 | sed 's/cpu//')
-				online_status=$(<"${cpu_dir}/cpu${cpu_number}/online")
-				new_status=$((1 - online_status))
+				cpu_number=${selected:3:1}
+				new_status=$((1 - $(<"${cpu_dir}/cpu${cpu_number}/online")))
 				apply "$new_status" "${cpu_dir}/cpu${cpu_number}/online"
 				command2db cpu.core_ctl.cpu$cpu_number "cpu_core_ctrl -exec $new_status $cpu_number" FALSE
 				;;
@@ -214,13 +213,13 @@ cpu_menu() {
 	while true; do
 		unset_headvar
 		header_info=(
-			"[] CPU: ${chipset}"
-			"[] big.LITTLE: ${is_big_little}"
+			"[] CPU: $chipset"
+			"[] big.LITTLE: $is_big_little"
 		)
 
 		if [ $is_big_little -eq 1 ]; then
 			header_info+=(
-				"[] big.LITTLE Clusters: ${nr_clusters}"
+				"[] big.LITTLE Clusters: $nr_clusters"
 				"[] Little Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster0} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz"
 				"[] Big Scaling freq: $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu$(echo ${cluster1} | awk '{print $1}')/cpufreq/scaling_max_freq)KHz"
 			)
@@ -243,7 +242,7 @@ cpu_menu() {
 
 		if [[ $soc == Mediatek ]] && [ -d /proc/ppm ]; then
 			header_info+=(
-				"[] Mediatek PPM: $(cat /proc/ppm/enabled | awk '{print $3}')"
+				"[] Mediatek PPM: $(awk '{print $3}' /proc/ppm/enabled)"
 				"[] CPU Power mode: $(cat /proc/cpufreq/cpufreq_power_mode)"
 				"[] CPU CCI mode: $(cat /proc/cpufreq/cpufreq_cci_mode)"
 			)

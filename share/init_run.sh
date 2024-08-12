@@ -19,7 +19,7 @@
 echo -e "\33[2K\r\033[1;34m[*] Gathering information about your hardware...\033[0m"
 
 # CPU info
-chipset=$(grep "Hardware" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')
+chipset=$(grep "Hardware" /proc/cpuinfo | awk '{print $3}')
 
 if [ -z "$chipset" ]; then
 	chipset=$(getprop "ro.board.platform")
@@ -59,7 +59,6 @@ if [ $nr_clusters -gt 1 ]; then
 fi
 
 # GPU info
-
 gpu_devfreq_paths_array=(
 	"$(find /sys/class/devfreq/ -iname "*.mali" -print -quit 2>/dev/null)"
 	"$(find /sys/class/devfreq/ -iname "*.gpu" -print -quit 2>/dev/null)"

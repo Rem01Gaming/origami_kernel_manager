@@ -20,7 +20,7 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/mtk_ged.sh
 
 mtk_gpufreqv2_lock_freq() {
 	local freq=$(fzf_select "$gpu_available_freqs" "Set frequency for GPU (NO DVFS): ")
-	local voltage=$(cat /proc/gpufreqv2/gpu_working_opp_table | awk -v freq="$freq" '$0 ~ freq {gsub(/.*, volt: /, ""); gsub(/,.*/, ""); print}')
+	local voltage=$(awk -v freq="$freq" '$0 ~ freq {gsub(/.*, volt: /, ""); gsub(/,.*/, ""); print}' /proc/gpufreqv2/gpu_working_opp_table)
 	apply "$freq $voltage" /proc/gpufreqv2/fix_custom_freq_volt
 }
 
@@ -30,7 +30,7 @@ mtk_gpufreqv2_lock_volt() {
 		read -r -s
 		return 1
 	fi
-	apply "$(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $4}') $(fzf_select "$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $5}' | sed 's/,//g' | sort -n | awk '!seen[$0]++ {print}')" "Select GPU voltage: ")" /proc/gpufreq/gpufreq_fixed_freq_volt
+	apply "$(awk '{print $4}' /proc/gpufreqv2/fix_custom_freq_volt) $(fzf_select "$(awk '{print $5}' /proc/gpufreqv2/gpu_working_opp_table | sed 's/,//g' | sort -nu)" "Select GPU voltage: ")" /proc/gpufreq/gpufreq_fixed_freq_volt
 }
 
 mtk_gpufreqv2_reset_dvfs() {
@@ -38,7 +38,7 @@ mtk_gpufreqv2_reset_dvfs() {
 }
 
 mtk_gpufreqv2_menu() {
-	gpu_available_freqs="$(cat /proc/gpufreqv2/gpu_working_opp_table | awk '{print $3}' | sed 's/,//g' | sort -n)"
+	gpu_available_freqs="$(awk '{print $3}' /proc/gpufreqv2/gpu_working_opp_table | sed 's/,//g' | sort -n)"
 
 	while true; do
 		gpu_max_freq="$(cat /sys/module/ged/parameters/gpu_cust_upbound_freq)"
@@ -49,7 +49,7 @@ mtk_gpufreqv2_menu() {
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] GPU: ${gpu}" | cut -c 1-${LINE}
 		echo -e "   /        /\\     [] GPU Scalling freq: ${gpu_min_freq}KHz - ${gpu_max_freq}KHz" | cut -c 1-${LINE}
-		echo -e "  /        /  \\    [] Fixed freq & volt: $(if [ $(cat /proc/gpufreqv2/fix_custom_freq_volt | awk '{print $2}') == "fix" ]; then echo "Disabled"; else echo "Enabled"; fi)"
+		echo -e "  /        /  \\    [] Fixed freq & volt: $(if [ $(awk '{print $2}' /proc/gpufreqv2/fix_custom_freq_volt) == "fix" ]; then echo "Disabled"; else echo "Enabled"; fi)"
 		echo -e " /        /    \\   [] GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)"
 		echo -e "/________/      \\  [ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)"
 		echo -e '\        \      /  '
