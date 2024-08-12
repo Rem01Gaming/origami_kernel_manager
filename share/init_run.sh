@@ -19,7 +19,7 @@
 echo -e "\33[2K\r\033[1;34m[*] Gathering information about your hardware...\033[0m"
 
 # CPU info
-chipset=$(grep "Hardware" /proc/cpuinfo | awk '{print $3}')
+chipset=$(grep "Hardware" /proc/cpuinfo | awk '{print $3}' | uniq)
 
 if [ -z "$chipset" ]; then
 	chipset=$(getprop "ro.board.platform")
