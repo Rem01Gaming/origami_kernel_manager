@@ -57,10 +57,8 @@ pack-deb:
 	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr
 	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/bin/
 	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/
-	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/doc
 	@cp -rv share/* $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/
 	@cp -rv src/* $(O)/deb/data/data/com.termux/files/usr/bin/
-	@cp -rv doc/* $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/doc
 	@cp -rv dpkg-conf $(O)/deb/DEBIAN
 	@printf "\033[1;38;2;254;228;208m[+] Build packages.\033[0m\n"&&sleep 1s
 	@chmod -Rv 755 $(O)/deb/DEBIAN
