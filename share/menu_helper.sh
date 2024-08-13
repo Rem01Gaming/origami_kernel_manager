@@ -28,7 +28,7 @@ fzf_select_n() {
 }
 
 fzy_select() {
-	selected_option=$(echo -e "${1}" | fzy -l 30 -p "$2")
+	selected_option=$(echo -e "$1" | fzy -l 24 -p "$2")
 	echo $selected_option
 }
 
@@ -57,7 +57,7 @@ color_blocks() {
 # Usage: menu_value_tune "prompt comment" <path> <max value> <min value> <increment/decrement by ..>
 menu_value_tune() {
 	echo
-	echo -e "${1}" | fold -s -w ${LINE}
+	echo -e "$1" | fold -s -w $LINE
 	echo -e "\nUse ( ↑ ↓ ) to increase or decrease value\nUse HOME or END to exit.\n"
 
 	number=$(cat ${2})
