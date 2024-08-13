@@ -48,6 +48,7 @@ source /data/data/com.termux/files/usr/share/origami-kernel/utils/net/net_util.s
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/disp/disp_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/misc/misc_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/battery/battery_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/sched/sched_util.sh
 
 LINE=$(stty size | awk '{print $2}')
 TERMUX_PATH="/data/data/com.termux/files/usr/bin"
@@ -203,11 +204,12 @@ main_menu() {
 		# Hide cursor
 		tput civis
 
-		case $(fzy_select "CPU control\nGPU control\nDRAM control\nMemory settings\nNetworking settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nOKM Settings\nShow License\nCheck for update\nDonate me\nJoin my telegram channel\nExit" "") in
+		case $(fzy_select "CPU control\nGPU control\nDRAM control\nMemory settings\nScheduler settings\nNetworking settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nOKM Settings\nShow License\nCheck for update\nDonate me\nJoin my telegram channel\nExit" "") in
 		"CPU control") cpu_menu ;;
 		"GPU control") gpu_menu ;;
 		"DRAM control") dram_menu ;;
 		"Memory settings") memory_menu ;;
+		"Scheduler settings") sched_menu ;;
 		"Networking settings") net_menu ;;
 		"Miscellaneous settings") misc_menu ;;
 		"Charging controller") batt_menu ;;
