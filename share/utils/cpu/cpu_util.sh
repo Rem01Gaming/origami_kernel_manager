@@ -258,7 +258,7 @@ cpu_menu() {
 		fi
 
 		clear
-		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
+		echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      ${header_info[0]}"
 		echo -e "   /        /\\     ${header_info[1]}"
@@ -270,7 +270,7 @@ cpu_menu() {
 		echo -e "  \\        \\  /    ${header_info[7]}"
 		echo -e "   \\________\\/     ${header_info[8]}"
 		echo -e "\n//////////////"
-		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
+		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
 		echo -e "[] CPU Control\033[0m"
 
 		tput civis
