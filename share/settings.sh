@@ -18,7 +18,6 @@
 
 execstoredcmd_switch() {
 	# Easter Egg #1
-	# Kanged from Namida app, hehe
 	easteregg() {
 		dialog1() {
 			clear
@@ -79,15 +78,16 @@ execstoredcmd_risky_switch() {
 	esac
 }
 
-clear_storedcmd() {
+clear_db() {
 	clear
 	tput civis
-	echo -e "\nClear stored settings on database?\n\nThis will clear all stored commands for Apply previous settings feature and Battery utils. only clear it if you find some weird behavior that you don't wanted." | fold -s -w ${LINE}
+	echo -e "\nClear database?\n\nThis will remove previous database including any data and create new fresh database. only proceed it if you find some weird behavior that you don't wanted." | fold -s -w ${LINE}
 	local selected=$(fzy_select "Proceed\nAbort" "")
 	case $selected in
 	Proceed)
-		sql_query "DELETE FROM tb_storecmd;"
-		sql_query "DELETE FROM tb_idlechg;"
+		remove_database
+		create_database
+		accept_risk
 		;;
 	Abort) ;;
 	esac
@@ -114,10 +114,10 @@ settings_menu() {
 		# Hide cursor
 		tput civis
 
-		case $(fzy_select "Apply previous settings\nAllow risky execution\nClear stored settings on database\nBack to main menu" "") in
+		case $(fzy_select "Apply previous settings\nAllow risky execution\nClear database\nBack to main menu" "") in
 		"Apply previous settings") execstoredcmd_switch ;;
 		"Allow risky execution") execstoredcmd_risky_switch ;;
-		"Clear stored settings on database") clear_storedcmd ;;
+		"Clear database") clear_db ;;
 		"Back to main menu") break ;;
 		esac
 	done

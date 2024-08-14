@@ -39,7 +39,6 @@ source /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/menu_helper.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/database_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/settings.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/exec_storedcmd.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/cpu/cpu_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/dram_util.sh
@@ -59,7 +58,15 @@ VERSION="v1.1.2"
 
 trap "tput cnorm" EXIT
 
-if [ $(sql_query "SELECT execstoredcmd FROM tb_info;") -eq 1 ] && [ ! -f /dev/okm-execstoredcmd ] && [ $(risk_acceptence) -eq 1 ]; then
+if [ ! -f $database_path ]; then
+	create_database
+fi
+
+if [[ $(get_db_version) != "$VERSION" ]]; then
+	update_db_version
+fi
+
+if [ $(risk_acceptence) -eq 1 ] && [ ! -f /dev/okm-execstoredcmd ] && [ $(sql_query "SELECT execstoredcmd FROM tb_info;") -eq 1 ]; then
 	init_execstoredcmd
 	touch /dev/okm-execstoredcmd
 fi

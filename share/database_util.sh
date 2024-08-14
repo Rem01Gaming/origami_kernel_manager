@@ -22,13 +22,19 @@ sql_query() {
 	echo "$1" | sqlite3 $database_path
 }
 
-if [ ! -f $database_path ]; then
+execstoredcmd_allow_risky="$(sql_query "SELECT execstoredcmd_risky FROM tb_info;")"
+
+create_database() {
 	sql_query "CREATE TABLE tb_storecmd (id TEXT PRIMARY KEY, command TEXT NOT NULL, risky BOOLEAN NOT NULL);"
-	sql_query "CREATE TABLE tb_info (risk_acceptence BOOLEAN NOT NULL, execstoredcmd BOOLEAN NOT NULL, execstoredcmd_risky BOOLEAN NOT NULL);"
+	sql_query "CREATE TABLE tb_info (okm_version TEXT NOT NULL, risk_acceptence BOOLEAN NOT NULL, execstoredcmd BOOLEAN NOT NULL, execstoredcmd_risky BOOLEAN NOT NULL);"
 	sql_query "CREATE TABLE tb_idlechg (idle_switch TEXT NOT NULL, enable_val TEXT NOT NULL, disable_val TEXT NOT NULL, used BOOLEAN NOT NULL);"
-	sql_query "INSERT INTO tb_info (risk_acceptence, execstoredcmd, execstoredcmd_risky) VALUES (FALSE, FALSE, FALSE);"
+	sql_query "INSERT INTO tb_info (okm_version, risk_acceptence, execstoredcmd, execstoredcmd_risky) VALUES ('$VERSION', FALSE, FALSE, FALSE);"
 	sql_query "PRAGMA auto_vacuum = FULL;"
-fi
+}
+
+remove_database() {
+	rm -f $database_path
+}
 
 risk_acceptence() {
 	sql_query "SELECT risk_acceptence FROM tb_info;"
@@ -46,9 +52,37 @@ execstoredcmd_risky_db() {
 	sql_query "UPDATE tb_info SET execstoredcmd_risky = $1;"
 }
 
+get_db_version() {
+	sql_query "SELECT okm_version FROM tb_info;"
+}
+
+update_db_version() {
+	sql_query "UPDATE tb_info SET okm_version = '$VERSION';"
+}
+
 # usage: command2db "identifier" "command" "risky (boolean)"
 command2db() {
 	if [ -f /dev/okm-execstoredcmd ]; then
 		sql_query "INSERT INTO tb_storecmd (id, command, risky) VALUES ('$1', '$2', $3) ON CONFLICT(id) DO UPDATE SET command='$2', risky=$3;"
 	fi
+}
+
+execstoredcmd() {
+	while IFS='|' read -r command risky; do
+		if [ "$risky" -eq 1 ] && [ "$execstoredcmd_allow_risky" -eq 1 ]; then
+			eval "$command"
+		elif [ "$risky" -eq 0 ]; then
+			eval "$command"
+		fi
+	done < <(sql_query "SELECT command, risky FROM tb_storecmd;")
+}
+
+init_execstoredcmd() {
+	read -r -p "Apply previous settings? [Y/n]: " input
+	case $input in
+	[Yy]*)
+		echo "Applying settings..."
+		execstoredcmd
+		;;
+	esac
 }
