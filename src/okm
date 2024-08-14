@@ -54,7 +54,7 @@ TERMUX_PATH="/data/data/com.termux/files/usr/bin"
 ANDROID=$(getprop ro.build.version.release)
 ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
 VENDOR=$(getprop "ro.product.manufacturer")
-VERSION="v1.1.2"
+VERSION="v1.1.3"
 
 trap "tput cnorm" EXIT
 
