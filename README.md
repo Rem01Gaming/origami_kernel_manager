@@ -13,13 +13,11 @@ Yet another kernel manager.
 [![Saweria](https://img.shields.io/badge/donate-white?style=for-the-badge&logo=iconjar&logoColor=white&label=Saweria&labelColor=222)](https://saweria.co/Rem01Gaming)
 [![Buymeacoffee](https://img.shields.io/badge/donate-white?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white&label=Buymeacoffee&labelColor=222)](https://www.buymeacoffee.com/Rem01Gaming)
 
-## About
+## About 
 
 Origami Kernel Manager is a set of utilities for power users to tune, adjust, and manage the kernel parameters through the command line interface (CLI), specifically on termux. It aims to deliver a comprehensive solution for enhancing device performance and customization by providing various settings for kernel fine-tuning.
 
-More info and documentation on [Origami Kernel Manager wiki](https://github.com/Rem01Gaming/origami_kernel_manager/wiki).
-
-## Why need a kernel manager?
+## Why need a kernel manager? 
 
 - Performance Optimization
   - Fine-tune CPU frequencies, governor profiles, and memory management for enhanced system performance.
@@ -33,33 +31,36 @@ More info and documentation on [Origami Kernel Manager wiki](https://github.com/
 - Stability and Reliability
   - Switch between different configurations to find a balance between performance and stability, ideal for users experimenting with kernel stuff.
 
-## Features
-- CPU and GPU control such as changing Governor, set max and min freq, Core control, and Governor parameter tuning
-- GPU Extension Device (GED) Tune for Mediatek
-- Adreno Idler and Simple GPU tune for Qualcomm Snapdragon
-- Memory parameters setting, DRAM Control for Mediatek
-- Networking and Firewall settings, such as TCP Congestion algorithm, SYN Cookies, TCP Low latency mode, BPF JIT Harden, etc.
-- Idle Charging controller
-- Selinux switch mode
-- MTK Videox Livedisplay and KCAL Display color calibration
-- Thermal Governor setting
-- Touchpanel settings for oplus devices (Oppo/Realme/OnePlus), Double Tap To Wake switch
-- I/O Scheduler setting
+## Features 
+```yaml
+Everything you might expect from a kernel manager, in addition to the following:
+```
+
+- Changing CPU Governor and frequencies
+- CPU Core control
+- CPU Frequencies settings for Mediatek devices via PPM and specific Kernel patch
+- GPU Control for Mediatek, Snapdragon, Nvidia Tegra, Mali (in common), Google Tensor, Unisoc, Samsung, and other devices.
+- DRAM Control for Mediatek and Snapdragon devices (Snapdragon has full CPU Bus settings)
+- CPU Voltage offset for Mediatek
+- Networking settings, such as TCP Congestion algorithm, SYN Cookies, TCP ECN, TCP Fastopen, etc.
+- Display color calibration, including Mediatek's VideoX Livedisplay and Snapdragon's KCAL
+- Memory parameters setting
+- Scheduler Settings
+- DT2W Settings, Touchpanel settings for oplus devices
+- Idle Charging
 - Mediatek tailored features such as APUs frequency, Performance and Power Management, Power Budget Management and more
+- Apply previous settings (simlar with apply-on-boot but instead will applied on first open)
 
-## Installation and running Origami Kernel Manager
+## Usage
 
-Read our wiki page [here](https://github.com/Rem01Gaming/origami_kernel_manager/wiki) for installation guide.
-
-## Contribution
-
-Contributions are encouraged! Whether it's through issue submissions or pull requests, your input is valued in enhancing the Origami Kernel Manager.
+- [Installation Guide](https://github.com/Rem01Gaming/origami_kernel_manager/wiki/Home)
+- [Utility Documentation](https://github.com/Rem01Gaming/origami_kernel_manager/wiki/Utility-Documentation)
 
 ## License
 
 This project is licensed under the GNU General Public License v3.0 or later. Refer to the [LICENSE](/LICENSE) file for detailed licensing information.
 
-## Warning
+## WARNING 
 
 The author assumes no responsibility under anything that might break due to the use/misuse of this software. By choosing to use/misuse it, you agree to do so at your own risk!
 
