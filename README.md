@@ -33,7 +33,7 @@ Origami Kernel Manager is a set of utilities for power users to tune, adjust, an
 
 ## Features 🎉
 ```yaml
-Everything you might expect from a kernel manager, in addition to the following:
+Everything you might expect from a kernel manager:
 ```
 
 - Changing CPU Governor and frequencies
