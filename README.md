@@ -13,11 +13,11 @@ Yet another kernel manager.
 [![Saweria](https://img.shields.io/badge/donate-white?style=for-the-badge&logo=iconjar&logoColor=white&label=Saweria&labelColor=222)](https://saweria.co/Rem01Gaming)
 [![Buymeacoffee](https://img.shields.io/badge/donate-white?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white&label=Buymeacoffee&labelColor=222)](https://www.buymeacoffee.com/Rem01Gaming)
 
-## About 
+## About 🧋
 
 Origami Kernel Manager is a set of utilities for power users to tune, adjust, and manage the kernel parameters through the command line interface (CLI), specifically on termux. It aims to deliver a comprehensive solution for enhancing device performance and customization by providing various settings for kernel fine-tuning.
 
-## Why need a kernel manager? 
+## Why need a kernel manager? 🤔
 
 - Performance Optimization
   - Fine-tune CPU frequencies, governor profiles, and memory management for enhanced system performance.
@@ -31,7 +31,7 @@ Origami Kernel Manager is a set of utilities for power users to tune, adjust, an
 - Stability and Reliability
   - Switch between different configurations to find a balance between performance and stability, ideal for users experimenting with kernel stuff.
 
-## Features 
+## Features 🎉
 ```yaml
 Everything you might expect from a kernel manager, in addition to the following:
 ```
@@ -60,7 +60,7 @@ Everything you might expect from a kernel manager, in addition to the following:
 
 This project is licensed under the GNU General Public License v3.0 or later. Refer to the [LICENSE](/LICENSE) file for detailed licensing information.
 
-## WARNING 
+## WARNING ⚠️
 
 The author assumes no responsibility under anything that might break due to the use/misuse of this software. By choosing to use/misuse it, you agree to do so at your own risk!
 
