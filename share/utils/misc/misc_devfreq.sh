@@ -46,16 +46,22 @@ devfreq_set_gov() {
 
 devfreq_menu() {
 	local devfreq_path=/sys/class/devfreq
-	local devfreq_list=$(ls $devfreq_path)
+	local devfreq_list=()
+	for dir in /sys/class/devfreq/*.*; do
+		if [ -d $dir ]; then
+			devfreq_list+=($(basename $dir))
+		fi
+	done
 
-	if [[ "$devfreq_list" == "" ]]; then
+	if [ ${#devfreq_list[@]} -eq 0 ]; then
 		echo -e "\n[-] Your kernel doesn't have any devfreq devices"
 		echo "[*] Hit enter to back to main menu"
 		read -r -s
 		return 0
 	fi
 
-	local devfreq_selected=$(echo $devfreq_list | fzf --reverse --cycle --prompt "Select a Devfreq Component: ")
+	local devfreq_selected=$(fzf_select "${devfreq_list[@]}" "Select a Devfreq Component: ")
+	unset devfreq_list
 
 	while true; do
 		clear
