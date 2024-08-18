@@ -39,12 +39,12 @@ qcom_cpubus() {
 	local cpubus_list=()
 	for dir in $cpubus_path/*; do
 		if [ -d $dir ]; then
-			cpubus_path+=($(basename $dir))
+			cpubus_list+=($(basename $dir))
 		fi
 	done
 
 	local cpubus_selected=$(fzf_select "${cpubus_list[@]}" "Select CPU Bus Component: ")
-	unset cpubus_path
+	unset cpubus_list
 
 	while true; do
 		for i in $cpubus_path/$cpubus_selected/*/min_freq; do
