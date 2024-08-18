@@ -49,7 +49,7 @@ mtk_gpufreqv2_menu() {
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] GPU: ${gpu}" | cut -c 1-${LINE}
 		echo -e "   /        /\\     [] GPU Scalling freq: ${gpu_min_freq}KHz - ${gpu_max_freq}KHz" | cut -c 1-${LINE}
-		echo -e "  /        /  \\    [] Fixed freq & volt: $(if [ $(awk '{print $2}' /proc/gpufreqv2/fix_custom_freq_volt) == "fix" ]; then echo "Disabled"; else echo "Enabled"; fi)"
+		echo -e "  /        /  \\    [] Fixed freq & volt: $(if [[ $(awk '{print $2}' /proc/gpufreqv2/fix_custom_freq_volt) == "fix" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
 		echo -e " /        /    \\   [] GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)"
 		echo -e "/________/      \\  [ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)"
 		echo -e '\        \      /  '
