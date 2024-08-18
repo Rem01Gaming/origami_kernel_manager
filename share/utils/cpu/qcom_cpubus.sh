@@ -35,7 +35,16 @@ qcom_cpubus_set_freq() {
 
 qcom_cpubus() {
 	local cpubus_path=/sys/devices/system/cpu/bus_dcvs
-	local cpubus_selected=$(ls $cpubus_path | fzf --reverse --cycle --prompt "Select CPU Bus Component: ")
+
+	local cpubus_list=()
+	for dir in $cpubus_path/*; do
+		if [ -d $dir ]; then
+			cpubus_path+=($(basename $dir))
+		fi
+	done
+
+	local cpubus_selected=$(fzf_select "${cpubus_list[@]}" "Select CPU Bus Component: ")
+	unset cpubus_path
 
 	while true; do
 		for i in $cpubus_path/$cpubus_selected/*/min_freq; do

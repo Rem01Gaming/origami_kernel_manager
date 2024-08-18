@@ -47,7 +47,7 @@ devfreq_set_gov() {
 devfreq_menu() {
 	local devfreq_path=/sys/class/devfreq
 	local devfreq_list=()
-	for dir in /sys/class/devfreq/*.*; do
+	for dir in $devfreq_path/*.*; do
 		if [ -d $dir ]; then
 			devfreq_list+=($(basename $dir))
 		fi
