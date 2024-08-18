@@ -2,7 +2,7 @@ Package: origami-kernel
 Architecture: all
 Maintainer: Rem01Gaming
 Installed-Size: 3500
-Version: 1.1.4
+Version: 1.1.5
 Homepage: https://github.com/Rem01Gaming/origami_kernel_manager
 Depends: fzf, fzy, jq, curl, sqlite
 Description: Yet another kernel manager.
