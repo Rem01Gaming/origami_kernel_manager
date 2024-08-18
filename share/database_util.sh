@@ -22,8 +22,6 @@ sql_query() {
 	echo "$1" | sqlite3 $database_path
 }
 
-execstoredcmd_allow_risky="$(sql_query "SELECT execstoredcmd_risky FROM tb_info;")"
-
 create_database() {
 	sql_query "CREATE TABLE tb_storecmd (id TEXT PRIMARY KEY, command TEXT NOT NULL, risky BOOLEAN NOT NULL);"
 	sql_query "CREATE TABLE tb_info (okm_version TEXT NOT NULL, risk_acceptence BOOLEAN NOT NULL, execstoredcmd BOOLEAN NOT NULL, execstoredcmd_risky BOOLEAN NOT NULL);"
@@ -69,7 +67,7 @@ command2db() {
 
 execstoredcmd() {
 	while IFS='|' read -r command risky; do
-		if [ "$risky" -eq 1 ] && [ "$execstoredcmd_allow_risky" -eq 1 ]; then
+		if [ "$risky" -eq 1 ] && [ "$(sql_query "SELECT execstoredcmd_risky FROM tb_info;")" -eq 1 ]; then
 			eval "$command"
 		elif [ "$risky" -eq 0 ]; then
 			eval "$command"
