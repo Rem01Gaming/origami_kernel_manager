@@ -105,6 +105,36 @@ print_existing_folders() {
 	fi
 }
 
+braille_throbber=(
+	$'\u2839'
+	$'\u2838'
+	$'\u2834'
+	$'\u2826'
+	$'\u2807'
+	$'\u280F'
+	$'\u2819'
+)
+
+throbber() {
+	while true; do
+		for char in "${braille_throbber[@]}"; do
+			echo -ne "\e[0;32m$char\e[0m $1\r"
+			sleep 0.1
+		done
+	done
+}
+
+start_throbber() {
+	throbber "$1" &
+	THROBBER_PID=$!
+}
+
+stop_throbber() {
+	kill "$THROBBER_PID" 2>/dev/null
+	wait "$THROBBER_PID" 2>/dev/null
+	echo -ne "\r\033[K" # Clear the line
+}
+
 unset_headvar() {
 	unset options
 	unset header_info
