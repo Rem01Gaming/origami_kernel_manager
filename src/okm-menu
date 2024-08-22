@@ -30,9 +30,12 @@ if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh ]; th
 	exit 1
 fi
 
+source /data/data/com.termux/files/usr/share/origami-kernel/menu_helper.sh
+start_throbber "Gathering information about your hardware..."
+tput civis
+
 source /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/database_util.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/menu_helper.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/settings.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/cpu/cpu_util.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_util.sh
@@ -166,4 +169,5 @@ main_menu() {
 	done
 }
 
+stop_throbber
 main_menu

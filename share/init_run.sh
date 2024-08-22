@@ -16,8 +16,6 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-echo -e "\33[2K\r\033[1;34m[*] Gathering information about your hardware...\033[0m"
-
 # CPU info
 chipset=$(grep "Hardware" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')
 
