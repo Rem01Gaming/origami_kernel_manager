@@ -1,0 +1,169 @@
+#!/data/data/com.termux/files/usr/bin/okm-sudo bash
+# This file is part of Origami Kernel Manager.
+#
+# Origami Kernel Manager is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Origami Kernel Manager is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Origami Kernel Manager.  If not, see <https://www.gnu.org/licenses/>.
+#
+# Copyright (C) 2023-2024 Rem01Gaming
+
+# Check dependencies
+if ! hash fzf fzy jq curl sqlite3; then
+	echo "[-] Environment has missing dependencies"
+	exit 127
+fi
+
+[ ! -d /data/origami-kernel ] && mkdir /data/origami-kernel
+
+if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh ]; then
+	echo "[-] Faulty installation detected !"
+	echo "[*] Please reinstall OKM"
+	exit 1
+fi
+
+source /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/database_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/menu_helper.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/settings.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/cpu/cpu_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/dram_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/memory/memory_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/net/net_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/disp/disp_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/misc/misc_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/battery/battery_util.sh
+source /data/data/com.termux/files/usr/share/origami-kernel/utils/sched/sched_util.sh
+
+LINE=$(stty size | awk '{print $2}')
+TERMUX_PATH="/data/data/com.termux/files/usr/bin"
+ANDROID=$(getprop ro.build.version.release)
+ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
+VENDOR=$(getprop "ro.product.manufacturer")
+VERSION="$(cat /data/data/com.termux/files/usr/share/origami-kernel/version)"
+
+trap "stop_throbber && tput cnorm" EXIT
+
+if [ ! -f $database_path ]; then
+	create_database
+fi
+
+if [[ $(get_db_version) != "$VERSION" ]]; then
+	update_db_version
+fi
+
+if [ $(risk_acceptence) -eq 1 ] && [ ! -f /dev/okm-execstoredcmd ] && [ $(sql_query "SELECT execstoredcmd FROM tb_info;") -eq 1 ]; then
+	init_execstoredcmd
+	touch /dev/okm-execstoredcmd
+fi
+
+# User agreement
+if [ $(risk_acceptence) -eq 0 ]; then
+	clear
+	echo -e "OKM - Origami Kernel Manager ${VERSION}"
+	echo -e "Copyright (c) 2023-2024 Rem01Gaming\n"
+	echo -e "DISCLAIMER AND LICENSE AGREEMENT\n"
+	echo -e "Origami Kernel Manager offers advanced root functions that could potentially harm your device if used incorrectly or in combination with other software, tweaks, or modules. Please be cautious as Origami Kernel Manager does not take responsibility for any damages resulting from the misuse of this software.\n\nIf you are not well-versed in how root access functions, it's advisable to refrain from utilizing the root options until you have a complete understanding of the associated risks.\n\nThis software is licensed under the GNU General Public License v3.0. It comes with NO WARRANTY AND LIABILITY. By using this software, you acknowledge and accept full responsibility for its use. You agree that any actions taken with this software that negatively impact your device are not the responsibility of the developer.\n\n" | fold -s -w ${LINE}
+	read -p "Type 'I AGREE' to continue: " a1
+	case $a1 in
+	"I AGREE") accept_risk ;;
+	*)
+		clear
+		echo -e "\033[38;5;196m[-] Not agreed, Aborted.\033[0m"
+		exit 0
+		;;
+	esac
+fi
+
+show_license() {
+	clear
+	echo -e "Origami Kernel Manager ${VERSION}
+Copyright (c) 2023-2024 Rem01Gaming
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License version 3. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program; if not, Kindly write a message to me Rem01Gaming.
+
+Report problems and questions to https://t.me/rem01shideout or https://github.com/Rem01Gaming/origami_kernel_manager
+
+Rem01Gaming <Rem01_Gaming@proton.me>
+
+
+[*] Press enter to back into main menu
+" | fold -s -w ${LINE}
+	read -r -s
+}
+
+donate() {
+	# Use the ip-api.com JSON API to get geolocation data
+	GEO_DATA=$(curl -s "http://ip-api.com/json")
+	code=$?
+
+	if [ $code -gt 0 ]; then
+		echo -e "\n[-] No internet nor http://ip-api.com access"
+		echo "[*] Hit enter to back to main menu"
+		read -r -s
+		return $code
+	fi
+
+	# Extract the country value from the JSON response
+	COUNTRY=$(echo "${GEO_DATA}" | jq -r '.countryCode')
+
+	# Check if the country is Indonesia or Philippines
+	if [ "$COUNTRY" == "ID" ] || [ "$COUNTRY" == "PH" ]; then
+		nohup /system/bin/am start -a android.intent.action.VIEW -d https://saweria.co/Rem01Gaming </dev/null >/dev/null 2>&1 &
+	else
+		nohup /system/bin/am start -a android.intent.action.VIEW -d https://www.buymeacoffee.com/Rem01Gaming </dev/null >/dev/null 2>&1 &
+	fi
+}
+
+main_menu() {
+	while true; do
+		clear
+		echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
+		echo -e "\e[38;2;254;228;208m"
+		echo -e "    _________      [] DEVICE: $(getprop "ro.product.system.model")"
+		echo -e "   /        /\\     [] MANUFACTURER: ${VENDOR}"
+		echo -e "  /        /  \\    [] CPU: ${chipset}"
+		echo -e " /        /    \\   [] GPU: ${gpu}" | cut -c 1-${LINE}
+		echo -e "/________/      \\  [] KERNEL VERSION: $(uname -r)" | cut -c 1-${LINE}
+		echo -e "\\        \\      /  [] UPTIME: $(uptime -p)"
+		echo -e " \\        \\    /   [] ANDROID VERSION: ${ANDROID}"
+		echo -e "  \\        \\  /    [] SELINUX: $(getenforce)"
+		echo -e "   \\________\\/     [] ENTROPY: ${ENTROPY}"
+		echo -e "\n//////////////"
+		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
+		echo -e "[] Main Menu\033[0m"
+
+		# Hide cursor
+		tput civis
+
+		case $(fzy_select "CPU control\nGPU control\nDRAM control\nMemory settings\nScheduler settings\nNetworking settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration\nOKM Settings\nShow License\nDonate me\nJoin my telegram channel\nExit" "") in
+		"CPU control") cpu_menu ;;
+		"GPU control") gpu_menu ;;
+		"DRAM control") dram_menu ;;
+		"Memory settings") memory_menu ;;
+		"Scheduler settings") sched_menu ;;
+		"Networking settings") net_menu ;;
+		"Miscellaneous settings") misc_menu ;;
+		"Charging controller") batt_menu ;;
+		"Display color calibration") disp_menu ;;
+		"OKM Settings") settings_menu ;;
+		"Show License") show_license ;;
+		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel </dev/null >/dev/null 2>&1 & ;;
+		"Donate me") donate ;;
+		"Exit") clear && exit 0 ;;
+		esac
+	done
+}
+
+main_menu
