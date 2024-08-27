@@ -10,6 +10,7 @@ on:
       - 'src/**'
       - 'share/**'
       - 'dpkg-conf/**'
+      - 'Makefile'
 
 jobs:
   build:

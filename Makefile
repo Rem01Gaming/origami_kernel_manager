@@ -18,6 +18,9 @@
 O = out
 .PHONY: all
 PREFIX = $(shell echo $$PREFIX)
+VERSION = $(shell cat share/version)
+COMMIT_HASH = $(shell git rev-parse --short HEAD)
+VERSION_CODE =$(shell git rev-list HEAD --count)
 
 all:
 	@echo "Available commands:"
@@ -60,6 +63,7 @@ pack-deb:
 	@cp -rv share/* $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/
 	@cp -rv src/* $(O)/deb/data/data/com.termux/files/usr/bin/
 	@cp -rv dpkg-conf $(O)/deb/DEBIAN
+	sed -i "s/^Version: .*/Version: $(VERSION)-$(VERSION_CODE)+$(COMMIT_HASH)/" $(O)/deb/DEBIAN/control
 	@printf "\033[1;38;2;254;228;208m[*] Build packages...\033[0m\n"
 	@chmod -Rv 755 $(O)/deb/DEBIAN
 	@chmod -Rv 755 $(O)/deb/data/data/com.termux/files/usr/bin

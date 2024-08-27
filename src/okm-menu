@@ -52,7 +52,7 @@ TERMUX_PATH="/data/data/com.termux/files/usr/bin"
 ANDROID=$(getprop ro.build.version.release)
 ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
 VENDOR=$(getprop "ro.product.manufacturer")
-VERSION="$(cat /data/data/com.termux/files/usr/share/origami-kernel/version)"
+VERSION="v$(cat /data/data/com.termux/files/usr/share/origami-kernel/version)"
 
 trap "stop_throbber && tput cnorm" EXIT
 
