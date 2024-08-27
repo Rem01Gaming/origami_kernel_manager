@@ -1,6 +1,6 @@
 #!/bin/env bash
 
-msg="**$TITLE**
+msg="*$TITLE*
 \\#ci\\_$VERSION
 \`\`\`
 $COMMIT_MESSAGE
