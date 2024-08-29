@@ -187,25 +187,20 @@ is_idle_chg_enabled() {
 
 batt_menu() {
 	while true; do
-		clear
-		echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
-		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] Battery level: $(cat $battery_level_node) %"
-		echo -e "   /        /\\     [] Battery capacity: $(cat $battery_capacity_node | cut -c 1-4) mAh"
-		echo -e "  /        /  \\    [] Battery health: $(cat $battery_health_node)"
-		echo -e " /        /    \\   [] Battery type: $(cat $battery_type_node)"
-		echo -e "/________/      \\  [] Battery status: $(cat $status_node)"
-		echo -e "\\        \\      /  $(is_idle_chg_enabled)"
-		echo -e ' \        \    /   '
-		echo -e '  \        \  /    '
-		echo -e '   \________\/     '
-		echo -e "\n//////////////"
-		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
-		echo -e "[] Charging Control\033[0m"
+		unset_headvar
+		header_info=(
+			"[] Battery level: $(cat $battery_level_node) %"
+			"[] Battery capacity: $(cat $battery_capacity_node | cut -c 1-4) mAh"
+			"[] Battery health: $(cat $battery_health_node)"
+			"[] Battery type: $(cat $battery_type_node)"
+			"[] Battery status: $(cat $status_node)"
+			"$(is_idle_chg_enabled)"
+		)
 
-		tput civis
+		header "Charging Control"
+		selected="$(fzy_select "Test charging switches\nEnable idle charging\nChange charging switch\nBack to main menu" "")"
 
-		case $(fzy_select "Test charging switches\nEnable idle charging\nChange charging switch\nBack to main menu" "") in
+		case "$selected" in
 		"Test charging switches") test_chg_switches ;;
 		"Enable idle charging") do_idle_chg ;;
 		"Change charging switch") change_use_chg_switch ;;

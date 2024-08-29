@@ -151,37 +151,27 @@ slmk_timeout() {
 memory_menu() {
 	while true; do
 		unset_headvar
-		options="Memory drop cache\nSwappiness\nMinimum amount of free memory\nExtra free kbytes\nVFS Cache pressure\nOvercommit ratio\nDirty ratio\nDirty background ratio\nDirty writeback centisecs\nDirty expire centisecs\nKill allocating task\nLaptop mode\n"
+		header_info=(
+			"[] Memory Total: $(sed -n 1p /proc/meminfo | awk '{print $2}') kB"
+			"[] Laptop mode: $(cat /proc/sys/vm/laptop_mode)"
+			"[] Swappiness: $(cat /proc/sys/vm/swappiness)%"
+			"[] Dirty Ratio: $(cat /proc/sys/vm/dirty_ratio)%"
+		)
+		options="Memory drop cache\nSwappiness\nMinimum amount of free memory\nExtra free kbytes\nVFS Cache pressure\nOvercommit ratio\nDirty ratio\nDirty background ratio\nDirty writeback centisecs\nDirty expire centisecs\nKill allocating task\nLaptop mode"
 
 		if [ -d /sys/kernel/mm/lru_gen ]; then
 			header_info=("[] MGLRU mode: $(cat /sys/kernel/mm/lru_gen)")
-			options="${options}MGLRU mode\nMGLRU time-to-live\n"
+			options="$options\nMGLRU mode\nMGLRU time-to-live"
 		fi
 
 		if [ -d /sys/module/simple_lmk ]; then
-			options="${options}Simple LMK minfree\nSimple LMK timeout\n"
+			options="$options\nSimple LMK minfree\nSimple LMK timeout\n"
 		fi
 
-		clear
-		echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
-		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] Memory Total: $(sed -n 1p /proc/meminfo | awk '{print $2}') kB" | cut -c 1-${LINE}
-		echo -e "   /        /\\     [] Laptop mode: $(cat /proc/sys/vm/laptop_mode)"
-		echo -e "  /        /  \\    [] Swappiness: $(cat /proc/sys/vm/swappiness)%"
-		echo -e " /        /    \\   [] Dirty Ratio: $(cat /proc/sys/vm/dirty_ratio)%"
-		echo -e "/________/      \\  ${header_info[0]}"
-		echo -e "\\        \\      /  ${header_info[2]}"
-		echo -e " \\        \\    /   ${header_info[3]}"
-		echo -e "  \\        \\  /    ${header_info[4]}"
-		echo -e "   \\________\\/     ${header_info[5]}"
-		echo -e "\n//////////////"
-		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
-		echo -e "[] Memory Settings\033[0m"
+		header "Memory Settings"
+		selected="$(fzy_select "$options\nBack to main menu" "")"
 
-		tput civis
-		unset header_info
-
-		case $(fzy_select "$options\nBack to main menu" "") in
+		case "$selected" in
 		"Memory drop cache") memory_drop_cache ;;
 		"Swappiness") memory_swappiness ;;
 		"Minimum amount of free memory") memory_min_free_kbytes ;;
@@ -198,7 +188,5 @@ memory_menu() {
 		"Simple LMK timeout") slmk_timeout ;;
 		"Back to main menu") break ;;
 		esac
-
-		unset options
 	done
 }

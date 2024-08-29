@@ -46,27 +46,11 @@ gpu_tensor_menu() {
 			"[] GPU Scalling freq: $(cat ${gpu_devfreq_path}/max_freq)KHz - $(cat ${gpu_devfreq_path}/min_freq)KHz"
 			"[] GPU Governor: $(cat ${gpu_devfreq_path}/governor)"
 		)
-		options="Set max freq\nSet min freq\nSet Governor\n"
 
-		clear
-		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $((LINE - 30))'q' | tr -d '\n')\033[0m"
-		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      ${header_info[0]}" | cut -c 1-${LINE}
-		echo -e "   /        /\\     ${header_info[1]}" | cut -c 1-${LINE}
-		echo -e "  /        /  \\    ${header_info[2]}"
-		echo -e " /        /    \   ${header_info[3]}"
-		echo -e "/________/      \  ${header_info[4]}"
-		echo -e "\        \      /  ${header_info[5]}"
-		echo -e " \        \    /   ${header_info[6]}"
-		echo -e "  \        \  /    ${header_info[7]}"
-		echo -e "   \________\/     ${header_info[8]}"
-		echo -e "\n//////////////"
-		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
-		echo -e "[] GPU Control\033[0m"
+		header "GPU Control"
+		selected="$(fzy_select "Set max freq\nSet min freq\nSet Governor\nBack to main menu" "")"
 
-		tput civis
-
-		case $(fzy_select "$options\nBack to main menu" "") in
+		case "$selected" in
 		"Set max freq") gpu_tensor_set_freq max ;;
 		"Set min freq") gpu_tensor_set_freq min ;;
 		"Set Governor") gpu_tensor_set_gov ;;

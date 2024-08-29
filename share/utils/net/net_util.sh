@@ -130,25 +130,28 @@ bpf_jit_harden() {
 
 net_menu() {
 	while true; do
-		clear
-		echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
-		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] TCP Congestion: $(cat /proc/sys/net/ipv4/tcp_congestion_control)" | cut -c 1-${LINE}
-		echo -e "   /        /\\     [] TCP SYN Cookies: $(cat /proc/sys/net/ipv4/tcp_syncookies)"
-		echo -e "  /        /  \\    [] BPF JIT harden: $(cat /proc/sys/net/core/bpf_jit_harden)"
-		echo -e " /        /    \\   [] TCP Reuse socket: $(cat /proc/sys/net/ipv4/tcp_tw_reuse)"
-		echo -e "/________/      \\  [] TCP ECN: $(cat /proc/sys/net/ipv4/tcp_ecn)"
-		echo -e "\\        \\      /  [ϟ] TCP Fastopen: $(cat /proc/sys/net/ipv4/tcp_fastopen)"
-		echo -e " \\        \\    /   [] TCP SACK: $(cat /proc/sys/net/ipv4/tcp_sack)"
-		echo -e "  \\        \\  /    [] TCP Timestamps: $(cat /proc/sys/net/ipv4/tcp_timestamps)"
-		echo -e "   \\________\\/     "
-		echo -e "\n//////////////"
-		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
-		echo -e "[] Networking Settings\033[0m"
+		unset_headvar
+		header_info=(
+			"[] TCP Congestion: $(cat /proc/sys/net/ipv4/tcp_congestion_control)"
+			"[] TCP SYN Cookies: $(cat /proc/sys/net/ipv4/tcp_syncookies)"
+			"[] TCP Reuse socket: $(cat /proc/sys/net/ipv4/tcp_tw_reuse)"
+			"[] TCP ECN: $(cat /proc/sys/net/ipv4/tcp_ecn)"
+			"[ϟ] TCP Fastopen: $(cat /proc/sys/net/ipv4/tcp_fastopen)"
+			"[] TCP SACK: $(cat /proc/sys/net/ipv4/tcp_sack)"
+			"[] TCP Timestamps: $(cat /proc/sys/net/ipv4/tcp_timestamps)"
+		)
 
-		tput civis
+		options="Change TCP Congestion algorithm\nTCP SYN Cookies\nTCP Max SYN backlog\nTCP Keep alive time\nTCP Reuse socket\nTCP Explicit Congestion Notification\nTCP Fastopen\nTCP Select Acknowledgments\nTCP Timestamps"
 
-		case $(fzy_select "Change TCP Congestion algorithm\nTCP SYN Cookies\nTCP Max SYN backlog\nTCP Keep alive time\nTCP Reuse socket\nTCP Explicit Congestion Notification\nTCP Fastopen\nTCP Select Acknowledgments\nTCP Timestamps\nBPF JIT harden\nBack to main menu" "") in
+		if [ -f /proc/sys/net/core/bpf_jit_harden ]; then
+			header_info+=("[] BPF JIT harden: $(cat /proc/sys/net/core/bpf_jit_harden)")
+			options="$options\nBPF JIT harden"
+		fi
+
+		header "Network Settings"
+		selected="$(fzy_select "$options\nBack to main menu" "")"
+
+		case "$selected" in
 		"Change TCP Congestion algorithm") tcp_congestion_change ;;
 		"TCP SYN Cookies") tcp_syncookies ;;
 		"TCP Max SYN backlog") tcp_max_syn_backlog ;;

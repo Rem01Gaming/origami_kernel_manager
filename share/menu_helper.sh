@@ -16,6 +16,27 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
+header() {
+	clear
+	echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
+	echo -e "\e[38;2;254;228;208m"
+	echo -e "    _________      ${header_info[0]}" | cut -c 1-$LINE
+	echo -e "   /        /\\     ${header_info[1]}" | cut -c 1-$LINE
+	echo -e "  /        /  \\    ${header_info[2]}" | cut -c 1-$LINE
+	echo -e " /        /    \\   ${header_info[3]}" | cut -c 1-$LINE
+	echo -e "/________/      \\  ${header_info[4]}" | cut -c 1-$LINE
+	echo -e "\\        \\      /  ${header_info[5]}" | cut -c 1-$LINE
+	echo -e " \\        \\    /   ${header_info[6]}" | cut -c 1-$LINE
+	echo -e "  \\        \\  /    ${header_info[7]}" | cut -c 1-$LINE
+	echo -e "   \\________\\/     ${header_info[8]}" | cut -c 1-$LINE
+	echo -e "\n//////////////"
+	echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
+	echo -e "[] $1\033[0m"
+
+	# Hide cursor
+	tput civis
+}
+
 fzf_select() {
 	options=($(echo $1))
 	selected_option=$(printf "%s\n" "${options[@]}" | fzf --reverse --cycle --prompt "$2")

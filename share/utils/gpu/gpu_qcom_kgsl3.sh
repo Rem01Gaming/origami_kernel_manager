@@ -44,25 +44,17 @@ gpu_qcom_kgsl3_menu() {
 	gpu_governor_path="/sys/class/kgsl/kgsl-3d0/pwrscale/trustzone/governor"
 
 	while true; do
-		clear
-		echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
-		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] GPU: ${gpu}" | cut -c 1-${LINE}
-		echo -e "   /        /\\     [] GPU Scalling freq: $(cat $gpu_min_freq)KHz - $(cat $gpu_max_freq_path)KHz" | cut -c 1-${LINE}
-		echo -e "  /        /  \\    [] GPU Governor: $(cat $gpu_governor_path)"
-		echo -e ' /        /    \   '
-		echo -e '/________/      \  '
-		echo -e '\        \      /  '
-		echo -e ' \        \    /   '
-		echo -e '  \        \  /    '
-		echo -e '   \________\/     '
-		echo -e "\n//////////////"
-		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
-		echo -e "[] GPU Control\033[0m"
+		unset_headvar
+		header_info=(
+			"[] GPU: ${gpu}"
+			"[] GPU Scalling freq: $(cat $gpu_min_freq)KHz - $(cat $gpu_max_freq_path)KHz"
+			"[] GPU Governor: $(cat $gpu_governor_path)"
+		)
 
-		tput civis
+		header "GPU Control"
+		selected="$(fzy_select "Set max freq\nSet min freq\nSet Governor\nBack to main menu" "")"
 
-		case $(fzy_select "Set max freq\nSet min freq\nSet Governor\nBack to main menu" "") in
+		case "$selected" in
 		"Set max freq") gpu_qcom_kgsl3_set_max_freq ;;
 		"Set Governor") gpu_qcom_kgsl3_set_gov ;;
 		"Back to main menu") break ;;

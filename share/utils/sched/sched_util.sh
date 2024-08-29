@@ -78,25 +78,9 @@ sched_menu() {
 			header_info+=("[] sched_tunable_scaling: $(cat $sys_kernel/sched_tunable_scaling)")
 		fi
 
-		clear
-		echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
-		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      ${header_info[0]}"
-		echo -e "   /        /\\     ${header_info[1]}"
-		echo -e "  /        /  \\    ${header_info[2]}"
-		echo -e " /        /    \\   ${header_info[3]}"
-		echo -e "/________/      \\  ${header_info[4]}"
-		echo -e "\\        \\      /  ${header_info[5]}"
-		echo -e " \\        \\    /   ${header_info[6]}"
-		echo -e "  \\        \\  /    ${header_info[7]}"
-		echo -e "   \\________\\/     ${header_info[8]}"
-		echo -e "\n//////////////"
-		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
-		echo -e "[] Scheduler Settings\033[0m"
-
-		tput civis
-
+		header "Scheduler Settings"
 		selected="$(fzy_select "$options\nBack to main menu" "")"
+
 		case $selected in
 		"Back to main menu") break ;;
 		*) sched_param_tune $selected ;;

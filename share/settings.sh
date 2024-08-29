@@ -95,24 +95,13 @@ clear_db() {
 
 settings_menu() {
 	while true; do
-		clear
-		echo -e "\e[30;48;2;254;228;208;38;2;0;0;0m Origami Kernel Manager ${VERSION}$(yes " " | sed $(($LINE - 30))'q' | tr -d '\n')\033[0m"
-		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] Apply previous settings: $(sql_query "SELECT execstoredcmd FROM tb_info;")"
-		echo -e "   /        /\\     [] Allow risky execution: $(sql_query "SELECT execstoredcmd_risky FROM tb_info;")"
-		echo -e "  /        /  \\    "
-		echo -e " /        /    \\   "
-		echo -e "/________/      \\  "
-		echo -e "\\        \\      /  "
-		echo -e " \\        \\    /   "
-		echo -e "  \\        \\  /    "
-		echo -e "   \\________\\/     "
-		echo -e "\n//////////////"
-		echo -e "$(yes "─" | sed ${LINE}'q' | tr -d '\n')\n"
-		echo -e "[] OKM Settings\033[0m"
+		unset_headvar
+		header_info=(
+			"[] Apply previous settings: $(sql_query "SELECT execstoredcmd FROM tb_info;")"
+			"[] Allow risky execution: $(sql_query "SELECT execstoredcmd_risky FROM tb_info;")"
+		)
 
-		# Hide cursor
-		tput civis
+		header "OKM Settings"
 
 		case $(fzy_select "Apply previous settings\nAllow risky execution\nClear database\nBack to main menu" "") in
 		"Apply previous settings") execstoredcmd_switch ;;

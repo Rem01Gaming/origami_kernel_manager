@@ -41,28 +41,19 @@ mtk_gpufreqv2_menu() {
 	gpu_available_freqs="$(awk '{print $3}' /proc/gpufreqv2/gpu_working_opp_table | sed 's/,//g' | sort -n)"
 
 	while true; do
-		gpu_max_freq="$(cat /sys/module/ged/parameters/gpu_cust_upbound_freq)"
-		gpu_min_freq="$(cat /sys/module/ged/parameters/gpu_cust_boost_freq)"
+		unset_headvar
+		header_info=(
+			"[] GPU: ${gpu}"
+			"[] GPU Scalling freq: $(cat /sys/module/ged/parameters/gpu_cust_boost_freq)KHz - $(cat /sys/module/ged/parameters/gpu_cust_upbound_freq)KHz"
+			"[] Fixed freq & volt: $(if [[ $(awk '{print $2}' /proc/gpufreqv2/fix_custom_freq_volt) == "fix" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
+			"[] GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)"
+			"[ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)"
+		)
 
-		clear
-		echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
-		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] GPU: ${gpu}" | cut -c 1-${LINE}
-		echo -e "   /        /\\     [] GPU Scalling freq: ${gpu_min_freq}KHz - ${gpu_max_freq}KHz" | cut -c 1-${LINE}
-		echo -e "  /        /  \\    [] Fixed freq & volt: $(if [[ $(awk '{print $2}' /proc/gpufreqv2/fix_custom_freq_volt) == "fix" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
-		echo -e " /        /    \\   [] GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)"
-		echo -e "/________/      \\  [ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)"
-		echo -e '\        \      /  '
-		echo -e ' \        \    /   '
-		echo -e '  \        \  /    '
-		echo -e '   \________\/     '
-		echo -e "\n//////////////"
-		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
-		echo -e "[] GPU Control\033[0m"
+		header "GPU Control"
+		selected="$(fzy_select "Set max freq\nSet min freq\nLock freq (NO DVFS)\nLock voltage (NO DVFS)\nReset DVFS\nGED GPU DVFS\nGED Boost\nGED GPU boost\nBack to main menu" "")"
 
-		tput civis
-
-		case $(fzy_select "Set max freq\nSet min freq\nLock freq (NO DVFS)\nLock voltage (NO DVFS)\nReset DVFS\nGED GPU DVFS\nGED Boost\nGED GPU boost\nBack to main menu" "") in
+		case "$selected" in
 		"Set max freq") ged_max_freq ;;
 		"Set min freq") ged_min_freq ;;
 		"Lock freq (NO DVFS)") mtk_gpufreqv2_lock_freq ;;

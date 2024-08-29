@@ -38,25 +38,16 @@ gpu_tegra_menu() {
 	gpu_max_freq_path="/sys/kernel/tegra_gpu/gpu_cap_rate"
 
 	while true; do
-		clear
-		echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
-		echo -e "\e[38;2;254;228;208m"
-		echo -e "    _________      [] GPU: ${gpu}" | cut -c 1-${LINE}
-		echo -e "   /        /\\     [] GPU Scalling freq: $(cat $gpu_min_freq_path)KHz - $(cat $gpu_max_freq_path)KHz" | cut -c 1-${LINE}
-		echo -e '  /        /  \    '
-		echo -e ' /        /    \   '
-		echo -e '/________/      \  '
-		echo -e '\        \      /  '
-		echo -e ' \        \    /   '
-		echo -e '  \        \  /    '
-		echo -e '   \________\/     '
-		echo -e "\n//////////////"
-		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
-		echo -e "[] GPU Control\033[0m"
+		unset_headvar
+		header_info=(
+			"[] GPU: ${gpu}"
+			"[] GPU Scalling freq: $(cat $gpu_min_freq_path)KHz - $(cat $gpu_max_freq_path)KHz"
+		)
 
-		tput civis
+		header "GPU Control"
+		selected="$(fzy_select "Set max freq\nSet min freq\nBack to main menu" "")"
 
-		case $(fzy_select "Set max freq\nSet min freq\nBack to main menu" "") in
+		case "$selected" in
 		"Set max freq") gpu_tegra_set_freq max ;;
 		"Set min freq") gpu_tegra_set_freq min ;;
 		"Back to main menu") break ;;
