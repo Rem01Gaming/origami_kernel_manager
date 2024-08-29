@@ -31,8 +31,10 @@ if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh ]; th
 fi
 
 source /data/data/com.termux/files/usr/share/origami-kernel/menu_helper.sh
-start_throbber "Gathering information about your hardware..."
+tput smcup
 tput civis
+clear
+start_throbber "Gathering information about your hardware..."
 
 source /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh
 source /data/data/com.termux/files/usr/share/origami-kernel/database_util.sh
@@ -54,7 +56,7 @@ ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/ran
 VENDOR=$(getprop "ro.product.manufacturer")
 VERSION="v$(cat /data/data/com.termux/files/usr/share/origami-kernel/version)"
 
-trap "stop_throbber && tput cnorm" EXIT
+trap "stop_throbber && tput cnorm && tput rmcup" EXIT
 
 if [ ! -f $database_path ]; then
 	create_database
