@@ -173,8 +173,10 @@ is_idle_chg_enabled() {
 
 		if [ -z $node_path ]; then
 			echo -e "\n\n\n[-] Abnormal data found in database !"
-			echo -e "[*] Please clear database on OKM Settings menu"
-			exit 1
+			echo "[*] Please clear database on OKM Settings menu"
+			echo "[*] Hit enter to back to main menu"
+			read -r -s
+			return 1
 		fi
 
 		case "$(cat $node_path)" in
