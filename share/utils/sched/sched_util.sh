@@ -49,6 +49,7 @@ sched_param_tune() {
 }
 
 sched_menu() {
+	unset options
 	options="$(find /proc/sys/kernel/ -type f -name "sched_*" -exec basename {} \;)"
 	while true; do
 		unset header_info
