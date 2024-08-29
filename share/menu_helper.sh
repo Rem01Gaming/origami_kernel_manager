@@ -20,7 +20,7 @@ header() {
 	clear
 	echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
 	echo -e "\e[38;2;254;228;208m"
-	cat <<EOF | cut -c 1-$LINE
+	cut -c 1-$LINE <<EOF
     _________      ${header_info[0]}
    /        /\\     ${header_info[1]}
   /        /  \\    ${header_info[2]}
