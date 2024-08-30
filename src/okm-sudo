@@ -79,7 +79,6 @@ SEARCH_SU_BINARY=(
 	"/system/xbin/su"
 	"/su/bin/su"
 	"/magisk/.core/bin/su"
-	"/apex/com.android.runtime/bin/su"
 )
 
 SU_ARGS=()
@@ -90,9 +89,9 @@ fi
 
 if [ ! -z $ENVIRONMENT_PRESERVE ]; then
 	SU_ARGS+=("--preserve-environment")
-	SU_CMDLINE="LD_PRELOAD=/data/data/com.termux/files/usr/lib/libtermux-exec.so PATH=/data/data/com.termux/files/usr/bin:/debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin"
+	SU_CMDLINE="LD_PRELOAD=/data/data/com.termux/files/usr/lib/libtermux-exec.so PATH=/data/data/com.termux/files/usr/bin:/debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin:/data/adb/ksu/bin:/data/adb/magisk/bin"
 else
-	SU_CMDLINE="$TERMUX_PATH/env -i SUDO_GID=$(id -g) SUDO_USER=$(id -u) PREFIX=/data/data/com.termux/files/usr LD_PRELOAD=/data/data/com.termux/files/usr/lib/libtermux-exec.so HOME=/data/data/com.termux/files/home/.suroot TMPDIR=/data/data/com.termux/files/home/.suroot/.tmp ANDROID_DATA=/data TERM=xterm-256color ANDROID_ROOT=/system PATH=/data/data/com.termux/files/usr/bin:/debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin"
+	SU_CMDLINE="$TERMUX_PATH/env -i SUDO_GID=$(id -g) SUDO_USER=$(id -u) PREFIX=/data/data/com.termux/files/usr LD_PRELOAD=/data/data/com.termux/files/usr/lib/libtermux-exec.so HOME=/data/data/com.termux/files/home/.suroot TMPDIR=/data/data/com.termux/files/home/.suroot/.tmp ANDROID_DATA=/data TERM=xterm-256color ANDROID_ROOT=/system PATH=/data/data/com.termux/files/usr/bin:/debug_ramdisk:/sbin:/sbin/su:/su/bin:/su/xbin:/system/bin:/system/xbin:/data/adb/ksu/bin:/data/adb/magisk/bin"
 fi
 
 # Execute command
