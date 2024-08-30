@@ -67,6 +67,7 @@ if [[ $(get_db_version) != "$VERSION" ]]; then
 fi
 
 if [ $(risk_acceptence) -eq 1 ] && [ ! -f /dev/okm-execstoredcmd ] && [ $(sql_query "SELECT execstoredcmd FROM tb_info;") -eq 1 ]; then
+	stop_throbber
 	init_execstoredcmd
 	touch /dev/okm-execstoredcmd
 fi
