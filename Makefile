@@ -53,28 +53,3 @@ install-dependence:
 	@apt install root-repo -y
 	@apt install fzf fzy git jq sqlite  -y
 	@echo "\033[1;38;2;254;228;208m[+] Dependencies installed\033[0m"
-
-pack-deb:
-	@mkdir -v $(O)
-	@mkdir -v $(O)/deb
-	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr
-	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/bin/
-	@mkdir -pv $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/
-	@cp -rv share/* $(O)/deb/data/data/com.termux/files/usr/share/origami-kernel/
-	@cp -rv src/* $(O)/deb/data/data/com.termux/files/usr/bin/
-	@cp -rv dpkg-conf $(O)/deb/DEBIAN
-	sed -i "s/^Version: .*/Version: $(VERSION)-$(VERSION_CODE)+$(COMMIT_HASH)/" $(O)/deb/DEBIAN/control
-	@printf "\033[1;38;2;254;228;208m[*] Build packages...\033[0m\n"
-	@chmod -Rv 755 $(O)/deb/DEBIAN
-	@chmod -Rv 755 $(O)/deb/data/data/com.termux/files/usr/bin
-	@chmod -Rv 777 $(O)/deb/data/data/com.termux/files/usr/bin/okm
-	@chmod -Rv 777 $(O)/deb/data/data/com.termux/files/usr/bin/okm-sudo
-	@cd $(O)/deb&&dpkg -b . ../../origami-kernel.deb
-	@printf "\033[1;38;2;254;228;208m    .^.   .^.\n"
-	@printf "    /⋀\\_ﾉ_/⋀\\ \n"
-	@printf "   /ﾉｿﾉ\\ﾉｿ丶)|\n"
-	@printf "  |ﾙﾘﾘ >   )ﾘ\n"
-	@printf "  ﾉノ㇏ Ｖ ﾉ|ﾉ\n"
-	@printf "        ⠁⠁\n"
-	@printf "\033[1;38;2;254;228;208m[+] Build done, Package: ./origami-kernel.deb\033[0m\n"
-	@rm -rf ./out

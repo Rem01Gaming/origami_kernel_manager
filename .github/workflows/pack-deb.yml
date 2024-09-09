@@ -10,7 +10,6 @@ on:
       - 'src/**'
       - 'share/**'
       - 'dpkg-conf/**'
-      - 'Makefile'
 
 jobs:
   build:
@@ -23,7 +22,17 @@ jobs:
         fetch-depth: 0
     - name: dpkg compile
       working-directory: ./
-      run: make pack-deb
+      run: |
+        mkdir -pv ./out/deb/data/data/com.termux/files/usr/bin
+        mkdir -pv ./out/deb/data/data/com.termux/files/usr/share/origami-kernel
+        cp -rv share/* ./out/deb/data/data/com.termux/files/usr/share/origami-kernel
+        cp -rv src/* ./out/deb/data/data/com.termux/files/usr/bin
+        cp -rv dpkg-conf ./out/deb/DEBIAN
+        sed -i "s/^Version: .*/Version: $(cat share/version)-$(shell git rev-list HEAD --count)+$(shell git rev-parse --short HEAD)/" ./out/deb/DEBIAN/control
+        chmod -Rv 755 ./out/deb/DEBIAN
+        chmod -Rv 755 ./out/deb/data/data/com.termux/files/usr/bin
+        chmod -Rv 777 ./out/deb/data/data/com.termux/files/usr/bin/*
+        cd ./out/deb && dpkg -b . ../../origami-kernel.deb
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
