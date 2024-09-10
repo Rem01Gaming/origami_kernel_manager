@@ -164,7 +164,7 @@ main_menu() {
 		"Show License") show_license ;;
 		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel </dev/null >/dev/null 2>&1 & ;;
 		"Donate me") donate ;;
-		"Exit") exit 0 ;;
+		"Exit") clear && exit 0 ;;
 		esac
 	done
 }
