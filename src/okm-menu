@@ -24,37 +24,37 @@ fi
 
 [ ! -d /data/origami-kernel ] && mkdir /data/origami-kernel
 
-if [ ! -f /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh ]; then
+if [ ! -f $PREFIX/share/origami-kernel/init_run.sh ]; then
 	echo "[-] Faulty installation detected !"
 	echo "[*] Please reinstall OKM"
 	exit 1
 fi
 
-source /data/data/com.termux/files/usr/share/origami-kernel/menu_helper.sh
+source $PREFIX/share/origami-kernel/menu_helper.sh
 tput smcup
 tput civis
 clear
 start_throbber "Gathering information about your hardware..."
 
-source /data/data/com.termux/files/usr/share/origami-kernel/init_run.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/database_util.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/settings.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/cpu/cpu_util.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_util.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/dram/dram_util.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/memory/memory_util.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/net/net_util.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/disp/disp_util.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/misc/misc_util.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/battery/battery_util.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/sched/sched_util.sh
+source $PREFIX/share/origami-kernel/init_run.sh
+source $PREFIX/share/origami-kernel/database_util.sh
+source $PREFIX/share/origami-kernel/settings.sh
+source $PREFIX/share/origami-kernel/utils/cpu/cpu_util.sh
+source $PREFIX/share/origami-kernel/utils/gpu/gpu_util.sh
+source $PREFIX/share/origami-kernel/utils/dram/dram_util.sh
+source $PREFIX/share/origami-kernel/utils/memory/memory_util.sh
+source $PREFIX/share/origami-kernel/utils/net/net_util.sh
+source $PREFIX/share/origami-kernel/utils/disp/disp_util.sh
+source $PREFIX/share/origami-kernel/utils/misc/misc_util.sh
+source $PREFIX/share/origami-kernel/utils/battery/battery_util.sh
+source $PREFIX/share/origami-kernel/utils/sched/sched_util.sh
 
 LINE=$(stty size | awk '{print $2}')
-TERMUX_PATH="/data/data/com.termux/files/usr/bin"
+TERMUX_PATH="$PREFIX/bin"
 ANDROID=$(getprop ro.build.version.release)
 ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
 VENDOR=$(getprop "ro.product.manufacturer")
-VERSION="v$(cat /data/data/com.termux/files/usr/share/origami-kernel/version)"
+VERSION="v$(cat $PREFIX/share/origami-kernel/version)"
 
 trap "stop_throbber && tput cnorm && tput rmcup" EXIT
 
@@ -74,6 +74,7 @@ fi
 
 # User agreement
 if [ $(risk_acceptence) -eq 0 ]; then
+	stop_throbber
 	clear
 	echo -e "OKM - Origami Kernel Manager ${VERSION}"
 	echo -e "Copyright (c) 2023-2024 Rem01Gaming\n"
