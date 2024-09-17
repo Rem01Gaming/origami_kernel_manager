@@ -36,6 +36,9 @@ tput civis
 clear
 start_throbber "Gathering information about your hardware..."
 
+# Sync to data in the rare case a device crashes
+sync
+
 source $PREFIX/share/origami-kernel/init_run.sh
 source $PREFIX/share/origami-kernel/database_util.sh
 source $PREFIX/share/origami-kernel/settings.sh
