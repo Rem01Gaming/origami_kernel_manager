@@ -166,7 +166,7 @@ cpu_core_ctrl() {
 			# Add a separator and "Back to the main menu" option
 			options+=(" " "Back to the main menu")
 
-			selected=$(printf '%s\n' "${options[@]}" | fzf --reverse --cycle --prompt "CPU Core Control: ")
+			selected=$(fzf_select_n "$(printf '%s\n' "${options[@]}")" "CPU Core Control: ")
 
 			case $selected in
 			"Back to the main menu") break ;;
