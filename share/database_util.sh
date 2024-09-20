@@ -76,6 +76,20 @@ execstoredcmd() {
 }
 
 init_execstoredcmd() {
+	header_info=(
+		"[] DEVICE: $(getprop "ro.product.system.model")"
+		"[] MANUFACTURER: $VENDOR"
+		"[] CPU: $chipset"
+		"[] GPU: $gpu"
+		"[] KERNEL VERSION: $(uname -r)"
+		"[] UPTIME: $(uptime -p)"
+		"[] ANDROID VERSION: ${ANDROID}"
+		"[] SELINUX: $(getenforce)"
+		"[] ENTROPY: ${ENTROPY}"
+	)
+	header "Main Menu"
+	echo -e "\n"
+
 	read -r -p "Apply previous settings? [Y/n]: " input
 	case $input in
 	[Yy]*)

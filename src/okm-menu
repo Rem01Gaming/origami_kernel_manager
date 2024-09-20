@@ -138,7 +138,7 @@ donate() {
 
 main_menu() {
 	while true; do
-	unset_headvar
+		unset_headvar
 		header_info=(
 			"[] DEVICE: $(getprop "ro.product.system.model")"
 			"[] MANUFACTURER: $VENDOR"
