@@ -110,7 +110,7 @@ mtk_cpu_volt_offset() {
 			fi
 		done
 		local selected=$(fzf_select "$(echo ${path[@]})" "Select CPU Part to voltage offset: ")
-		menu_value_tune "Offset Voltage for CPU $selected\nOffset will take original voltage from Operating Performance Point (OPP) and add or subtract the given voltage, you can use it for Overvolting or Undervolting.\nOne tick is equal to 6,25mV." /proc/eem/$selected/eem_offset 50 -50 1
+		menu_value_tune "Voltage Offset for CPU $selected\nOffset will take original voltage from Operating Performance Point (OPP) and add or subtract the given voltage, you can use it for Overvolting or Undervolting.\nOne tick is equal to 6,25mV." /proc/eem/$selected/eem_offset 50 -50 1
 		local offset=$number
 		command2db cpu.mtk.volt_offset "mtk_cpu_volt_offset -exec $offset $selected" TRUE
 		unset path
