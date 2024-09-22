@@ -256,6 +256,10 @@ cpu_menu() {
 					"[] CPU CCI mode: $(cat /proc/cpufreq/cpufreq_cci_mode)")
 				options="$options\nMediatek Power mode"
 			fi
+			
+			if [ -f /sys/devices/system/cpu/sched/sched_boost ]; then
+				options="$options\nMediatek Sched Boost"
+			fi
 
 			if [ -d /proc/eem ]; then
 				options="$options\nCPU Voltage offset"
@@ -280,6 +284,7 @@ cpu_menu() {
 		"Mediatek Performance and Power Management") mtk_ppm_policy ;;
 		"Mediatek CCI mode") mtk_cpufreq_cci_mode ;;
 		"Mediatek Power mode") mtk_cpufreq_power_mode ;;
+		"Mediatek Sched Boost") mtk_sched_boost ;;
 		"CPU Voltage offset") mtk_cpu_volt_offset ;;
 		"CPU Bus Control") qcom_cpubus ;;
 		"Back to main menu") break ;;

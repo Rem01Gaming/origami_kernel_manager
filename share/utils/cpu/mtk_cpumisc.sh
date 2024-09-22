@@ -116,3 +116,18 @@ mtk_cpu_volt_offset() {
 		unset path
 	fi
 }
+
+mtk_sched_boost() {
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Disabled Foreground Boost-all" "Mediatek sched boost: ")
+		command2db cpu.mtk.sched_boost "mtk_sched_boost -exec $selected" FALSE
+	fi
+
+	case $selected in
+	Disabled) apply 0 /sys/devices/system/cpu/sched/sched_boost ;;
+	Foreground) apply 1 /sys/devices/system/cpu/sched/sched_boost ;;
+	Boost-all) apply 2 /sys/devices/system/cpu/sched/sched_boost ;;
+	esac
+}
