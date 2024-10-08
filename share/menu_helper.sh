@@ -44,11 +44,13 @@ fzf_select() {
 	options=($(echo $1))
 	selected_option=$(printf "%s\n" "${options[@]}" | fzf --no-clear --reverse --cycle --prompt "$2")
 	echo $selected_option
+	clear >&2
 }
 
 fzf_select_n() {
 	selected_option=$(echo -e "${1%\\n}" | fzf --no-clear --select-1 --reverse --cycle --prompt "$2")
 	echo $selected_option
+	clear >&2
 }
 
 fzy_select() {
