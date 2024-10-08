@@ -27,7 +27,6 @@ all:
 	@echo "make install : Install directly to your termux"
 	@echo "make uninstall : Uninstall from your termux"
 	@echo "make install-dependence : Install needed dependencines"
-	@echo "make pack-deb : Build deb package"
 
 install:
 	cp ./src/* $(PREFIX)/bin

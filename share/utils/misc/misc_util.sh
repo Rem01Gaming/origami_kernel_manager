@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/bin/env bash
 # This file is part of Origami Kernel Manager.
 #
 # Origami Kernel Manager is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/misc/misc_devfreq.sh
+source $PREFIX/share/origami-kernel/utils/misc/misc_devfreq.sh
 
 thermal_gov_set() {
 	if [[ $1 == "-exec" ]]; then

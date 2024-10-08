@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/bin/env bash
 # This file is part of Origami Kernel Manager.
 #
 # Origami Kernel Manager is free software: you can redistribute it and/or modify
@@ -16,15 +16,15 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_devfreq.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/mtk_gpufreq.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/mtk_gpufreqv2.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_tegra.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_tensor.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_omap.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_qcom_kgsl2.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_qcom_kgsl3.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/gpu_generic.sh
+source $PREFIX/share/origami-kernel/utils/gpu/gpu_devfreq.sh
+source $PREFIX/share/origami-kernel/utils/gpu/mtk_gpufreq.sh
+source $PREFIX/share/origami-kernel/utils/gpu/mtk_gpufreqv2.sh
+source $PREFIX/share/origami-kernel/utils/gpu/gpu_tegra.sh
+source $PREFIX/share/origami-kernel/utils/gpu/gpu_tensor.sh
+source $PREFIX/share/origami-kernel/utils/gpu/gpu_omap.sh
+source $PREFIX/share/origami-kernel/utils/gpu/gpu_qcom_kgsl2.sh
+source $PREFIX/share/origami-kernel/utils/gpu/gpu_qcom_kgsl3.sh
+source $PREFIX/share/origami-kernel/utils/gpu/gpu_generic.sh
 
 gpu_menu() {
 	if [ -z $gpu_node_id ]; then

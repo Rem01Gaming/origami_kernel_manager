@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/origami-sudo bash
+#!/bin/env bash
 # This file is part of Origami Kernel Manager.
 #
 # Origami Kernel Manager is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-database_path="/data/origami-kernel/okm.db"
+database_path="$HOME/.okm/okm.db"
 
 sql_query() {
 	echo "$1" | sqlite3 $database_path
@@ -76,17 +76,20 @@ execstoredcmd() {
 }
 
 init_execstoredcmd() {
-	header_info=(
-		"[] DEVICE: $(getprop "ro.product.system.model")"
-		"[] MANUFACTURER: $VENDOR"
-		"[] CPU: $chipset"
-		"[] GPU: $gpu"
-		"[] KERNEL VERSION: $(uname -r)"
-		"[] UPTIME: $(uptime -p)"
-		"[] ANDROID VERSION: ${ANDROID}"
-		"[] SELINUX: $(getenforce)"
-		"[] ENTROPY: ${ENTROPY}"
-	)
+	header_info=()
+		[ $ANDROID ] && header_info+=(
+			"[] DEVICE: $(getprop ro.product.system.model)"
+			"[] MANUFACTURER: $VENDOR"
+			"[] SELINUX: $(getenforce)"
+			"[] ANDROID VERSION: $ANDROID_VER"
+		)
+		header_info+=(
+			"[] CPU: $chipset"
+			"[] GPU: $gpu"
+			"[] KERNEL VERSION: $(uname -r)"
+			"[] UPTIME: $(uptime -p)"
+			"[] ENTROPY: ${ENTROPY}"
+		)
 	header "Main Menu"
 	echo -e "\n"
 

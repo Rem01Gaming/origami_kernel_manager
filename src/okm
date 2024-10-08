@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/bin/env bash
 # This file is part of Origami Kernel Manager.
 #
 # Origami Kernel Manager is free software: you can redistribute it and/or modify
@@ -16,12 +16,14 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
+[ -d /data/data/com.termux ] && alias sudo="okm-sudo"
+
 version_code() {
 	echo $1 | tr -cd '0-9'
 }
 
 okm_show_usage() {
-	VERSION="$(cat /data/data/com.termux/files/usr/share/origami-kernel/version)"
+	VERSION="$(cat $PREFIX/share/origami-kernel/version)"
 	cat <<EOF
 OKM - Origami Kernel Manager $VERSION
   Usage: okm
@@ -34,11 +36,14 @@ EOF
 }
 
 okm_update() {
-	source /data/data/com.termux/files/usr/share/origami-kernel/menu_helper.sh
+	source $PREFIX/share/origami-kernel/menu_helper.sh
+
+	update_dir="$TMPDIR/.origami_kernel_manager"
+	update_deb="$TMPDIR/.origami-kernel.deb"
 
 	trap "stop_throbber && tput cnorm" EXIT
 	tput civis
-	VERSION="$(cat /data/data/com.termux/files/usr/share/origami-kernel/version)"
+	VERSION="$(cat $PREFIX/share/origami-kernel/version)"
 
 	# Check dependencies
 	if ! hash curl; then
@@ -80,14 +85,14 @@ okm_update() {
 
 	if [ ! -z $install_deb ]; then
 		start_throbber "Downloading update files..."
-		rm -f ~/origami-kernel.deb
-		curl -o ~/origami-kernel.deb -L https://github.com/Rem01Gaming/origami_kernel_manager/releases/download/$latest_release/origami-kernel.deb >/dev/null 2>&1
+		rm -f $update_deb
+		curl -o $update_deb -L https://github.com/Rem01Gaming/origami_kernel_manager/releases/download/$latest_release/origami-kernel.deb >/dev/null 2>&1
 		stop_throbber
-		[ ! -f ~/origami-kernel.deb ] && echo "error: Can't download DEB package from GitHub release, check your Internet connection!" && exit 1
+		[ ! -f $update_deb ] && echo "error: Can't download DEB package from GitHub release, check your Internet connection!" && exit 1
 		start_throbber "Installing update..."
 		apt remove origami-kernel -y >/dev/null 2>&1
-		apt install ~/origami-kernel.deb -y >/dev/null 2>&1
-		rm -f ~/origami-kernel.deb
+		apt install $update_deb -y >/dev/null 2>&1
+		rm -f $update_deb
 		stop_throbber
 		echo "Updated successfully to $latest_release :)"
 	else
@@ -97,15 +102,15 @@ okm_update() {
 		fi
 		whereami=$PWD
 		start_throbber "Downloading update files..."
-		git clone --depth 1 --branch $latest_release --single-branch https://github.com/Rem01Gaming/origami_kernel_manager.git ~/.origami-kernel >/dev/null 2>&1
+		git clone --depth 1 --branch $latest_release --single-branch https://github.com/Rem01Gaming/origami_kernel_manager.git $update_dir >/dev/null 2>&1
 		stop_throbber
-		[ ! -d ~/.origami-kernel ] && echo "error: Can't git clone GitHub repo, check your Internet connection!" && exit 1
+		[ ! -d $update_dir ] && echo "error: Can't git clone OKM repo, check your Internet connection!" && exit 1
 		cd ~/.origami-kernel
 		start_throbber "Installing update..."
 		make uninstall >/dev/null 2>&1
 		make install >/dev/null 2>&1
 		cd $whereami
-		rm -rf ~/.origami-kernel
+		rm -rf $update_dir
 		stop_throbber
 		echo "Updated successfully to $latest_release :)"
 	fi
@@ -113,7 +118,7 @@ okm_update() {
 }
 
 if [ -z $1 ]; then
-	okm-menu
+	sudo okm-menu
 	exit 0
 fi
 

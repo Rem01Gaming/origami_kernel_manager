@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/origami-sudo bash
+#!/bin/env bash
 # This file is part of Origami Kernel Manager.
 #
 # Origami Kernel Manager is free software: you can redistribute it and/or modify

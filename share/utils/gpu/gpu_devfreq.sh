@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/bin/env bash
 # This file is part of Origami Kernel Manager.
 #
 # Origami Kernel Manager is free software: you can redistribute it and/or modify
@@ -16,8 +16,8 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/simple_gpu_algo.sh
-source /data/data/com.termux/files/usr/share/origami-kernel/utils/gpu/adreno_idler.sh
+source $PREFIX/share/origami-kernel/utils/gpu/simple_gpu_algo.sh
+source $PREFIX/share/origami-kernel/utils/gpu/adreno_idler.sh
 
 gpu_devfreq_set_freq() {
 	if [[ $1 == "-exec" ]]; then

@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/bin/env bash
 # This file is part of Origami Kernel Manager.
 #
 # Origami Kernel Manager is free software: you can redistribute it and/or modify
@@ -159,6 +159,14 @@ stop_throbber() {
 	kill "$THROBBER_PID" 2>/dev/null
 	wait "$THROBBER_PID" 2>/dev/null
 	echo -ne "\r\033[K" # Clear the line
+}
+
+open_link() {
+	if [ $ANDROID ]; then
+		/system/bin/am start -a android.intent.action.VIEW -d "$1" >/dev/null 2>&1 &
+	else
+		xdg-open "$1"
+	fi
 }
 
 unset_headvar() {

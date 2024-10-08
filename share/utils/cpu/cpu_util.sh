@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/bash
+#!/bin/env bash
 # This file is part of Origami Kernel Manager.
 #
 # Origami Kernel Manager is free software: you can redistribute it and/or modify
@@ -17,9 +17,9 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 if [[ $soc == Mediatek ]]; then
-	source /data/data/com.termux/files/usr/share/origami-kernel/utils/cpu/mtk_cpumisc.sh
+	source $PREFIX/share/origami-kernel/utils/cpu/mtk_cpumisc.sh
 elif [[ $soc == Qualcomm ]]; then
-	source /data/data/com.termux/files/usr/share/origami-kernel/utils/cpu/qcom_cpubus.sh
+	source $PREFIX/share/origami-kernel/utils/cpu/qcom_cpubus.sh
 fi
 
 cpu_cluster_handle() {
@@ -256,7 +256,7 @@ cpu_menu() {
 					"[] CPU CCI mode: $(cat /proc/cpufreq/cpufreq_cci_mode)")
 				options="$options\nMediatek Power mode"
 			fi
-			
+
 			if [ -f /sys/devices/system/cpu/sched/sched_boost ]; then
 				options="$options\nMediatek Sched Boost"
 			fi

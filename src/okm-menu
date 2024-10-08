@@ -1,4 +1,4 @@
-#!/data/data/com.termux/files/usr/bin/okm-sudo bash
+#!/bin/env bash
 # This file is part of Origami Kernel Manager.
 #
 # Origami Kernel Manager is free software: you can redistribute it and/or modify
@@ -16,13 +16,15 @@
 #
 # Copyright (C) 2023-2024 Rem01Gaming
 
+[ -d /data/data/com.termux ] && ANDROID=1
+
 # Check dependencies
 if ! hash fzf fzy jq curl sqlite3; then
 	echo "[-] Environment has missing dependencies"
 	exit 127
 fi
 
-[ ! -d /data/origami-kernel ] && mkdir /data/origami-kernel
+[ ! -d $HOME/.okm ] && mkdir $HOME/.okm
 
 if [ ! -f $PREFIX/share/origami-kernel/init_run.sh ]; then
 	echo "[-] Faulty installation detected !"
@@ -54,7 +56,7 @@ source $PREFIX/share/origami-kernel/utils/sched/sched_util.sh
 
 LINE=$(stty size | awk '{print $2}')
 TERMUX_PATH="$PREFIX/bin"
-ANDROID=$(getprop ro.build.version.release)
+ANDROID_VER=$(getprop ro.build.version.release)
 ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
 VENDOR=$(getprop "ro.product.manufacturer")
 VERSION="v$(cat $PREFIX/share/origami-kernel/version)"
@@ -130,24 +132,27 @@ donate() {
 
 	# Check if the country is Indonesia or Philippines
 	if [ "$COUNTRY" == "ID" ] || [ "$COUNTRY" == "PH" ]; then
-		nohup /system/bin/am start -a android.intent.action.VIEW -d https://saweria.co/Rem01Gaming </dev/null >/dev/null 2>&1 &
+		open_link https://saweria.co/Rem01Gaming
 	else
-		nohup /system/bin/am start -a android.intent.action.VIEW -d https://www.buymeacoffee.com/Rem01Gaming </dev/null >/dev/null 2>&1 &
+		open_link https://www.buymeacoffee.com/Rem01Gaming
 	fi
 }
 
 main_menu() {
 	while true; do
 		unset_headvar
-		header_info=(
-			"[] DEVICE: $(getprop "ro.product.system.model")"
+		header_info=()
+		[ $ANDROID ] && header_info+=(
+			"[] DEVICE: $(getprop ro.product.system.model)"
 			"[] MANUFACTURER: $VENDOR"
+			"[] SELINUX: $(getenforce)"
+			"[] ANDROID VERSION: $ANDROID_VER"
+		)
+		header_info+=(
 			"[] CPU: $chipset"
 			"[] GPU: $gpu"
 			"[] KERNEL VERSION: $(uname -r)"
 			"[] UPTIME: $(uptime -p)"
-			"[] ANDROID VERSION: ${ANDROID}"
-			"[] SELINUX: $(getenforce)"
 			"[] ENTROPY: ${ENTROPY}"
 		)
 		options="CPU control\nGPU control\nDRAM control\nMemory settings\nScheduler settings\nNetworking settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration"
@@ -166,7 +171,7 @@ main_menu() {
 		"Display color calibration") disp_menu ;;
 		"OKM Settings") settings_menu ;;
 		"Show License") show_license ;;
-		"Join my telegram channel") nohup /system/bin/am start -a android.intent.action.VIEW -d https://t.me/rem01schannel </dev/null >/dev/null 2>&1 & ;;
+		"Join my telegram channel") open_link https://t.me/rem01schannel ;;
 		"Donate me") donate ;;
 		"Exit") clear && exit 0 ;;
 		esac
