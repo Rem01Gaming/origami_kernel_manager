@@ -20,7 +20,7 @@
 chipset=$(grep "Hardware" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')
 
 if [ -z "$chipset" ]; then
-	chipset=$(getprop "ro.board.platform")
+	chipset="$(getprop ro.board.platform) $(getprop ro.hardware)"
 fi
 
 case $chipset in
@@ -32,7 +32,7 @@ case $chipset in
 *) soc=unknown ;;
 esac
 
-if [[ $soc == unknown ]] && [ -f /sys/devices/soc0/machine ]; then
+if [[ $soc == unknown ]] && [ -f /sys/devices/soc0/machine ] && [ ! -d /sys/kernel/gpu ]; then
 	soc=Qualcomm
 fi
 
