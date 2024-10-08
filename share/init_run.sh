@@ -23,7 +23,7 @@ if [ -z "$chipset" ]; then
 	chipset="$(getprop ro.board.platform) $(getprop ro.hardware)"
 fi
 
-case $chipset in
+case "$chipset" in
 *mt* | *MT*) soc=Mediatek ;;
 *sm* | *qcom* | *SM* | *QCOM* | *Qualcomm*) soc=Qualcomm ;;
 *exynos*) soc=Exynos ;;
@@ -99,7 +99,7 @@ elif [ -d /sys/kernel/gpu ]; then
 	gpu=$(cat /sys/kernel/gpu/gpu_model)
 fi
 
-[ -z $gpu ] && [[ ! $soc == "Mediatek" ]] && gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
+[ -z "$gpu" ] && [[ ! $soc == "Mediatek" ]] && gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
 
 if [ -z "$gpu" ]; then
 	gpu="Unknown"
