@@ -165,7 +165,7 @@ open_link() {
 	if [ $ANDROID ]; then
 		/system/bin/am start -a android.intent.action.VIEW -d "$1" >/dev/null 2>&1 &
 	else
-		xdg-open "$1"
+		xdg-open "$1" >/dev/null 2>&1 &
 	fi
 }
 
