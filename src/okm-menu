@@ -17,6 +17,7 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 [ -d /data/data/com.termux ] && ANDROID=1
+[ -z $PREFIX ] && PREFIX="/usr"
 
 # Check dependencies
 if ! hash fzf fzy jq curl sqlite3; then

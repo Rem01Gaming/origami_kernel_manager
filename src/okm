@@ -17,6 +17,7 @@
 # Copyright (C) 2023-2024 Rem01Gaming
 
 [ -d /data/data/com.termux ] && alias sudo="okm-sudo"
+[ -z $PREFIX ] && PREFIX="/usr"
 
 version_code() {
 	echo $1 | tr -cd '0-9'

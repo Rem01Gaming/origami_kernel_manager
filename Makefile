@@ -17,7 +17,7 @@
 
 O = out
 .PHONY: all
-PREFIX = $(shell echo $$PREFIX)
+PREFIX ?= /usr
 VERSION = $(shell cat share/version)
 COMMIT_HASH = $(shell git rev-parse --short HEAD)
 VERSION_CODE =$(shell git rev-list HEAD --count)
