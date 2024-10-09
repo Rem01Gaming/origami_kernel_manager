@@ -18,8 +18,10 @@
 
 # CPU info
 chipset=$(grep "Hardware" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')
-
 if [ -z "$chipset" ]; then
+	chipset=$(grep "model\sname" /proc/cpuinfo | uniq | cut -d ':' -f 2 | sed 's/^[ \t]*//')
+fi
+if [ -z "$chipset" ] && [ $ANDROID ]; then
 	chipset="$(getprop ro.board.platform) $(getprop ro.hardware)"
 fi
 
@@ -29,6 +31,7 @@ case "$chipset" in
 *exynos*) soc=Exynos ;;
 *Unisoc* | *unisoc*) soc=Unisoc ;;
 *gs*) soc=Google ;;
+*intel* | *Intel*) soc=Intel ;;
 *) soc=unknown ;;
 esac
 
@@ -51,8 +54,7 @@ if [ $nr_clusters -gt 1 ]; then
 
 	if [ $(cat /sys/devices/system/cpu/cpufreq/policy$(echo ${cluster0} | awk '{print $1}')/scaling_available_frequencies | awk '{print $1}') -gt $(cat /sys/devices/system/cpu/cpufreq/policy$(echo ${cluster1} | awk '{print $1}')/scaling_available_frequencies | awk '{print $1}') ]; then
 		# If the frequency of cluster0 (little cpu) is bigger than cluster1 (big cpu)
-		# then there's a chance if it's swapped due to kernel issues
-		# correct it.
+		# then there's a chance if it's swapped, correct it.
 		cluster0=$(cat ${policy_folders[1]}/related_cpus 2>/dev/null)
 		cluster1=$(cat ${policy_folders[0]}/related_cpus 2>/dev/null)
 	fi
@@ -101,7 +103,7 @@ elif [ -d /sys/kernel/gpu ]; then
 	gpu=$(cat /sys/kernel/gpu/gpu_model)
 fi
 
-[ -z "$gpu" ] && [[ ! $soc == "Mediatek" ]] && gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
+[ -z "$gpu" ] && [ $ANDROID ] && [[ ! $soc == "Mediatek" ]] && gpu=$(dumpsys SurfaceFlinger | grep GLES | awk -F ': ' '{print $2}' | tr -d '\n')
 
 if [ -z "$gpu" ]; then
 	gpu="Unknown"
