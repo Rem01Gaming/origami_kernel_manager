@@ -36,6 +36,8 @@ if [[ $soc == unknown ]] && [ -f /sys/devices/soc0/machine ] && [ ! -d /sys/kern
 	soc=Qualcomm
 fi
 
+chipset="$(echo $chipset | awk '{print $1}')"
+
 cores=$(($(nproc --all) - 1))
 
 policy_folders=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
