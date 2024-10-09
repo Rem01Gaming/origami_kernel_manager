@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Origami Kernel Manager.  If not, see <https://www.gnu.org/licenses/>.
 #
-# Copyright (C) 2023-2024 Rem01Gaming
+# Copyright (C) 2023-present Rem01Gaming
 
 gpu_generic_set_freq() {
 	case $1 in

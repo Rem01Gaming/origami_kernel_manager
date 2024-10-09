@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Origami Kernel Manager.  If not, see <https://www.gnu.org/licenses/>.
 #
-# Copyright (C) 2023-2024 Rem01Gaming
+# Copyright (C) 2023-present Rem01Gaming
 
 [ -d /data/data/com.termux ] && ANDROID=1
 [ -z $PREFIX ] && PREFIX="/usr"
@@ -56,11 +56,13 @@ source $PREFIX/share/origami-kernel/utils/battery/battery_util.sh
 source $PREFIX/share/origami-kernel/utils/sched/sched_util.sh
 
 LINE=$(stty size | awk '{print $2}')
-TERMUX_PATH="$PREFIX/bin"
-ANDROID_VER=$(getprop ro.build.version.release)
-ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
-VENDOR=$(getprop "ro.product.manufacturer")
 VERSION="v$(cat $PREFIX/share/origami-kernel/version)"
+ENTROPY="$(cat /proc/sys/kernel/random/entropy_avail)/$(cat /proc/sys/kernel/random/poolsize) ($(($(cat /proc/sys/kernel/random/entropy_avail) * 100 / $(cat /proc/sys/kernel/random/poolsize)))% available)"
+
+if [ $ANDROID ]; then
+	ANDROID_VER=$(getprop ro.build.version.release)
+	VENDOR=$(getprop "ro.product.manufacturer")
+fi
 
 trap "stop_throbber && tput cnorm && tput rmcup" EXIT
 
@@ -82,10 +84,20 @@ fi
 if [ $(risk_acceptence) -eq 0 ]; then
 	stop_throbber
 	clear
-	echo -e "OKM - Origami Kernel Manager ${VERSION}"
-	echo -e "Copyright (c) 2023-2024 Rem01Gaming\n"
-	echo -e "DISCLAIMER AND LICENSE AGREEMENT\n"
-	echo -e "Origami Kernel Manager offers advanced root functions that could potentially harm your device if used incorrectly or in combination with other software, tweaks, or modules. Please be cautious as Origami Kernel Manager does not take responsibility for any damages resulting from the misuse of this software.\n\nIf you are not well-versed in how root access functions, it's advisable to refrain from utilizing the root options until you have a complete understanding of the associated risks.\n\nThis software is licensed under the GNU General Public License v3.0. It comes with NO WARRANTY AND LIABILITY. By using this software, you acknowledge and accept full responsibility for its use. You agree that any actions taken with this software that negatively impact your device are not the responsibility of the developer.\n\n" | fold -s -w ${LINE}
+	fold -s -w $LINE <<EOF
+OKM - Origami Kernel Manager $VERSION
+Copyright (c) 2023-present Rem01Gaming
+
+DISCLAIMER AND LICENSE AGREEMENT
+
+Origami Kernel Manager offers advanced root functions that could potentially harm your device if used incorrectly or in combination with other software, tweaks, or modules. Please be cautious as Origami Kernel Manager does not take responsibility for any damages resulting from the misuse of this software.
+
+If you are not well-versed in how root access functions, it's advisable to refrain from utilizing the root options until you have a complete understanding of the associated risks.
+
+This software is licensed under the GNU General Public License v3.0. It comes with NO WARRANTY AND LIABILITY. By using this software, you acknowledge and accept full responsibility for its use. You agree that any actions taken with this software that negatively impact your device are not the responsibility of the developer.
+
+
+EOF
 	read -p "Type 'I AGREE' to continue: " a1
 	case $a1 in
 	"I AGREE") accept_risk ;;
@@ -99,8 +111,9 @@ fi
 
 show_license() {
 	clear
-	echo -e "Origami Kernel Manager ${VERSION}
-Copyright (c) 2023-2024 Rem01Gaming
+	fold -s -w $LINE <<EOF
+Origami Kernel Manager ${VERSION}
+Copyright (c) 2023-present Rem01Gaming
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License version 3. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
@@ -112,7 +125,7 @@ Rem01Gaming <Rem01_Gaming@proton.me>
 
 
 [*] Press enter to back into main menu
-" | fold -s -w ${LINE}
+EOF
 	read -r -s
 }
 
@@ -129,7 +142,7 @@ donate() {
 	fi
 
 	# Extract the country value from the JSON response
-	COUNTRY=$(echo "${GEO_DATA}" | jq -r '.countryCode')
+	COUNTRY=$(echo "$GEO_DATA" | jq -r '.countryCode')
 
 	# Check if the country is Indonesia or Philippines
 	if [ "$COUNTRY" == "ID" ] || [ "$COUNTRY" == "PH" ]; then
@@ -154,7 +167,7 @@ main_menu() {
 			"[] GPU: $gpu"
 			"[] KERNEL VERSION: $(uname -r)"
 			"[] UPTIME: $(uptime -p)"
-			"[] ENTROPY: ${ENTROPY}"
+			"[] ENTROPY: $ENTROPY"
 		)
 		options="CPU control\nGPU control\nDRAM control\nMemory settings\nScheduler settings\nNetworking settings\nMiscellaneous settings\nCharging controller\nDisplay color calibration"
 		header "Main Menu"

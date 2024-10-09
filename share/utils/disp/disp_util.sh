@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Origami Kernel Manager.  If not, see <https://www.gnu.org/licenses/>.
 #
-# Copyright (C) 2023-2024 Rem01Gaming
+# Copyright (C) 2023-present Rem01Gaming
 
 mtk_videox_livedisplay() {
 	R=$(cat /sys/devices/platform/mtk_disp_mgr.0/rgb | awk '{print $1}')

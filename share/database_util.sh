@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Origami Kernel Manager.  If not, see <https://www.gnu.org/licenses/>.
 #
-# Copyright (C) 2023-2024 Rem01Gaming
+# Copyright (C) 2023-present Rem01Gaming
 
 database_path="$HOME/.okm/okm.db"
 
@@ -77,19 +77,19 @@ execstoredcmd() {
 
 init_execstoredcmd() {
 	header_info=()
-		[ $ANDROID ] && header_info+=(
-			"[] DEVICE: $(getprop ro.product.system.model)"
-			"[] MANUFACTURER: $VENDOR"
-			"[] SELINUX: $(getenforce)"
-			"[] ANDROID VERSION: $ANDROID_VER"
-		)
-		header_info+=(
-			"[] CPU: $chipset"
-			"[] GPU: $gpu"
-			"[] KERNEL VERSION: $(uname -r)"
-			"[] UPTIME: $(uptime -p)"
-			"[] ENTROPY: ${ENTROPY}"
-		)
+	[ $ANDROID ] && header_info+=(
+		"[] DEVICE: $(getprop ro.product.system.model)"
+		"[] MANUFACTURER: $VENDOR"
+		"[] SELINUX: $(getenforce)"
+		"[] ANDROID VERSION: $ANDROID_VER"
+	)
+	header_info+=(
+		"[] CPU: $chipset"
+		"[] GPU: $gpu"
+		"[] KERNEL VERSION: $(uname -r)"
+		"[] UPTIME: $(uptime -p)"
+		"[] ENTROPY: ${ENTROPY}"
+	)
 	header "Main Menu"
 	echo -e "\n"
 

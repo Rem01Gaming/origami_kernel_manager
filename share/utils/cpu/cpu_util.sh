@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Origami Kernel Manager.  If not, see <https://www.gnu.org/licenses/>.
 #
-# Copyright (C) 2023-2024 Rem01Gaming
+# Copyright (C) 2023-present Rem01Gaming
 
 if [[ $soc == Mediatek ]]; then
 	source $PREFIX/share/origami-kernel/utils/cpu/mtk_cpumisc.sh
