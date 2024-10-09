@@ -240,7 +240,7 @@ misc_menu() {
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] Thermal Governor: $(chmod 0644 /sys/class/thermal/thermal_zone0/policy && cat /sys/class/thermal/thermal_zone0/policy)"
 		echo -e "   /        /\\     ${header_info[0]}"
-		echo -e "  /        /  \\    ${header_info1]}"
+		echo -e "  /        /  \\    ${header_info[1]}"
 		echo -e " /        /    \\   ${header_info[2]}"
 		echo -e "/________/      \\  ${header_info[3]}"
 		echo -e "\\        \\      /  ${header_info[4]}"
@@ -251,7 +251,7 @@ misc_menu() {
 		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
 		echo -e "[] Miscellaneous Settings\033[0m"
 
-		options="Set I/O Scheduler\nSet Thermal Governor\nTune custom devfreq component\n$(echo $options)"
+		options="Set I/O Scheduler\nSet Thermal Governor\nTune custom devfreq component\n$options"
 
 		tput civis
 

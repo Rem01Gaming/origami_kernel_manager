@@ -118,7 +118,11 @@ okm_update() {
 }
 
 if [ -z $1 ]; then
-	[ -d /data/data/com.termux ] && okm-sudo okm-menu || sudo okm
+	if [ -d /usr ]; then
+		sudo okm-menu
+	else
+		okm-sudo okm-menu
+	fi
 	exit 0
 fi
 

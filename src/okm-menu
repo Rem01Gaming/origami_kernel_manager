@@ -64,7 +64,15 @@ if [ $ANDROID ]; then
 	VENDOR=$(getprop "ro.product.manufacturer")
 fi
 
-trap "stop_throbber && tput cnorm && tput rmcup" EXIT
+exit_handler() {
+	if [ "$?" -eq 0 ]; then
+		stop_throbber
+		tput cnorm
+		tput rmcup
+	fi
+}
+
+trap "exit_handler" EXIT
 
 if [ ! -f $database_path ]; then
 	create_database
@@ -104,7 +112,7 @@ EOF
 	*)
 		clear
 		echo -e "\033[38;5;196m[-] Not agreed, Aborted.\033[0m"
-		exit 0
+		exit 1
 		;;
 	esac
 fi
