@@ -186,9 +186,14 @@ misc_menu() {
 		unset_headvar
 		header_info=()
 
+		if hash getenforce 2>/dev/null; then
+			header_info+=("[] SELINUX: $(getenforce)")
+			options="Selinux mode\n"
+		fi
+
 		if [ ! -z $dt2w_path ]; then
 			header_info+=("[] DT2W: $(cat $dt2w_path)")
-			options="Double tap to wake\n"
+			options="${options}Double tap to wake\n"
 		fi
 
 		if [[ $soc == Mediatek ]] && [ -d /sys/kernel/thunderquake_engine ]; then
@@ -234,19 +239,19 @@ misc_menu() {
 		echo -e "\e[30;48;2;254;228;208m Origami Kernel Manager ${VERSION}$(printf '%*s' $((LINE - 30)) '')\033[0m"
 		echo -e "\e[38;2;254;228;208m"
 		echo -e "    _________      [] Thermal Governor: $(chmod 0644 /sys/class/thermal/thermal_zone0/policy && cat /sys/class/thermal/thermal_zone0/policy)"
-		echo -e "   /        /\\     [] SELINUX: $(getenforce)"
-		echo -e "  /        /  \\    ${header_info[0]}"
-		echo -e " /        /    \\   ${header_info[1]}"
-		echo -e "/________/      \\  ${header_info[2]}"
-		echo -e "\\        \\      /  ${header_info[3]}"
-		echo -e " \\        \\    /   ${header_info[4]}"
-		echo -e "  \\        \\  /    ${header_info[5]}"
-		echo -e "   \\________\\/     ${header_info[6]}"
+		echo -e "   /        /\\     ${header_info[0]}"
+		echo -e "  /        /  \\    ${header_info1]}"
+		echo -e " /        /    \\   ${header_info[2]}"
+		echo -e "/________/      \\  ${header_info[3]}"
+		echo -e "\\        \\      /  ${header_info[4]}"
+		echo -e " \\        \\    /   ${header_info[5]}"
+		echo -e "  \\        \\  /    ${header_info[6]}"
+		echo -e "   \\________\\/     ${header_info[7]}"
 		echo -e "\n//////////////"
 		echo -e "$(printf '─%.0s' $(seq 1 $LINE))\n"
 		echo -e "[] Miscellaneous Settings\033[0m"
 
-		options="Set I/O Scheduler\nSet Thermal Governor\nSelinux mode\nTune custom devfreq component\n$(echo $options)"
+		options="Set I/O Scheduler\nSet Thermal Governor\nTune custom devfreq component\n$(echo $options)"
 
 		tput civis
 
