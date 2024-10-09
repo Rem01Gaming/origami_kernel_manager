@@ -59,6 +59,7 @@ fzy_select() {
 }
 
 apply() {
+	chown root:root $2 >/dev/null 2>&1
 	chmod 644 $2 >/dev/null 2>&1
 	echo $1 >$2 2>/dev/null
 	chmod 444 $2 >/dev/null 2>&1
