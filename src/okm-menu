@@ -16,7 +16,7 @@
 #
 # Copyright (C) 2023-present Rem01Gaming
 
-[ -d /data/data/com.termux ] && ANDROID=1
+[ ! -d /usr ] && ANDROID=1
 [ -z $PREFIX ] && PREFIX="/usr"
 
 # Check dependencies
