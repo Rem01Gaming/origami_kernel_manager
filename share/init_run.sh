@@ -39,7 +39,7 @@ if [[ $soc == unknown ]] && [ -f /sys/devices/soc0/machine ] && [ ! -d /sys/kern
 	soc=Qualcomm
 fi
 
-chipset="$(echo $chipset | awk '{print $1}')"
+chipset="$(echo $chipset | tr ' ' '\n' | sort -u | tr '\n' ' ')"
 
 cores=$(($(nproc --all) - 1))
 
