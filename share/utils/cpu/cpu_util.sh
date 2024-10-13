@@ -209,6 +209,24 @@ cpu_gov_param() {
 	fi
 }
 
+cpu_block_thermal_interface() {
+	if [[ $1 == "-exec" ]]; then
+		local selected=$2
+	else
+		local selected=$(fzf_select "Allow Disallow" "Prohibit CPU thermal access: ")
+		command2db cpu.block_thermal_interface "cpu_block_thermal_interface -exec $selected" FALSE
+	fi
+
+	case $selected in
+	Allow) chmod 644 /sys/devices/virtual/thermal/thermal_message/cpu_limits ;;
+	Disallow) for path in /sys/devices/system/cpu/cpufreq/policy*; do
+		cpu_maxfreq="$(cat $path/cpuinfo_max_freq)"
+		apply "cpu$(awk '{print $1}' $path/affected_cpus) $cpu_maxfreq" /sys/devices/virtual/thermal/thermal_message/cpu_limits
+		apply "$cpu_maxfreq" $path/scaling_max_freq
+	done ;;
+	esac
+}
+
 cpu_menu() {
 	while true; do
 		unset_headvar
@@ -239,6 +257,10 @@ cpu_menu() {
 		fi
 
 		options="Set Governor\nGovernor parameter\nSet max freq\nSet min freq\nCPU Core control"
+
+		if [ -f /sys/devices/virtual/thermal/thermal_message/cpu_limits ]; then
+			options="$options\nProhibit CPU thermal access"
+		fi
 
 		if [[ $soc == Mediatek ]]; then
 			if [ -d /proc/ppm ]; then
@@ -281,6 +303,7 @@ cpu_menu() {
 		"Set max freq") cpu_set_freq max ;;
 		"Set min freq") cpu_set_freq min ;;
 		"CPU Core control") cpu_core_ctrl ;;
+		"Prohibit CPU thermal access") cpu_block_thermal_interface ;;
 		"Mediatek Performance and Power Management") mtk_ppm_policy ;;
 		"Mediatek CCI mode") mtk_cpufreq_cci_mode ;;
 		"Mediatek Power mode") mtk_cpufreq_power_mode ;;
