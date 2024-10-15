@@ -42,22 +42,36 @@ fi
 chipset="$(echo $chipset | tr ' ' '\n' | sort -u | tr '\n' ' ')"
 
 cores=$(($(nproc --all) - 1))
+ARCH=$(uname -m)
 
-policy_folders=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
-nr_clusters=${#policy_folders[@]}
+# Normalize architecture names
+case "$ARCH" in
+x86_64) ARCH="x86_64" ;;               # 64-bit x86
+i686 | i386) ARCH="x86" ;;             # 32-bit x86
+aarch64) ARCH="arm64" ;;               # 64-bit ARM
+armv7* | armv8* | armhf) ARCH="arm" ;; # 32-bit ARM
+*) ARCH="unknown" ;;                   # Default case if unknown
+esac
 
-if [ $nr_clusters -gt 1 ]; then
-	is_big_little=1
-	cluster0=$(cat ${policy_folders[0]}/related_cpus 2>/dev/null)
-	cluster1=$(cat ${policy_folders[1]}/related_cpus 2>/dev/null)
-	cluster2=$(cat ${policy_folders[2]}/related_cpus 2>/dev/null)
+if [[ "$ARCH" == "*arm*" ]]; then
+	policy_folders=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
+	nr_clusters=${#policy_folders[@]}
 
-	if [ $(cat /sys/devices/system/cpu/cpufreq/policy$(echo ${cluster0} | awk '{print $1}')/scaling_available_frequencies | awk '{print $1}') -gt $(cat /sys/devices/system/cpu/cpufreq/policy$(echo ${cluster1} | awk '{print $1}')/scaling_available_frequencies | awk '{print $1}') ]; then
-		# If the frequency of cluster0 (little cpu) is bigger than cluster1 (big cpu)
-		# then there's a chance if it's swapped, correct it.
-		cluster0=$(cat ${policy_folders[1]}/related_cpus 2>/dev/null)
-		cluster1=$(cat ${policy_folders[0]}/related_cpus 2>/dev/null)
+	if [ $nr_clusters -gt 1 ]; then
+		is_big_little=1
+		cluster0=$(cat ${policy_folders[0]}/related_cpus 2>/dev/null)
+		cluster1=$(cat ${policy_folders[1]}/related_cpus 2>/dev/null)
+		cluster2=$(cat ${policy_folders[2]}/related_cpus 2>/dev/null)
+
+		if [ $(cat /sys/devices/system/cpu/cpufreq/policy$(echo ${cluster0} | awk '{print $1}')/scaling_available_frequencies | awk '{print $1}') -gt $(cat /sys/devices/system/cpu/cpufreq/policy$(echo ${cluster1} | awk '{print $1}')/scaling_available_frequencies | awk '{print $1}') ]; then
+			# If the frequency of cluster0 (little cpu) is bigger than cluster1 (big cpu)
+			# then there's a chance if it's swapped, correct it.
+			cluster0=$(cat ${policy_folders[1]}/related_cpus 2>/dev/null)
+			cluster1=$(cat ${policy_folders[0]}/related_cpus 2>/dev/null)
+		fi
 	fi
+else
+	is_big_little=0
 fi
 
 # GPU info

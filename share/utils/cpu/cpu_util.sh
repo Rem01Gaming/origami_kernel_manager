@@ -22,6 +22,18 @@ elif [[ $soc == Qualcomm ]]; then
 	source $PREFIX/share/origami-kernel/utils/cpu/qcom_cpubus.sh
 fi
 
+intel_scaling_available_frequencies() {
+	NumSteps=$(cat /sys/devices/system/cpu/intel_pstate/num_pstates)
+	MinFreq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)
+	MaxFreq=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)
+	LastFreq=$MinFreq
+	StepRate=$((($MaxFreq - $MinFreq) / $NumSteps))
+	for ((n = 0; n <= $NumSteps; n++)); do
+		echo $LastFreq
+		LastFreq=$(($LastFreq + $StepRate))
+	done
+}
+
 cpu_cluster_handle() {
 	case $1 in
 	little) cluster_need_set=0 ;;
@@ -105,7 +117,14 @@ cpu_set_freq() {
 			esac
 			cpu_cluster_handle $cluster_selected
 			max_min=$1
-			local freq=$(fzf_select "$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)" "Select $max_min CPU freq for $cluster_selected cluster: ")
+
+			if [ $soc == "Intel" ]; then
+				local available_freq="$(intel_scaling_available_frequencies)"
+			else
+				local available_freq="$(cat /sys/devices/system/cpu/cpufreq/policy${first_cpu_oncluster}/scaling_available_frequencies)"
+			fi
+
+			local freq=$(fzf_select "$available_freq" "Select $max_min CPU freq for $cluster_selected cluster: ")
 			command2db cpu.$cluster_selected.${max_min}_freq "cpu_set_freq -exec $freq $cluster_selected $max_min" FALSE
 		fi
 
