@@ -272,7 +272,7 @@ cpu_menu() {
 			header_info+=("[] Governor: ${gov_tmp}")
 			unset gov_tmp
 		else
-			header_info=("[] Scaling freq: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)KHz"
+			header_info+=("[] Scaling freq: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq)KHz - $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq)KHz"
 			"[] Governor: $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)")
 		fi
 

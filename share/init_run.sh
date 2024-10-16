@@ -53,7 +53,7 @@ armv7* | armv8* | armhf) ARCH="arm" ;; # 32-bit ARM
 *) ARCH="unknown" ;;                   # Default case if unknown
 esac
 
-if [[ "$ARCH" == "*arm*" ]]; then
+if [[ "$ARCH" == *arm* ]]; then
 	policy_folders=($(ls -d /sys/devices/system/cpu/cpufreq/policy* | sort -V))
 	nr_clusters=${#policy_folders[@]}
 
