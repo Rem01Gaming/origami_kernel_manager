@@ -165,7 +165,7 @@ main_menu() {
 		unset_headvar
 		header_info=()
 		[ $ANDROID ] && header_info+=(
-			"[] DEVICE: $(getprop ro.product.system.model)"
+			"[] DEVICE: $(getprop ro.product.model)"
 			"[] MANUFACTURER: $VENDOR"
 			"[] SELINUX: $(getenforce)"
 			"[] ANDROID VERSION: $ANDROID_VER"

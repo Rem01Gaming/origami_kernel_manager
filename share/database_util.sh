@@ -78,7 +78,7 @@ execstoredcmd() {
 init_execstoredcmd() {
 	header_info=()
 	[ $ANDROID ] && header_info+=(
-		"[] DEVICE: $(getprop ro.product.system.model)"
+		"[] DEVICE: $(getprop ro.product.model)"
 		"[] MANUFACTURER: $VENDOR"
 		"[] SELINUX: $(getenforce)"
 		"[] ANDROID VERSION: $ANDROID_VER"
@@ -88,7 +88,7 @@ init_execstoredcmd() {
 		"[] GPU: $gpu"
 		"[] KERNEL VERSION: $(uname -r)"
 		"[] UPTIME: $(uptime -p)"
-		"[] ENTROPY: ${ENTROPY}"
+		"[] ENTROPY: $ENTROPY"
 	)
 	header "Main Menu"
 	echo -e "\n"
