@@ -188,9 +188,9 @@ cpu_core_ctrl() {
 
 			selected=$(fzf_select_n "$(printf '%s\n' "${options[@]}")" "CPU Core Control: ")
 
-			case $selected in
+			case "$selected" in
 			"Back to the main menu") break ;;
-			" ") ;;
+			" " | *system*) ;;
 			*)
 				cpu_number=${selected:3:1}
 				new_status=$((1 - $(<"${cpu_dir}/cpu${cpu_number}/online")))
