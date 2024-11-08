@@ -95,7 +95,7 @@ tcp_sack() {
 	if [[ $1 == "-exec" ]]; then
 		local selected=$2
 	else
-		local selected=$(fzf_select "Disable Enable" "TCP Select Acknowledgments (SACKS): ")
+		local selected=$(fzf_select "Disable Enable" "TCP Select Acknowledgments (SACK): ")
 		command2db net.ipv4.tcp_sack "tcp_sack -exec $selected" FALSE
 	fi
 	case $selected in
