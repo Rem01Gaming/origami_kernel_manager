@@ -131,17 +131,38 @@ bpf_jit_harden() {
 net_menu() {
 	while true; do
 		unset_headvar
-		header_info=(
-			"[] TCP Congestion: $(cat /proc/sys/net/ipv4/tcp_congestion_control)"
-			"[] TCP SYN Cookies: $(cat /proc/sys/net/ipv4/tcp_syncookies)"
-			"[] TCP Reuse socket: $(cat /proc/sys/net/ipv4/tcp_tw_reuse)"
-			"[] TCP ECN: $(cat /proc/sys/net/ipv4/tcp_ecn)"
-			"[ϟ] TCP Fastopen: $(cat /proc/sys/net/ipv4/tcp_fastopen)"
-			"[] TCP SACK: $(cat /proc/sys/net/ipv4/tcp_sack)"
-			"[] TCP Timestamps: $(cat /proc/sys/net/ipv4/tcp_timestamps)"
-		)
-
-		options="Change TCP Congestion algorithm\nTCP SYN Cookies\nTCP Max SYN backlog\nTCP Keep alive time\nTCP Reuse socket\nTCP Explicit Congestion Notification\nTCP Fastopen\nTCP Select Acknowledgments\nTCP Timestamps"
+		options="Change TCP Congestion algorithm\nTCP Max SYN backlog\nTCP Keep alive time"
+		header_info=("[] TCP Congestion: $(cat /proc/sys/net/ipv4/tcp_congestion_control)")
+		
+		if [ -f /proc/sys/net/ipv4/tcp_syncookies ]; then
+			header_info+=("[] TCP SYN Cookies: $(cat /proc/sys/net/ipv4/tcp_syncookies)")
+			options="$options\nTCP SYN Cookies"
+		fi
+		
+		if [ -f /proc/sys/net/ipv4/tcp_tw_reuse ]; then
+			header_info+=("[] TCP Reuse socket: $(cat /proc/sys/net/ipv4/tcp_tw_reuse)")
+			options="$options\nTCP Reuse socket"
+		fi
+		
+		if [ -f /proc/sys/net/ipv4/tcp_ecn ]; then
+			header_info+=("[] TCP ECN: $(cat /proc/sys/net/ipv4/tcp_ecn)")
+			options="$options\nTCP Explicit Congestion Notification"
+		fi
+		
+		if [ -f /proc/sys/net/ipv4/tcp_fastopen ]; then
+			header_info+=("[ϟ] TCP Fastopen: $(cat /proc/sys/net/ipv4/tcp_fastopen)")
+			options="$options\nTCP Fastopen"
+		fi
+		
+		if [ -f /proc/sys/net/ipv4/tcp_sack ]; then
+			header_info+=("[] TCP SACK: $(cat /proc/sys/net/ipv4/tcp_sack)")
+			options="$options\nTCP Select Acknowledgments"
+		fi
+		
+		if [ -f /proc/sys/net/ipv4/tcp_timestamps ]; then
+			header_info+=("[] TCP Timestamps: $(cat /proc/sys/net/ipv4/tcp_timestamps)")
+			options="$options\nTCP Timestamps"
+		fi
 
 		if [ -f /proc/sys/net/core/bpf_jit_harden ]; then
 			header_info+=("[] BPF JIT harden: $(cat /proc/sys/net/core/bpf_jit_harden)")
