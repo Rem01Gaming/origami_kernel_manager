@@ -37,9 +37,9 @@ ged_min_freq() {
 		local index=$2
 	else
 		if [[ $gpu_node_id == 1 ]]; then
-			index=$(grep "$(fzf_select "$gpu_available_freqs" "Maximum GPU Frequency: ")" /proc/gpufreq/gpufreq_opp_dump | awk '{print $1}')
+			index=$(grep "$(fzf_select "$gpu_available_freqs" "Minimum GPU Frequency: ")" /proc/gpufreq/gpufreq_opp_dump | awk '{print $1}')
 		elif [[ $gpu_node_id == 2 ]]; then
-			index=$(grep "$(fzf_select "$gpu_available_freqs" "Maximum GPU Frequency: ")" /proc/gpufreqv2/gpu_working_opp_table | awk '{print $1}')
+			index=$(grep "$(fzf_select "$gpu_available_freqs" "Minimum GPU Frequency: ")" /proc/gpufreqv2/gpu_working_opp_table | awk '{print $1}')
 		fi
 		local index=${index:1:-1}
 		command2db gpu.ged.min_freq "ged_min_freq -exec $index" FALSE
