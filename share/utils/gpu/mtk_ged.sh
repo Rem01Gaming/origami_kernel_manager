@@ -112,16 +112,3 @@ mtk_ged_game_mode() {
 	Disable) apply 0 /sys/module/ged/parameters/gx_game_mode ;;
 	esac
 }
-
-mtk_ged_dcs_mode() {
-	if [[ $1 == "-exec" ]]; then
-		local selected=$2
-	else
-		local selected=$(fzf_select "Enable Disable" "DCS Policy mode: ")
-		command2db gpu.ged.dcs_mode "mtk_ged_dcs_mode -exec $selceted" FALSE
-	fi
-	case $selected in
-	Enable) apply 1 /sys/kernel/ged/hal/dcs_mode ;;
-	Disable) apply 0 /sys/kernel/ged/hal/dcs_mode ;;
-	esac
-}
