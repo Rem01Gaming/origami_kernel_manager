@@ -34,15 +34,16 @@ mtk_gpufreqv2_menu() {
 	while true; do
 		unset_headvar
 		header_info=(
-			"[] GPU: ${gpu}"
-			"[] GPU Scalling freq: $(cat /sys/module/ged/parameters/gpu_cust_boost_freq)KHz - $(cat /sys/module/ged/parameters/gpu_cust_upbound_freq)KHz"
+			"[] GPU: $gpu"
+			"[] GPU Scaling freq: $(cat /sys/module/ged/parameters/gpu_cust_boost_freq)KHz - $(cat /sys/module/ged/parameters/gpu_cust_upbound_freq)KHz"
 			"[] Fixed freq & volt: $(if [[ $(awk '{print $2}' /proc/gpufreqv2/fix_target_opp_index) == "fix" ]]; then echo "Enabled"; else echo "Disabled"; fi)"
 			"[] GPU DVFS: $(cat /sys/module/ged/parameters/gpu_dvfs_enable)"
 			"[ϟ] GED Boosting: $(cat /sys/module/ged/parameters/ged_boost_enable)"
+			"[] GED DCS Policy: $(cat /sys/kernel/ged/hal/dcs_mode)"
 		)
 
 		header "GPU Control"
-		selected="$(fzy_select "Set max freq\nSet min freq\nLock freq (NO DVFS)\nReset DVFS\nGED GPU DVFS\nGED Boost\nGED GPU boost\nBack to main menu" "")"
+		selected="$(fzy_select "Set max freq\nSet min freq\nLock freq (NO DVFS)\nReset DVFS\nGED GPU DVFS\nGED Boost\nGED GPU boost\nDCS Policy mode\nBack to main menu" "")"
 
 		case "$selected" in
 		"Set max freq") ged_max_freq ;;
@@ -52,6 +53,7 @@ mtk_gpufreqv2_menu() {
 		"GED GPU DVFS") mtk_ged_dvfs ;;
 		"GED Boost") mtk_ged_boost ;;
 		"GED GPU boost") mtk_ged_gpu_boost ;;
+		"GED DCS Policy") mtk_ged_dcs_mode ;;
 		"Back to main menu") break ;;
 		esac
 	done
