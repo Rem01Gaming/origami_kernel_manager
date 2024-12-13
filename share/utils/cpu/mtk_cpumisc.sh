@@ -117,6 +117,26 @@ mtk_cpu_volt_offset() {
 	fi
 }
 
+mtk_cpu_volt_offset2() {
+	if [[ $1 == "-exec" ]]; then
+		local offset=$2
+		local selected=$3
+		apply $offset /proc/eemg/$selected/eemg_offset
+	else
+		local path=()
+		for dir in /proc/eemg/EEMG_DET_*; do
+			if [[ $dir != *GPU* ]] && [ -f $dir/eemg_offset ]; then
+				path+=($(basename $dir))
+			fi
+		done
+		local selected=$(fzf_select "$(echo ${path[@]})" "Select CPU Part to voltage offset: ")
+		menu_value_tune "Voltage Offset for CPU $selected\nOffset will take original voltage from Operating Performance Point (OPP) and add or subtract the given voltage, you can use it for Overvolting or Undervolting.\nOne tick is equal to 6,25mV." /proc/eemg/$selected/eemg_offset 50 -50 1
+		local offset=$number
+		command2db cpu.mtk.volt_offset "mtk_cpu_volt_offset2 -exec $offset $selected" TRUE
+		unset path
+	fi
+}
+
 mtk_sched_boost() {
 	if [[ $1 == "-exec" ]]; then
 		local selected=$2
