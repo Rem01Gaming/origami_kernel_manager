@@ -304,9 +304,7 @@ cpu_menu() {
 			fi
 
 			if [ -d /proc/eem ]; then
-				options="$options\nCPU Voltage offset (EEM)"
-			elif [ -d /proc/eemg ]; then
-				options="$options\nCPU Voltage offset (EEMG)"
+				options="$options\nCPU Voltage offset"
 			fi
 		fi
 
@@ -330,8 +328,7 @@ cpu_menu() {
 		"Mediatek CCI mode") mtk_cpufreq_cci_mode ;;
 		"Mediatek Power mode") mtk_cpufreq_power_mode ;;
 		"Mediatek Sched Boost") mtk_sched_boost ;;
-		"CPU Voltage offset (EEM)") mtk_cpu_volt_offset ;;
-		"CPU Voltage offset (EEMG)") mtk_cpu_volt_offset2 ;;
+		"CPU Voltage offset") mtk_cpu_volt_offset ;;
 		"CPU Bus Control") qcom_cpubus ;;
 		"Back to main menu") break ;;
 		esac
