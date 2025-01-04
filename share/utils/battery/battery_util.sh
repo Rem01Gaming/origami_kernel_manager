@@ -54,6 +54,7 @@ test_chg_switches() {
 		"/sys/class/hw_power/charger/charge_data/enable_charger 1 0"
 		"/sys/class/qcom-battery/input_suspend 0 1"
 		"/sys/devices/platform/charger/tran_aichg_disable_charger 0 1"
+		"/sys/devices/platform/charger/bypass_charger 0 1"
 		"/sys/devices/platform/huawei_charger/enable_charger 1 0"
 		"/sys/devices/platform/lge-unified-nodes/charging_completed 0 1"
 		"/sys/devices/platform/lge-unified-nodes/charging_enable 1 0"
