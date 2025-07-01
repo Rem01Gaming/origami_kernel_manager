@@ -117,14 +117,15 @@ okm_update() {
 	exit 0
 }
 
-if [ -z $1 ]; then
-	if [ -d /usr ]; then
-		sudo okm-menu
-	else
-		okm-sudo okm-menu
+[ -z $1 ] && {
+	if [ ! "$UID" -eq 0 ]; then
+		echo "Please run this program as root." >&2
+		exit 1
 	fi
+
+	okm-menu
 	exit 0
-fi
+}
 
 case $1 in
 update) okm_update ;;

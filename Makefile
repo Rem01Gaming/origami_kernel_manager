@@ -33,7 +33,6 @@ install:
 	mkdir $(PREFIX)/share/origami-kernel
 	cp -r ./share/* $(PREFIX)/share/origami-kernel
 	chmod +x $(PREFIX)/bin/okm
-	chmod +x $(PREFIX)/bin/okm-sudo
 	chmod +x $(PREFIX)/bin/okm-menu
 	@printf "\033[1;38;2;254;228;208m    .^.   .^.\n"
 	@printf "    /⋀\\_ﾉ_/⋀\\ \n"
